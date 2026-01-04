@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumni Dashboard · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --error: #dc2626;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: var(--bg-primary);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            padding: 2rem 0;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            width: 3rem;
+            height: 3rem;
+            background: var(--primary);
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Activity Section */
+        .activity-section {
+            margin-bottom: 3rem;
+        }
+
+        .activity-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .activity-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .activity-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .activity-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .activity-table th,
+        .activity-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .activity-table th {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .activity-table td {
+            color: var(--text-secondary);
+        }
+
+        .type-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .type-badge.event {
+            background: #dbeafe;
+            color: var(--primary);
+        }
+
+        .type-badge.job {
+            background: #dcfce7;
+            color: var(--success);
+        }
+
+        .type-badge.news {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .type-badge.survey {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .action-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .action-link:hover {
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        .empty-jobs {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-jobs h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }
+
+        .empty-jobs p {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+
+        /* Career Section */
+        .career-section {
+            margin-bottom: 2rem;
+        }
+
+        /* Filters Card */
+        .filters-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .job-filters {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .filter-input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            background: var(--bg-primary);
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .filter-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .filter-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .department-filters {
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .dept-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .dept-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .dept-btn {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .dept-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .dept-btn.active {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Jobs Grid */
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .job-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .job-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+            display: block;
+        }
+
+        .job-title:hover {
+            color: var(--primary);
+        }
+
+        .job-dept {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-deadline {
+            color: var(--error);
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-meta-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .job-tag {
+            background: #e0f2fe;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .job-tag-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .job-location {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0.75rem 0;
+            }
+            .nav-container {
+                padding: 0 1rem;
+            }
+            .nav-links {
+                gap: 1rem;
+            }
+            .main-content {
+                padding: 1rem;
+            }
+            .hero-title {
+                font-size: 2rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .filter-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .activity-table th,
+            .activity-table td {
+                padding: 0.5rem;
+            }
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                Alumni Portal
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="/events.html" class="nav-link">Events</a>
+                <a href="/jobs.html" class="nav-link">Jobs</a>
+                <a href="/news.html" class="nav-link">News</a>
+                <a href="/surveys.html" class="nav-link">Surveys</a>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="hero-section">
+            <h1 class="hero-title">Welcome Back, Alumni!</h1>
+            <p class="hero-subtitle">
+                Discover opportunities, stay connected, and grow your professional network through our comprehensive alumni portal.
+            </p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-number" id="metric-events">0</span>
+                        <span class="stat-label">Upcoming Events</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-number" id="metric-jobs">0</span>
+                        <span class="stat-label">Job Opportunities</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-newspaper"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-number" id="metric-news">0</span>
+                        <span class="stat-label">Latest News</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-poll"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-number" id="metric-surveys">0</span>
+                        <span class="stat-label">Active Surveys</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-section">
+                <div class="section-header">
+                    <h2 class="section-title">Recent Activity</h2>
+                    <p class="section-subtitle">Stay updated with the latest happenings</p>
+                </div>
+                <div class="activity-grid">
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <i class="fas fa-clock activity-icon"></i>
+                            <h3 class="activity-title">Recent Items</h3>
+                        </div>
+                        <div class="activity-table">
+                            <table id="recent-table">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Title</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Career Opportunities Section -->
+            <div class="career-section">
+                <div class="section-header">
+                    <h2 class="section-title">Career Opportunities</h2>
+                    <p class="section-subtitle">Discover exciting job opportunities tailored for our alumni community</p>
+                </div>
+
+                <!-- Job Filters -->
+                <div class="filters-card">
+                    <form id="jobs-filter-form" class="job-filters">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label for="jobTitle" class="filter-label">
+                                    <i class="fas fa-search"></i>
+                                    Job Title
+                                </label>
+                                <input id="jobTitle" name="jobTitle" placeholder="Search by job title..." class="filter-input" />
+                            </div>
+                            <div class="filter-group">
+                                <label for="jobDepartment" class="filter-label">
+                                    <i class="fas fa-building"></i>
+                                    Department
+                                </label>
+                                <input id="jobDepartment" name="jobDepartment" placeholder="e.g. Computer Science" class="filter-input" />
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">&nbsp;</label>
+                                <button type="submit" class="filter-btn">
+                                    <i class="fas fa-filter"></i>
+                                    Apply Filters
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="department-filters">
+                            <h4 class="dept-title">Popular Departments</h4>
+                            <div class="dept-buttons">
+                                <button type="button" class="dept-btn" data-dept="Computer Science">
+                                    <i class="fas fa-code"></i>
+                                    Computer Science
+                                </button>
+                                <button type="button" class="dept-btn" data-dept="Pharmacy">
+                                    <i class="fas fa-pills"></i>
+                                    Pharmacy
+                                </button>
+                                <button type="button" class="dept-btn" data-dept="Data Science">
+                                    <i class="fas fa-chart-line"></i>
+                                    Data Science
+                                </button>
+                                <button type="button" class="dept-btn" data-dept="BBA">
+                                    <i class="fas fa-chart-bar"></i>
+                                    Business
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Job Listings -->
+                <div id="jobs-list" class="jobs-grid"></div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Theme toggle functionality
+    (function() {
+        const stored = window.localStorage.getItem('amp-theme');
+        if (stored === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        }
+        const btn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-toggle-icon');
+        if (!btn || !icon) return;
+
+        function syncIcon() {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            icon.textContent = isLight ? '☀️' : '🌙';
+        }
+        syncIcon();
+
+        btn.addEventListener('click', () => {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.body.removeAttribute('data-theme');
+                window.localStorage.setItem('amp-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                window.localStorage.setItem('amp-theme', 'light');
+            }
+            syncIcon();
+
+            // Animate theme transition
+            document.body.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 300);
+        });
+    })();
+
+    async function safeFetch(url) {
+        try {
+            const res = await fetch(url);
+            if (!res.ok) return [];
+            const json = await res.json().catch(() => ({}));
+            return json.data || [];
+        } catch {
+            return [];
+        }
+    }
+
+    // Load dashboard data
+    (async function loadDashboard() {
+        const [events, jobs, news, surveys] = await Promise.all([
+            safeFetch('/events'),
+            safeFetch('/jobPosts/published'),
+            safeFetch('/news'),
+            safeFetch('/surveys')
+        ]);
+
+        // Update stats cards
+        document.getElementById('metric-events').textContent = events.length;
+        document.getElementById('metric-jobs').textContent = jobs.length;
+        document.getElementById('metric-news').textContent = news.length;
+
+        // Use submitted survey responses count for "Active surveys" metric
+        try {
+            const res = await fetch('/surveys/active/count');
+            const json = await res.json().catch(() => ({}));
+            const submittedCount = (json.data !== undefined && json.data !== null) ? json.data : 0;
+            document.getElementById('metric-surveys').textContent = submittedCount;
+        } catch {
+            document.getElementById('metric-surveys').textContent = surveys.length;
+        }
+
+        // Update recent activity table
+        const tbody = document.querySelector('#recent-table tbody');
+        const rows = [];
+
+        events.slice(0, 3).forEach(e => {
+            rows.push(`<tr>
+                <td><span class="type-badge event">Event</span></td>
+                <td>${e.title || e.name || 'Untitled event'}</td>
+                <td><a href="/events.html" class="action-link">View</a></td>
+            </tr>`);
+        });
+
+        jobs.slice(0, 3).forEach(j => {
+            rows.push(`<tr>
+                <td><span class="type-badge job">Job</span></td>
+                <td>${j.title || j.position || 'Untitled job'}</td>
+                <td><a href="/jobs.html" class="action-link">View</a></td>
+            </tr>`);
+        });
+
+        news.slice(0, 3).forEach(n => {
+            rows.push(`<tr>
+                <td><span class="type-badge news">News</span></td>
+                <td>${n.title || n.headline || 'Untitled news'}</td>
+                <td><a href="/news.html" class="action-link">View</a></td>
+            </tr>`);
+        });
+
+        surveys.slice(0, 3).forEach(s => {
+            rows.push(`<tr>
+                <td><span class="type-badge survey">Survey</span></td>
+                <td>${s.title || s.name || 'Untitled survey'}</td>
+                <td><a href="/surveys.html" class="action-link">View</a></td>
+            </tr>`);
+        });
+
+        tbody.innerHTML = rows.join('') || '<tr><td colspan="3" class="empty-state">No recent activity. Start exploring opportunities!</td></tr>';
+    })();
+
+    // Setup job listings with modern design
+    (async function setupAvailableJobs() {
+        const jobs = await safeFetch('/available-jobs');
+        const listEl = document.getElementById('jobs-list');
+        const form = document.getElementById('jobs-filter-form');
+        const deptButtons = Array.from(document.querySelectorAll('.dept-btn'));
+
+        function render(filtered) {
+            if (!filtered.length) {
+                listEl.innerHTML = `
+                    <div class="empty-jobs">
+                        <i class="fas fa-briefcase empty-icon"></i>
+                        <h3>No jobs found</h3>
+                        <p>Try adjusting your filters or check back later for new opportunities.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map((job, index) => `
+                <div class="job-card" style="animation-delay: ${index * 0.1}s;">
+                    <div class="job-title">
+                        <a href="/job-detail.html?id=${encodeURIComponent(job.id || '')}">
+                            ${job.title}
+                        </a>
+                    </div>
+                    <div class="job-dept">${job.departmentFullName}</div>
+                    <div class="job-deadline">
+                        <i class="fas fa-clock"></i>
+                        Deadline: ${job.vacancyUntil}
+                    </div>
+                    <div class="job-meta-row">
+                        <span class="job-tag">
+                            <span class="job-tag-dot"></span>
+                            ${job.experience}
+                        </span>
+                        <span class="job-tag">
+                            <span class="job-tag-dot"></span>
+                            ${job.contractType}
+                        </span>
+                        <span class="job-tag">
+                            <span class="job-tag-dot"></span>
+                            ${job.salary}
+                        </span>
+                    </div>
+                    <div class="job-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        ${job.location}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function applyFilters() {
+            const title = (form.jobTitle.value || '').toLowerCase();
+            const dept = (form.jobDepartment.value || '').toLowerCase();
+            const activeDeptButton = deptButtons.find(btn => btn.classList.contains('active'));
+            const deptFromButton = activeDeptButton ? (activeDeptButton.dataset.dept || '').toLowerCase() : '';
+
+            const filtered = jobs.filter(job => {
+                const matchesTitle = !title || (job.title || '').toLowerCase().includes(title);
+                const combinedDept = (job.departmentFullName + ' ' + job.departmentKey).toLowerCase();
+                const deptFilter = deptFromButton || dept;
+                const matchesDept = !deptFilter || combinedDept.includes(deptFilter);
+                return matchesTitle && matchesDept;
+            });
+            render(filtered);
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            deptButtons.forEach(btn => btn.classList.remove('active'));
+            applyFilters();
+        });
+
+        deptButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                deptButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                form.jobDepartment.value = '';
+                applyFilters();
+            });
+        });
+
+        render(jobs);
+    })();
+</script>
+</body>
+</html>
+
+

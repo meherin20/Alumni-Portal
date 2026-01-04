@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 75%, #1a1a2e 100%);
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-left {
+            text-align: center;
+        }
+
+        .brand-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .brand-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-subtitle {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .features-list {
+            display: grid;
+            gap: 1rem;
+            text-align: left;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .feature-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .feature-content h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .feature-content p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+        }
+
+        .login-right {
+            position: relative;
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+
+        .login-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0.25rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+
+        .tab-btn.active {
+            color: #ffffff;
+        }
+
+        .tab-slider {
+            position: absolute;
+            top: 0.25rem;
+            left: 0.25rem;
+            width: calc(33.333% - 0.25rem);
+            height: calc(100% - 0.5rem);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            z-index: 1;
+        }
+
+        .tab-slider.student { transform: translateX(0); }
+        .tab-slider.alumni { transform: translateX(100%); }
+        .tab-slider.admin { transform: translateX(200%); }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin-bottom: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+
+        .login-link:hover {
+            color: #667eea;
+        }
+
+        .divider {
+            text-align: center;
+            position: relative;
+            margin: 2rem 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 0 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-btn {
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .alert {
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #86efac;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Light Mode Styles */
+        [data-theme="light"] {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #ffffff 75%, #f8fafc 100%);
+            color: #1e293b;
+        }
+
+        [data-theme="light"]::before {
+            background:
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+        }
+
+        [data-theme="light"] .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .brand-title {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="light"] .brand-subtitle {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        [data-theme="light"] .feature-item {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .feature-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .login-title,
+        [data-theme="light"] .login-subtitle {
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .form-label {
+            color: #374151;
+        }
+
+        [data-theme="light"] .form-input {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .form-input::placeholder {
+            color: rgba(30, 41, 59, 0.5);
+        }
+
+        [data-theme="light"] .login-tabs {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="light"] .tab-btn {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        [data-theme="light"] .tab-btn.active {
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .login-link {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        [data-theme="light"] .divider {
+            color: rgba(30, 41, 59, 0.5);
+        }
+
+        [data-theme="light"] .social-btn {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(30, 41, 59, 0.8);
+        }
+
+        [data-theme="light"] .social-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 1024px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1rem;
+            }
+
+            .login-left {
+                order: 2;
+            }
+
+            .login-right {
+                order: 1;
+            }
+
+            .brand-title {
+                font-size: 2rem;
+            }
+
+            .features-list {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .brand-logo {
+                font-size: 3rem;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
+        <span id="theme-toggle-icon">🌙</span>
+    </button>
+
+    <div class="login-container">
+        <div class="login-left">
+            <div class="brand-logo">🎓</div>
+            <h1 class="brand-title">Welcome Back</h1>
+            <p class="brand-subtitle">
+                Sign in to access your alumni network, discover opportunities, and connect with fellow graduates.
+            </p>
+
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon">📅</div>
+                    <div class="feature-content">
+                        <h4>Exclusive Events</h4>
+                        <p>Network with alumni and industry leaders</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">💼</div>
+                    <div class="feature-content">
+                        <h4>Job Opportunities</h4>
+                        <p>Discover career opportunities posted by alumni</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📰</div>
+                    <div class="feature-content">
+                        <h4>Campus News</h4>
+                        <p>Stay updated with latest university news</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-content">
+                        <h4>Surveys & Feedback</h4>
+                        <p>Share your thoughts and shape the future</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-right">
+            <div class="login-card">
+                <div class="login-header">
+                    <h2 class="login-title">Sign In</h2>
+                    <p class="login-subtitle">Choose your account type and sign in</p>
+                </div>
+
+                <div class="login-tabs">
+                    <div class="tab-slider student" id="tab-slider"></div>
+                    <button type="button" class="tab-btn active" data-type="student">Student</button>
+                    <button type="button" class="tab-btn" data-type="alumni">Alumni</button>
+                    <button type="button" class="tab-btn" data-type="admin">Admin</button>
+                </div>
+
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="your.email@uiu.ac.bd" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">Password</label>
+                        <input type="password" id="password" name="password" class="form-input" placeholder="Enter your password" required />
+                    </div>
+
+                    <input type="hidden" name="loginType" value="student" id="loginType" />
+
+                    <div class="login-links">
+                        <a href="/reset-password.html" class="login-link">Forgot password?</a>
+                        <a href="/signup.html" class="login-link">Create account</a>
+                    </div>
+
+                    <button type="submit" class="login-btn" id="loginBtn">
+                        Sign In
+                    </button>
+
+                    <div id="login-message" class="alert" style="display: none;"></div>
+                </form>
+
+                <div class="divider">
+                    <span>or continue with</span>
+                </div>
+
+                <div class="social-login">
+                    <a href="#" class="social-btn">
+                        <span>🌐</span>
+                        University SSO
+                    </a>
+                    <a href="#" class="social-btn">
+                        <span>📧</span>
+                        Outlook
+                    </a>
+                </div>
+
+                <p style="text-align: center; color: rgba(255, 255, 255, 0.6); font-size: 0.75rem; margin-top: 1.5rem;">
+                    Secured with SSL encryption • API endpoint: /users/login
+                </p>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // Theme toggle functionality
+    (function() {
+        const stored = window.localStorage.getItem('amp-theme');
+        if (stored === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        }
+
+        const btn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-toggle-icon');
+
+        function syncTheme() {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            icon.textContent = isLight ? '☀️' : '🌙';
+        }
+
+        syncTheme();
+
+        btn.addEventListener('click', () => {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.body.removeAttribute('data-theme');
+                window.localStorage.setItem('amp-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                window.localStorage.setItem('amp-theme', 'light');
+            }
+            syncTheme();
+        });
+    })();
+
+    // Tab functionality
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabSlider = document.getElementById('tab-slider');
+    const loginTypeInput = document.getElementById('loginType');
+
+    tabButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+
+            // Add active class to clicked button
+            button.classList.add('active');
+
+            // Update slider position
+            const type = button.dataset.type;
+            tabSlider.className = `tab-slider ${type}`;
+
+            // Update hidden input
+            loginTypeInput.value = type;
+        });
+    });
+
+    // Login form functionality
+    const form = document.getElementById('login-form');
+    const messageBox = document.getElementById('login-message');
+    const loginBtn = document.getElementById('loginBtn');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        messageBox.style.display = 'none';
+
+        // Update button state
+        loginBtn.disabled = true;
+        loginBtn.textContent = 'Signing In...';
+
+        const payload = {
+            email: form.email.value,
+            password: form.password.value,
+            role: loginTypeInput.value.toUpperCase()
+        };
+
+        try {
+            const res = await fetch('/users/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json().catch(() => ({}));
+
+            messageBox.classList.remove('alert-error', 'alert-success');
+            messageBox.classList.add('alert');
+
+            if (!res.ok) {
+                messageBox.classList.add('alert-error');
+                messageBox.textContent = data.message || data.error || 'Login failed. Please check your credentials.';
+            } else {
+                messageBox.classList.add('alert-success');
+                messageBox.textContent = data.message || 'Login successful! Redirecting...';
+
+                const selectedType = loginTypeInput.value || 'student';
+
+                try {
+                    window.localStorage.setItem('amp-user-email', form.email.value);
+                    window.localStorage.setItem('amp-user-role', selectedType);
+                } catch (e) {
+                    // ignore storage errors
+                }
+
+                // Redirect based on user type
+                setTimeout(() => {
+                    if (selectedType === 'admin') {
+                        window.location.href = '/admin-dashboard.html';
+                    } else if (selectedType === 'alumni') {
+                        window.location.href = '/alumni-portal.html';
+                    } else {
+                        window.location.href = '/student-view.html';
+                    }
+                }, 1000);
+            }
+            messageBox.style.display = 'block';
+        } catch (err) {
+            messageBox.classList.remove('alert');
+            messageBox.classList.add('alert', 'alert-error');
+            messageBox.textContent = 'Network error. Please check your connection and try again.';
+            messageBox.style.display = 'block';
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Sign In';
+        }
+    });
+
+    // Add smooth animations
+    document.addEventListener('DOMContentLoaded', () => {
+        // Animate form card entrance
+        const loginCard = document.querySelector('.login-card');
+        loginCard.style.opacity = '0';
+        loginCard.style.transform = 'translateY(20px)';
+
+        setTimeout(() => {
+            loginCard.style.transition = 'all 0.6s ease';
+            loginCard.style.opacity = '1';
+            loginCard.style.transform = 'translateY(0)';
+        }, 100);
+
+        // Animate brand elements
+        const brandElements = document.querySelectorAll('.brand-logo, .brand-title, .brand-subtitle');
+        brandElements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                element.style.transition = 'all 0.6s ease';
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+            }, 200 + (index * 100));
+        });
+
+        // Animate feature items
+        const featureItems = document.querySelectorAll('.feature-item');
+        featureItems.forEach((item, index) => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-20px)';
+
+            setTimeout(() => {
+                item.style.transition = 'all 0.5s ease';
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 500 + (index * 100));
+        });
+    });
+</script>
+</body>
+</html>
+
+

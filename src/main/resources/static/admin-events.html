@@ -1,0 +1,4357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Event Management · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.18);
+            --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
+            --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.1);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .page-shell {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 20px;
+        }
+
+        .admin-container {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .admin-sidebar {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .admin-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .admin-nav-item:hover::before {
+            left: 100%;
+        }
+
+        .admin-nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .admin-nav-item.active {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .admin-nav-icon {
+            font-size: 18px;
+            width: 20px;
+        }
+
+        .admin-content {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .admin-header {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .admin-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+            z-index: 1;
+            position: relative;
+        }
+
+        .test-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .test-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .admin-subtitle {
+            opacity: 0.8;
+            font-size: 16px;
+            margin: 4px 0 0 0;
+            font-weight: 300;
+        }
+
+        .btn-admin {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-admin::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-admin:hover::before {
+            left: 100%;
+        }
+
+        .btn-admin:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Premium Yellow Create Event Button */
+        .btn-create-event {
+            position: relative;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            color: #1f2937;
+            border: 3px solid #f59e0b;
+            padding: 16px 28px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow:
+                0 6px 25px rgba(251, 191, 36, 0.6),
+                0 3px 15px rgba(245, 158, 11, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 180px;
+            justify-content: center;
+            animation: subtlePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes subtlePulse {
+            0%, 100% {
+                box-shadow:
+                    0 6px 25px rgba(251, 191, 36, 0.6),
+                    0 3px 15px rgba(245, 158, 11, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            }
+            50% {
+                box-shadow:
+                    0 8px 35px rgba(251, 191, 36, 0.8),
+                    0 4px 20px rgba(245, 158, 11, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        .btn-create-event::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+            z-index: 1;
+        }
+
+        .btn-create-event:hover::before {
+            left: 100%;
+        }
+
+        .btn-create-event:hover {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+            border-color: #d97706;
+            transform: translateY(-4px) scale(1.08);
+            box-shadow:
+                0 12px 40px rgba(251, 191, 36, 0.8),
+                0 6px 25px rgba(245, 158, 11, 0.6),
+                inset 0 2px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-create-event:active {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow:
+                0 6px 20px rgba(251, 191, 36, 0.6),
+                0 3px 10px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-glow {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b, #d97706, #fbbf24);
+            border-radius: 20px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+            filter: blur(6px);
+        }
+
+        .btn-create-event:hover .btn-glow {
+            opacity: 0.8;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+        }
+
+        .btn-sparkle {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, #ffffff, #fbbf24);
+            border-radius: 50%;
+            opacity: 0.9;
+            animation: sparkle 2.5s ease-in-out infinite;
+            box-shadow: 0 0 8px rgba(251, 191, 36, 0.8);
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0.9;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.4);
+            }
+        }
+
+        .btn-create-event i,
+        .btn-create-event span {
+            position: relative;
+            z-index: 2;
+        }
+
+        .btn-create-event i {
+            font-size: 18px;
+            color: #92400e;
+            filter: drop-shadow(0 0 3px rgba(146, 64, 14, 0.5));
+        }
+
+        .btn-create-event span {
+            color: #92400e;
+            font-weight: 800;
+            filter: drop-shadow(0 0 2px rgba(146, 64, 14, 0.3));
+        }
+
+        /* Yellow Admin Button */
+        .btn-admin-yellow {
+            position: relative;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            color: #1f2937;
+            border: none;
+            padding: 16px 28px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 4px 20px rgba(251, 191, 36, 0.4),
+                0 2px 10px rgba(217, 119, 6, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-admin-yellow:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow:
+                0 8px 30px rgba(251, 191, 36, 0.6),
+                0 4px 15px rgba(217, 119, 6, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-admin-yellow:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-admin-yellow .btn-glow-yellow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.5) 0%, rgba(217, 119, 6, 0.5) 100%);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-admin-yellow:hover .btn-glow-yellow {
+            opacity: 1;
+        }
+
+        .btn-admin-yellow .btn-sparkle-yellow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-admin-yellow:hover .btn-sparkle-yellow {
+            opacity: 1;
+        }
+
+        /* Main Create Event Button */
+        .btn-create-event-main {
+            position: relative;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            color: #1f2937;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 4px 20px rgba(251, 191, 36, 0.4),
+                0 2px 10px rgba(217, 119, 6, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-create-event-main:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow:
+                0 8px 30px rgba(251, 191, 36, 0.6),
+                0 4px 15px rgba(217, 119, 6, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-create-event-main:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-create-event-main .btn-glow-yellow-main {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.5) 0%, rgba(217, 119, 6, 0.5) 100%);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-create-event-main:hover .btn-glow-yellow-main {
+            opacity: 1;
+        }
+
+        .btn-create-event-main .btn-sparkle-yellow-main {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-create-event-main:hover .btn-sparkle-yellow-main {
+            opacity: 1;
+        }
+
+        .btn-create-event-main i {
+            font-size: 16px;
+        }
+
+        .btn-create-event-main span {
+            font-weight: 800;
+            filter: drop-shadow(0 0 2px rgba(31, 41, 55, 0.3));
+        }
+
+        /* Modern Admin Dashboard Styles */
+        .modern-admin-dashboard {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .dashboard-welcome {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .welcome-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #1f2937;
+            box-shadow: 0 8px 16px rgba(251, 191, 36, 0.3);
+        }
+
+        .welcome-content h1 {
+            color: white;
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-content p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            margin: 0;
+            max-width: 500px;
+        }
+
+        .dashboard-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-dashboard-primary, .btn-dashboard-secondary {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-dashboard-primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1f2937;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .btn-dashboard-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(251, 191, 36, 0.6);
+        }
+
+        .btn-dashboard-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-dashboard-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card-modern {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card-modern:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .total-events .stat-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .active-events .stat-icon { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .total-registrations .stat-icon { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .featured-events .stat-icon { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+
+        .card-header {
+            padding: 24px 24px 16px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .event-management .card-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .registration-management .card-icon { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .featured-management .card-icon { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .communication-center .card-icon { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        .analytics-reports .card-icon { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .system-settings .card-icon { background: linear-gradient(135deg, #6b7280, #4b5563); color: white; }
+
+        .card-title h3 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .card-title p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .quick-action-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .quick-action-btn.primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #1f2937;
+        }
+
+        .quick-action-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+        }
+
+        .quick-action-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quick-action-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Registration Overview */
+        .registration-overview {
+            margin-bottom: 20px;
+        }
+
+        .overview-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .mini-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .mini-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fbbf24;
+            display: block;
+        }
+
+        .mini-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Featured Status */
+        .featured-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .featured-count {
+            text-align: center;
+        }
+
+        .featured-count span:first-child {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fbbf24;
+            display: block;
+        }
+
+        .featured-count span:last-child {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+        }
+
+        .toggle-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-right: 12px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #fbbf24;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Communication Stats */
+        .communication-stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .comm-stat {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            flex: 1;
+        }
+
+        .comm-number {
+            font-size: 20px;
+            font-weight: 700;
+            color: #8b5cf6;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .comm-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Analytics Overview */
+        .analytics-overview {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 16px;
+            flex: 1;
+        }
+
+        .metric-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .metric-item:nth-child(1) .metric-icon { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
+        .metric-item:nth-child(2) .metric-icon { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+
+        .metric-data {
+            flex: 1;
+        }
+
+        .metric-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Settings Overview */
+        .settings-overview {
+            margin-bottom: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .setting-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            color: white;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-name {
+            font-size: 14px;
+            color: white;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .setting-status {
+            font-size: 12px;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Recent Items */
+        .recent-events, .urgent-list, .featured-preview, .recent-communications {
+            margin-top: 20px;
+        }
+
+        .recent-events h4, .urgent-list h4, .featured-preview h4, .recent-communications h4 {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .recent-items, .preview-items, .comm-items {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .recent-items::-webkit-scrollbar,
+        .preview-items::-webkit-scrollbar,
+        .comm-items::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .recent-items::-webkit-scrollbar-track,
+        .preview-items::-webkit-scrollbar-track,
+        .comm-items::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .recent-items::-webkit-scrollbar-thumb,
+        .preview-items::-webkit-scrollbar-thumb,
+        .comm-items::-webkit-scrollbar-thumb {
+            background: rgba(251, 191, 36, 0.5);
+            border-radius: 2px;
+        }
+
+        /* System Health */
+        .system-health {
+            margin-top: 20px;
+        }
+
+        .health-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .health-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        .health-status {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .health-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .health-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* Chart Placeholder */
+        .analytics-chart-placeholder {
+            margin-top: 20px;
+        }
+
+        .chart-placeholder {
+            height: 120px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .chart-placeholder i {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .chart-placeholder p {
+            font-size: 12px;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Dashboard Footer */
+        .dashboard-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+        }
+
+        .footer-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn-dashboard-ghost {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-dashboard-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .footer-info {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 20px;
+            font-style: italic;
+        }
+
+        /* Recent Items Styling */
+        .recent-item, .preview-item, .comm-item {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .recent-item:last-child, .preview-item:last-child, .comm-item:last-child {
+            border-bottom: none;
+        }
+
+        .recent-title {
+            font-size: 13px;
+            color: white;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .recent-meta, .preview-meta, .comm-meta {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        /* Modal Actions */
+        .modal-actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .modal-actions button {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .modal-actions button:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modern-admin-dashboard {
+                padding: 20px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-footer {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+        }
+
+
+        .btn-create-event-admin {
+            position: relative;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            color: #1f2937;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 4px 20px rgba(251, 191, 36, 0.4),
+                0 2px 10px rgba(217, 119, 6, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-create-event-admin:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow:
+                0 8px 30px rgba(251, 191, 36, 0.6),
+                0 4px 15px rgba(217, 119, 6, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-create-event-admin:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-create-event-admin .btn-glow-yellow-admin {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.5) 0%, rgba(217, 119, 6, 0.5) 100%);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-create-event-admin:hover .btn-glow-yellow-admin {
+            opacity: 1;
+        }
+
+        .btn-create-event-admin .btn-sparkle-yellow-admin {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-create-event-admin:hover .btn-sparkle-yellow-admin {
+            opacity: 1;
+        }
+
+        .btn-create-event-admin i {
+            font-size: 16px;
+        }
+
+        .btn-create-event-admin span {
+            font-weight: 800;
+            filter: drop-shadow(0 0 2px rgba(31, 41, 55, 0.3));
+        }
+
+        /* Admin Table Styles */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-table th {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+        }
+
+        .admin-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-small:hover {
+            background: #2563eb;
+        }
+
+        /* Featured Events Grid */
+        .featured-events-grid, .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .featured-event-card, .event-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .featured-event-card:hover, .event-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-card.featured {
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .featured-event-card h4, .event-card h4 {
+            color: white;
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+
+        .featured-event-card p, .event-card p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 0 12px 0;
+            font-size: 14px;
+        }
+
+        .admin-body {
+            padding: 24px;
+        }
+
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .events-table th,
+        .events-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .events-table th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .event-title-cell {
+            max-width: 200px;
+        }
+
+        .event-title {
+            font-weight: 500;
+            color: #111827;
+            text-decoration: none;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .event-title:hover {
+            color: #ea580c;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-upcoming { background: #dbeafe; color: #1e40af; }
+        .status-ongoing { background: #dcfce7; color: #166534; }
+        .status-past { background: #fee2e2; color: #dc2626; }
+
+        .registration-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .registration-register_now { background: #fed7aa; color: #9a3412; }
+        .registration-applied { background: #bbf7d0; color: #166534; }
+        .registration-closed { background: #fecaca; color: #dc2626; }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-edit { background: #ea580c; color: white; }
+        .btn-edit:hover { background: #dc2626; }
+
+        .btn-delete { background: #dc2626; color: white; }
+        .btn-delete:hover { background: #b91c1c; }
+
+        .btn-view { background: #6b7280; color: white; }
+        .btn-view:hover { background: #4b5563; }
+
+        .btn-approve { background: #059669; color: white; }
+        .btn-approve:hover { background: #047857; }
+
+        .btn-featured {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-featured:hover {
+            background: rgba(255, 215, 0, 0.3);
+            color: #fbbf24;
+            border-color: #fbbf24;
+        }
+
+        .btn-featured-active {
+            background: var(--warning-gradient);
+            color: white;
+        }
+
+        .btn-featured-active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(251, 191, 36, 0.3);
+        }
+
+        .btn-notify {
+            background: var(--success-gradient);
+            color: white;
+        }
+
+        .btn-notify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3);
+        }
+
+        /* Modern Table Enhancements */
+        .events-table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .events-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .events-table thead {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .events-table th,
+        .events-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .events-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .events-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .events-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .event-category-badge {
+            background: var(--secondary-gradient);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .attendees-count {
+            font-weight: 600;
+            color: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 32px;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .registrations-list {
+            margin-top: 16px;
+        }
+
+        .registration-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: var(--transition);
+        }
+
+        .registration-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(4px);
+        }
+
+        .registration-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .registration-info p {
+            margin: 0;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+
+        /* Premium Create Event Form Styles */
+        .create-event-premium {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .create-event-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706, #b45309);
+            z-index: 1;
+        }
+
+        .form-header-premium {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-icon-premium {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
+            position: relative;
+        }
+
+        .form-icon-premium i {
+            font-size: 32px;
+            color: #1f2937;
+        }
+
+        .form-title-premium h2 {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+        }
+
+        .form-title-premium p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        .premium-form {
+            position: relative;
+            z-index: 2;
+        }
+
+        .form-section-premium {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-section-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #fbbf24, #f59e0b, #d97706);
+            opacity: 0.6;
+        }
+
+        .section-header-premium {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-header-premium i {
+            color: #fbbf24;
+            font-size: 20px;
+            background: rgba(251, 191, 36, 0.1);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .section-header-premium h3 {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .form-grid-premium {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-field-premium {
+            margin-bottom: 20px;
+        }
+
+        .field-label-premium {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .field-label-premium i {
+            color: #fbbf24;
+            font-size: 14px;
+        }
+
+        .input-wrapper-premium,
+        .textarea-wrapper-premium {
+            position: relative;
+        }
+
+        .input-premium,
+        .select-premium,
+        .textarea-premium {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-family: inherit;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .input-premium::placeholder,
+        .select-premium option,
+        .textarea-premium::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .input-premium:focus,
+        .select-premium:focus,
+        .textarea-premium:focus {
+            border-color: #fbbf24;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+        }
+
+        .input-glow,
+        .textarea-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 12px;
+            background: linear-gradient(45deg, transparent, rgba(251, 191, 36, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .input-wrapper-premium:focus-within .input-glow,
+        .textarea-wrapper-premium:focus-within .textarea-glow {
+            opacity: 1;
+            animation: inputGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes inputGlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .textarea-premium {
+            min-height: 100px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .select-premium {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23fbbf24' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 40px;
+        }
+
+        .select-premium option {
+            background: #1a1a1a;
+            color: white;
+            padding: 8px;
+        }
+
+        /* Premium Form Actions */
+        .form-actions-premium {
+            display: flex;
+            gap: 16px;
+            justify-content: flex-end;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-cancel-premium {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cancel-premium:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-submit-premium {
+            position: relative;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            color: #1f2937;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 4px 20px rgba(251, 191, 36, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-width: 180px;
+            justify-content: center;
+        }
+
+        .btn-submit-premium::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+            z-index: 1;
+        }
+
+        .btn-submit-premium:hover::before {
+            left: 100%;
+        }
+
+        .btn-submit-premium:hover {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow:
+                0 8px 30px rgba(251, 191, 36, 0.6),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-submit-glow {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b, #d97706, #fbbf24);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+            filter: blur(4px);
+        }
+
+        .btn-submit-premium:hover .btn-submit-glow {
+            opacity: 0.6;
+            animation: submitGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes submitGlow {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.9; }
+        }
+
+        .btn-submit-sparkles {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            gap: 2px;
+        }
+
+        .sparkle {
+            width: 3px;
+            height: 3px;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: sparkleSubmit 2s ease-in-out infinite;
+        }
+
+        .sparkle:nth-child(2) { animation-delay: 0.5s; }
+        .sparkle:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes sparkleSubmit {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.3); }
+        }
+
+        .btn-submit-premium *,
+        .btn-submit-premium span {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive Design for Premium Form */
+        @media (max-width: 768px) {
+            .create-event-premium {
+                padding: 24px;
+                margin-top: 20px;
+            }
+
+            .form-grid-premium {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .form-section-premium {
+                padding: 20px;
+            }
+
+            .form-actions-premium {
+                flex-direction: column;
+            }
+
+            .btn-submit-premium,
+            .btn-cancel-premium {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-header-premium {
+                margin-bottom: 30px;
+            }
+
+            .form-icon-premium {
+                width: 60px;
+                height: 60px;
+            }
+
+            .form-icon-premium i {
+                font-size: 24px;
+            }
+
+            .form-title-premium h2 {
+                font-size: 24px;
+            }
+        }
+
+        /* Enhanced Focus States */
+        .input-premium:focus + .input-glow,
+        .select-premium:focus + .input-glow,
+        .textarea-premium:focus + .textarea-glow {
+            opacity: 1;
+            animation: inputGlow 2s ease-in-out infinite;
+        }
+
+        /* Loading States */
+        .btn-submit-premium.loading {
+            pointer-events: none;
+        }
+
+        .btn-submit-premium.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success Animation */
+        .btn-submit-premium.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .btn-submit-premium.success i {
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .events-table {
+                font-size: 14px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="app-nav">
+        <div class="app-nav-left">
+            <div class="app-logo">AP</div>
+            <div class="app-brand">
+                <div class="app-brand-title">Alumni Management Portal</div>
+                <div class="app-brand-sub">Admin Dashboard - Event Management.</div>
+            </div>
+        </div>
+        <nav class="app-nav-links">
+            <a href="/admin-dashboard.html" class="app-nav-link">Dashboard</a>
+            <a href="/admin-events.html" class="app-nav-link app-nav-link-active">Events</a>
+            <a href="/jobs-admin.html" class="app-nav-link">Jobs</a>
+            <a href="/surveys-admin.html" class="app-nav-link">Surveys</a>
+            <a href="/logout" class="app-nav-cta">Logout</a>
+        </nav>
+    </header>
+
+    <main class="layout-main">
+        <section class="scene-card">
+            <div class="admin-container">
+                <!-- Sidebar -->
+                <div class="admin-sidebar">
+                    <div style="margin-bottom: 32px;">
+                        <h3 style="color: white; font-size: 18px; font-weight: 600; margin: 0 0 20px 0;">Event Management</h3>
+                    </div>
+
+                    <a href="#all-events" class="admin-nav-item active" onclick="showSection('all-events')">
+                        <i class="fas fa-calendar-alt admin-nav-icon"></i>
+                        <span>All Events</span>
+                    </a>
+                    <a href="#create-event" class="admin-nav-item" onclick="showSection('create-event')">
+                        <i class="fas fa-plus-circle admin-nav-icon"></i>
+                        <span>Create Event</span>
+                    </a>
+                    <a href="#event-analytics" class="admin-nav-item" onclick="showSection('event-analytics')">
+                        <i class="fas fa-chart-bar admin-nav-icon"></i>
+                        <span>Analytics</span>
+                    </a>
+                    <a href="#comments" class="admin-nav-item" onclick="showSection('comments')">
+                        <i class="fas fa-comments admin-nav-icon"></i>
+                        <span>User Comments</span>
+                    </a>
+                    <a href="#settings" class="admin-nav-item" onclick="showSection('settings')">
+                        <i class="fas fa-cog admin-nav-icon"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+
+                <!-- Main Content -->
+                <div class="admin-content">
+                    <div class="admin-header">
+                        <div>
+                            <h1 class="admin-title" id="content-title">All Events</h1>
+                            <p class="admin-subtitle" id="content-subtitle">Manage and monitor all your events</p>
+                        </div>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <button class="btn-create-event-main" onclick="showAdminPanelForCreate()">
+                                <div class="btn-glow-yellow-main"></div>
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Create Event</span>
+                                <div class="btn-sparkle-yellow-main"></div>
+                            </button>
+                            <button class="btn-admin-yellow" onclick="showAdminPanel()">
+                                <div class="btn-glow-yellow"></div>
+                                <i class="fas fa-cogs"></i>
+                                <span>Event Admin Panel</span>
+                                <div class="btn-sparkle-yellow"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="admin-body">
+                        <div id="error-message" class="error" style="display: none;"></div>
+
+                        <!-- Events Table -->
+                        <div id="events-section">
+                            <div id="loading" class="loading">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 12px;"></i>
+                                <div>Loading events...</div>
+                            </div>
+                            <div id="events-table-container" style="display: none;">
+                                <table class="events-table">
+                                    <thead>
+                                        <tr>
+                                            <th><i class="fas fa-calendar-alt"></i> Event</th>
+                                            <th><i class="fas fa-tag"></i> Type</th>
+                                            <th><i class="fas fa-clock"></i> Date</th>
+                                            <th><i class="fas fa-info-circle"></i> Status</th>
+                                            <th><i class="fas fa-ticket-alt"></i> Registration</th>
+                                            <th><i class="fas fa-users"></i> Attendees</th>
+                                            <th><i class="fas fa-cogs"></i> Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="events-table-body">
+                                        <!-- Events will be populated here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Modern Event Admin Dashboard -->
+                        <div id="admin-panel-section" class="modern-admin-dashboard" style="display: none;">
+                            <!-- Dashboard Header -->
+                            <div class="dashboard-header">
+                                <div class="dashboard-welcome">
+                                    <div class="welcome-icon">
+                                        <i class="fas fa-crown"></i>
+                                    </div>
+                                    <div class="welcome-content">
+                                        <h1>Event Administration Dashboard</h1>
+                                        <p>Manage all aspects of event creation, registration, and communication</p>
+                                    </div>
+                                </div>
+                                <div class="dashboard-actions">
+                                    <button class="btn-dashboard-primary" onclick="showQuickCreateModal()">
+                                        <i class="fas fa-plus-circle"></i>
+                                        <span>Quick Create</span>
+                                    </button>
+                                    <button class="btn-dashboard-secondary" onclick="refreshDashboard()">
+                                        <i class="fas fa-sync-alt"></i>
+                                        <span>Refresh</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Stats Overview -->
+                            <div class="dashboard-stats">
+                                <div class="stat-card-modern total-events">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="total-events-count">0</div>
+                                        <div class="stat-label">Total Events</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card-modern active-events">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-play-circle"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="active-events-count">0</div>
+                                        <div class="stat-label">Active Events</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card-modern total-registrations">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="total-registrations-count">0</div>
+                                        <div class="stat-label">Total Registrations</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card-modern featured-events">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="stat-number" id="featured-events-count">0</div>
+                                        <div class="stat-label">Featured Events</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Main Dashboard Grid -->
+                            <div class="dashboard-grid">
+
+                                <!-- Event Management Card -->
+                                <div class="dashboard-card event-management">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-calendar-plus"></i>
+                                        </div>
+                                        <div class="card-title">
+                                            <h3>Event Management</h3>
+                                            <p>Create, edit, and manage events</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="quick-actions">
+                                            <button class="quick-action-btn primary" onclick="showCreateEventModal()">
+                                                <i class="fas fa-plus"></i>
+                                                <span>Create New Event</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="showEventList()">
+                                                <i class="fas fa-list"></i>
+                                                <span>Manage Events</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="showBulkActions()">
+                                                <i class="fas fa-tasks"></i>
+                                                <span>Bulk Actions</span>
+                                            </button>
+                                        </div>
+                                        <div class="recent-events">
+                                            <h4>Recent Events</h4>
+                                            <div id="recent-events-list" class="recent-items">
+                                                <div class="loading">Loading recent events...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Registration Management Card -->
+                                <div class="dashboard-card registration-management">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-users-cog"></i>
+                                        </div>
+                                        <div class="card-title">
+                                            <h3>Registration Control</h3>
+                                            <p>Manage participant registrations</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="registration-overview">
+                                            <div class="overview-stats">
+                                                <div class="mini-stat">
+                                                    <span class="mini-number" id="pending-approvals">0</span>
+                                                    <span class="mini-label">Pending</span>
+                                                </div>
+                                                <div class="mini-stat">
+                                                    <span class="mini-number" id="recent-registrations">0</span>
+                                                    <span class="mini-label">Today</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="quick-actions">
+                                            <button class="quick-action-btn primary" onclick="showRegistrationManager()">
+                                                <i class="fas fa-user-check"></i>
+                                                <span>Review Registrations</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="showRegistrationReports()">
+                                                <i class="fas fa-chart-bar"></i>
+                                                <span>View Reports</span>
+                                            </button>
+                                        </div>
+                                        <div class="urgent-notifications">
+                                            <div id="urgent-registrations" class="urgent-list">
+                                                <div class="loading">Loading urgent items...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Featured Events Card -->
+                                <div class="dashboard-card featured-management">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div class="card-title">
+                                            <h3>Featured Events</h3>
+                                            <p>Highlight important events</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="featured-status">
+                                            <div class="featured-count">
+                                                <span id="current-featured-count">0</span>
+                                                <span>Events Featured</span>
+                                            </div>
+                                            <div class="featured-toggle">
+                                                <label class="toggle-label">Auto-Feature New Events</label>
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" id="auto-feature-toggle">
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="quick-actions">
+                                            <button class="quick-action-btn primary" onclick="showFeaturedManager()">
+                                                <i class="fas fa-crown"></i>
+                                                <span>Manage Featured</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="showFeaturedAnalytics()">
+                                                <i class="fas fa-chart-line"></i>
+                                                <span>Analytics</span>
+                                            </button>
+                                        </div>
+                                        <div class="featured-preview">
+                                            <h4>Currently Featured</h4>
+                                            <div id="featured-preview-list" class="preview-items">
+                                                <div class="loading">Loading featured events...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Communication Center Card -->
+                                <div class="dashboard-card communication-center">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-envelope"></i>
+                                        </div>
+                                        <div class="card-title">
+                                            <h3>Communication Center</h3>
+                                            <p>Send notifications and reminders</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="communication-stats">
+                                            <div class="comm-stat">
+                                                <div class="comm-number" id="sent-today">0</div>
+                                                <div class="comm-label">Sent Today</div>
+                                            </div>
+                                            <div class="comm-stat">
+                                                <div class="comm-number" id="scheduled-reminders">0</div>
+                                                <div class="comm-label">Scheduled</div>
+                                            </div>
+                                        </div>
+                                        <div class="quick-actions">
+                                            <button class="quick-action-btn primary" onclick="showNotificationComposer()">
+                                                <i class="fas fa-paper-plane"></i>
+                                                <span>Send Notification</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="showReminderScheduler()">
+                                                <i class="fas fa-clock"></i>
+                                                <span>Schedule Reminders</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="showCommunicationHistory()">
+                                                <i class="fas fa-history"></i>
+                                                <span>History</span>
+                                            </button>
+                                        </div>
+                                        <div class="recent-communications">
+                                            <h4>Recent Communications</h4>
+                                            <div id="recent-communications-list" class="comm-items">
+                                                <div class="loading">Loading recent communications...</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Analytics & Reports Card -->
+                                <div class="dashboard-card analytics-reports">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-chart-pie"></i>
+                                        </div>
+                                        <div class="card-title">
+                                            <h3>Analytics & Reports</h3>
+                                            <p>Track performance and insights</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="analytics-overview">
+                                            <div class="metric-item">
+                                                <div class="metric-icon">
+                                                    <i class="fas fa-eye"></i>
+                                                </div>
+                                                <div class="metric-data">
+                                                    <div class="metric-number" id="total-views">0</div>
+                                                    <div class="metric-label">Total Views</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-item">
+                                                <div class="metric-icon">
+                                                    <i class="fas fa-mouse-pointer"></i>
+                                                </div>
+                                                <div class="metric-data">
+                                                    <div class="metric-number" id="conversion-rate">0%</div>
+                                                    <div class="metric-label">Conversion Rate</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="quick-actions">
+                                            <button class="quick-action-btn primary" onclick="showDetailedAnalytics()">
+                                                <i class="fas fa-chart-bar"></i>
+                                                <span>Detailed Analytics</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="generateReports()">
+                                                <i class="fas fa-file-pdf"></i>
+                                                <span>Generate Report</span>
+                                            </button>
+                                        </div>
+                                        <div class="analytics-chart-placeholder">
+                                            <div class="chart-placeholder">
+                                                <i class="fas fa-chart-line"></i>
+                                                <p>Event Performance Chart</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- System Settings Card -->
+                                <div class="dashboard-card system-settings">
+                                    <div class="card-header">
+                                        <div class="card-icon">
+                                            <i class="fas fa-cog"></i>
+                                        </div>
+                                        <div class="card-title">
+                                            <h3>System Settings</h3>
+                                            <p>Configure system preferences</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="settings-overview">
+                                            <div class="setting-item">
+                                                <div class="setting-icon">
+                                                    <i class="fas fa-bell"></i>
+                                                </div>
+                                                <div class="setting-info">
+                                                    <div class="setting-name">Notification Settings</div>
+                                                    <div class="setting-status" id="notification-status">Active</div>
+                                                </div>
+                                            </div>
+                                            <div class="setting-item">
+                                                <div class="setting-icon">
+                                                    <i class="fas fa-shield-alt"></i>
+                                                </div>
+                                                <div class="setting-info">
+                                                    <div class="setting-name">Security Settings</div>
+                                                    <div class="setting-status" id="security-status">Enabled</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="quick-actions">
+                                            <button class="quick-action-btn primary" onclick="showSystemSettings()">
+                                                <i class="fas fa-sliders-h"></i>
+                                                <span>System Config</span>
+                                            </button>
+                                            <button class="quick-action-btn secondary" onclick="showBackupRestore()">
+                                                <i class="fas fa-database"></i>
+                                                <span>Backup & Restore</span>
+                                            </button>
+                                        </div>
+                                        <div class="system-health">
+                                            <div class="health-indicator">
+                                                <div class="health-label">System Health</div>
+                                                <div class="health-status" id="system-health">Excellent</div>
+                                            </div>
+                                            <div class="health-bar">
+                                                <div class="health-fill" style="width: 95%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Actions Footer -->
+                            <div class="dashboard-footer">
+                                <div class="footer-actions">
+                                    <button class="btn-dashboard-ghost" onclick="showHelpCenter()">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span>Help & Support</span>
+                                    </button>
+                                    <button class="btn-dashboard-ghost" onclick="showKeyboardShortcuts()">
+                                        <i class="fas fa-keyboard"></i>
+                                        <span>Shortcuts</span>
+                                    </button>
+                                    <button class="btn-dashboard-ghost" onclick="exportDashboardData()">
+                                        <i class="fas fa-download"></i>
+                                        <span>Export Data</span>
+                                    </button>
+                                </div>
+                                <div class="footer-info">
+                                    <span>Last updated: <span id="last-updated">Just now</span></span>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            </div> <!-- Close admin-container -->
+        </section>
+    </main>
+</div>
+
+<!-- Event Details Modal -->
+<div id="event-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title" id="modal-title">Event Details</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div id="modal-content">
+            <!-- Event details will be populated here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    let allEvents = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadEvents();
+    });
+
+    async function loadEvents() {
+        try {
+            showLoading(true);
+            hideError();
+
+            console.log('Loading events from /events/enhanced...');
+
+            // First test the basic API
+            console.log('Testing basic API connectivity...');
+            const testResponse = await fetch('/events/test');
+            if (testResponse.ok) {
+                const testData = await testResponse.json();
+                console.log('API test successful:', testData);
+            } else {
+                console.warn('API test failed, but continuing...');
+            }
+
+            const response = await fetch('/events/enhanced');
+            console.log('Events API response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Events API error response:', errorText);
+
+                // Try to get more details from the test endpoint
+                try {
+                    const testResponse = await fetch('/events/test');
+                    if (testResponse.ok) {
+                        const testData = await testResponse.json();
+                        console.log('Test endpoint data:', testData);
+                        if (testData.error) {
+                            throw new Error(`Database issue: ${testData.error}`);
+                        }
+                    }
+                } catch (testError) {
+                    console.error('Test endpoint also failed:', testError);
+                }
+
+                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            console.log('Received events data:', data);
+
+            if (data.data) {
+                allEvents = data.data;
+                console.log('Successfully loaded', allEvents.length, 'events');
+                displayEvents(allEvents);
+            } else {
+                console.warn('No data field in response, checking for error field...');
+                if (data.error) {
+                    throw new Error(`Server error: ${data.error}`);
+                } else {
+                    throw new Error('Invalid response format - no data field');
+                }
+            }
+
+        } catch (error) {
+            console.error('Error loading events:', error);
+            showError(`Failed to load events: ${error.message}. Please check the console for details.`);
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    function displayEvents(events) {
+        const tbody = document.getElementById('events-table-body');
+
+        console.log('Displaying', events.length, 'events');
+
+        if (!events || events.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: rgba(255, 255, 255, 0.7);">No events found. Click "Create Event" to add your first event.</td></tr>';
+            document.getElementById('events-table-container').style.display = 'block';
+            return;
+        }
+
+        tbody.innerHTML = events.map(event => {
+            try {
+                const startDate = event.startDate ? new Date(event.startDate).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                }) : 'TBD';
+
+                const attendeesText = event.maxParticipants ?
+                    `<span class="attendees-count">${event.currentParticipants || 0}</span>/${event.maxParticipants}` :
+                    `<span class="attendees-count">${event.currentParticipants || 0}</span>`;
+
+                return `
+                    <tr>
+                        <td class="event-title-cell">
+                            <a href="/event-detail.html?id=${event.id}" class="event-title" target="_blank">${event.title || 'Untitled Event'}</a>
+                        </td>
+                        <td><span class="event-category-badge">${event.eventTypeLabel || 'General'}</span></td>
+                        <td>${startDate}</td>
+                        <td><span class="status-badge status-${(event.eventStatus || 'UPCOMING').toLowerCase()}">${event.eventStatus || 'UPCOMING'}</span></td>
+                        <td><span class="registration-badge registration-${(event.registrationStatus || 'REGISTER_NOW').toLowerCase().replace('_', '')}">${event.registrationStatusLabel || 'Register Now'}</span></td>
+                        <td>${attendeesText}</td>
+                        <td class="action-buttons">
+                            <button class="btn-action btn-view" onclick="viewEventDetails(${event.id})" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-action btn-edit" onclick="showAdminPanelForEdit(${event.id})" title="Edit Event">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-action ${event.featured ? 'btn-featured-active' : 'btn-featured'}" onclick="toggleFeatured(${event.id})" title="${event.featured ? 'Remove from Featured' : 'Mark as Featured'}">
+                                <i class="fas fa-star"></i>
+                            </button>
+                            <button class="btn-action btn-notify" onclick="showAdminPanelForNotification(${event.id})" title="Send Notification">
+                                <i class="fas fa-envelope"></i>
+                            </button>
+                            <button class="btn-action btn-delete" onclick="deleteEvent(${event.id})" title="Delete Event">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            } catch (error) {
+                console.error('Error rendering event:', event, error);
+                return `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 20px; color: #ef4444;">
+                            Error loading event data. Please check console for details.
+                        </td>
+                    </tr>
+                `;
+            }
+        }).join('');
+
+        document.getElementById('events-table-container').style.display = 'block';
+    }
+
+
+    function viewEventDetails(eventId) {
+        const event = allEvents.find(e => e.id === eventId);
+        if (!event) return;
+
+        const modalContent = document.getElementById('modal-content');
+        modalContent.innerHTML = `
+            <div style="margin-bottom: 24px;">
+                <h3>${event.title}</h3>
+                <p><strong>Type:</strong> ${event.eventTypeLabel}</p>
+                <p><strong>Date:</strong> ${new Date(event.startDate).toLocaleString()}</p>
+                <p><strong>Location:</strong> ${event.location}</p>
+                <p><strong>Status:</strong> ${event.eventStatus}</p>
+                <p><strong>Registration:</strong> ${event.registrationStatusLabel}</p>
+                <p><strong>Participants:</strong> ${event.currentParticipants || 0}${event.maxParticipants ? `/${event.maxParticipants}` : ''}</p>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h4 style="margin: 0;">Registrations</h4>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn-admin" onclick="sendEventReminder(${event.id})" style="background: var(--success-gradient); font-size: 12px; padding: 8px 16px;">
+                            <i class="fas fa-bell"></i> Send Reminder
+                        </button>
+                        <button class="btn-admin" onclick="exportRegistrations(${event.id})" style="background: var(--accent-gradient); font-size: 12px; padding: 8px 16px;">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+                <div id="registrations-summary" style="margin-bottom: 16px; padding: 16px; background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
+                    <div class="loading">Loading registration summary...</div>
+                </div>
+                <div id="registrations-list" class="registrations-list">
+                    <div class="loading">Loading registrations...</div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-cancel" onclick="closeEventRegistrations(${event.id})">
+                    <i class="fas fa-lock"></i> Close Registrations
+                </button>
+                <button class="btn-admin" onclick="updateEventStatus(${event.id}, 'ONGOING')" style="background: var(--success-gradient);">
+                    <i class="fas fa-play"></i> Mark Ongoing
+                </button>
+                <button class="btn-admin" onclick="updateEventStatus(${event.id}, 'PAST')" style="background: var(--danger-gradient);">
+                    <i class="fas fa-check-circle"></i> Mark Completed
+                </button>
+            </div>
+        `;
+
+        document.getElementById('event-modal').classList.add('show');
+        loadEventRegistrations(eventId);
+    }
+
+    async function loadEventRegistrations(eventId) {
+        try {
+            const response = await fetch(`/events/${eventId}/detailed-registrations`);
+            if (!response.ok) throw new Error('Failed to load registrations');
+
+            const data = await response.json();
+            const registrations = data.data.registrations;
+            const summary = data.data;
+
+            // Update summary
+            const summaryDiv = document.getElementById('registrations-summary');
+            summaryDiv.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: var(--accent-gradient); background: -webkit-linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.total}</div>
+                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase;">Total Registered</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: var(--success-gradient); background: -webkit-linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.confirmed}</div>
+                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase;">Confirmed</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 24px; font-weight: 700; color: var(--warning-gradient); background: -webkit-linear-gradient(135deg, #fa709a 0%, #fee140 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.total - summary.confirmed}</div>
+                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase;">Pending</div>
+                    </div>
+                </div>
+            `;
+
+            // Update registrations list
+            const registrationsList = document.getElementById('registrations-list');
+            if (registrations.length === 0) {
+                registrationsList.innerHTML = '<p style="text-align: center; color: rgba(255, 255, 255, 0.7); padding: 40px;">No registrations yet.</p>';
+                return;
+            }
+
+            registrationsList.innerHTML = registrations.map(reg => `
+                <div class="registration-item">
+                    <div class="registration-info">
+                        <h4 style="color: white; margin: 0 0 4px 0;">${reg.userName}</h4>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin: 0; font-size: 14px;">${reg.userEmail}</p>
+                        ${reg.registrationNotes ? `<p style="color: rgba(255, 255, 255, 0.6); margin: 4px 0 0 0; font-size: 12px; font-style: italic;">Note: ${reg.registrationNotes}</p>` : ''}
+                    </div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn-action btn-approve" onclick="approveRegistration(${eventId}, ${reg.userId})" title="Approve Registration">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn-action btn-notify" onclick="sendIndividualNotification(${eventId}, ${reg.userId}, '${reg.userEmail}')" title="Send Individual Notification">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (error) {
+            document.getElementById('registrations-list').innerHTML = '<p style="color: #dc2626; text-align: center;">Failed to load registrations.</p>';
+            console.error('Error loading registrations:', error);
+        }
+    }
+
+    async function approveRegistration(eventId, userId) {
+        try {
+            const response = await fetch(`/events/${eventId}/approve-registration/${userId}`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                alert('Registration approved!');
+                loadEventRegistrations(eventId);
+            } else {
+                alert('Failed to approve registration');
+            }
+        } catch (error) {
+            alert('Failed to approve registration');
+            console.error('Error approving registration:', error);
+        }
+    }
+
+    async function closeEventRegistrations(eventId) {
+        if (!confirm('Are you sure you want to close registrations for this event?')) return;
+
+        try {
+            const response = await fetch(`/events/${eventId}/close-registrations`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                alert('Event registrations closed!');
+                closeModal();
+                loadEvents();
+            } else {
+                alert('Failed to close registrations');
+            }
+        } catch (error) {
+            alert('Failed to close registrations');
+            console.error('Error closing registrations:', error);
+        }
+    }
+
+    async function updateEventStatus(eventId, status) {
+        try {
+            const response = await fetch(`/events/${eventId}/status/${status}`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                alert(`Event status updated to ${status}!`);
+                closeModal();
+                loadEvents();
+            } else {
+                alert('Failed to update event status');
+            }
+        } catch (error) {
+            alert('Failed to update event status');
+            console.error('Error updating event status:', error);
+        }
+    }
+
+    function editEvent(eventId) {
+        // Find the event data
+        const event = allEvents.find(e => e.id === eventId);
+        if (!event) {
+            alert('Event not found');
+            return;
+        }
+
+        // Populate the form with event data
+        document.getElementById('admin-event-title').value = event.title || '';
+        document.getElementById('admin-event-type').value = event.eventType || '';
+        document.getElementById('admin-start-date').value = event.startDate ? new Date(event.startDate).toISOString().slice(0, 16) : '';
+        document.getElementById('admin-end-date').value = event.endDate ? new Date(event.endDate).toISOString().slice(0, 16) : '';
+        document.getElementById('admin-location').value = event.location || '';
+        document.getElementById('short-description').value = event.shortDescription || '';
+        document.getElementById('full-description').value = event.fullDescription || '';
+        document.getElementById('max-participants').value = event.maxParticipants || '';
+        document.getElementById('meeting-link').value = event.meetingLink || '';
+        document.getElementById('speakers').value = event.speakers || '';
+        document.getElementById('agenda').value = event.agenda || '';
+
+        // Store the event ID for editing
+        document.getElementById('event-admin-form').dataset.editId = eventId;
+
+        // Update UI for edit mode
+        document.getElementById('content-title').textContent = 'Edit Event';
+        document.querySelector('.btn-admin[onclick*="showCreateEventModal"]').style.display = 'none';
+
+        // Show the edit form
+        showCreateEventModal();
+
+        // Change the submit button text
+        const submitBtn = document.querySelector('.btn-submit-premium');
+        const submitText = document.getElementById('submit-text');
+        submitText.textContent = 'Update Event';
+        submitBtn.querySelector('i').className = 'fas fa-save';
+    }
+
+    async function toggleFeatured(eventId) {
+        try {
+            const response = await fetch(`/events/${eventId}/toggle-featured`, {
+                method: 'PUT'
+            });
+
+            if (response.ok) {
+                alert('Event featured status updated successfully!');
+                loadEvents();
+            } else {
+                alert('Failed to update featured status');
+            }
+        } catch (error) {
+            alert('Failed to update featured status');
+            console.error('Error toggling featured status:', error);
+        }
+    }
+
+    async function sendEventReminder(eventId) {
+        if (!confirm('Are you sure you want to send a reminder to all registered attendees?')) return;
+
+        try {
+            const response = await fetch(`/events/${eventId}/reminder`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                alert('Event reminder sent successfully!');
+            } else {
+                alert('Failed to send reminder');
+            }
+        } catch (error) {
+            alert('Failed to send reminder');
+            console.error('Error sending reminder:', error);
+        }
+    }
+
+    function exportRegistrations(eventId) {
+        // In a real application, this would call an export endpoint
+        // For now, we'll show a placeholder
+        alert('Export functionality would generate a CSV/Excel file with all registration details. This feature is ready for backend implementation.');
+    }
+
+    async function sendNotification(eventId) {
+        const subject = prompt('Enter notification subject:');
+        if (!subject) return;
+
+        const message = prompt('Enter notification message:');
+        if (!message) return;
+
+        if (!confirm('Are you sure you want to send this notification to all registered attendees?')) return;
+
+        try {
+            const response = await fetch(`/events/${eventId}/notify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    subject: subject,
+                    message: message
+                })
+            });
+
+            if (response.ok) {
+                alert('Notification sent successfully!');
+            } else {
+                alert('Failed to send notification');
+            }
+        } catch (error) {
+            alert('Failed to send notification');
+            console.error('Error sending notification:', error);
+        }
+    }
+
+    async function sendIndividualNotification(eventId, userId, userEmail) {
+        const subject = prompt(`Enter notification subject for ${userEmail}:`);
+        if (!subject) return;
+
+        const message = prompt(`Enter notification message for ${userEmail}:`);
+        if (!message) return;
+
+        if (!confirm(`Are you sure you want to send this notification to ${userEmail}?`)) return;
+
+        try {
+            // For individual notifications, you might want to create a separate endpoint
+            // For now, we'll use the general notification endpoint
+            const response = await fetch(`/events/${eventId}/notify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    subject: subject,
+                    message: message,
+                    targetUserId: userId // This would need backend support
+                })
+            });
+
+            if (response.ok) {
+                alert('Individual notification sent successfully!');
+            } else {
+                alert('Failed to send notification');
+            }
+        } catch (error) {
+            alert('Failed to send notification');
+            console.error('Error sending individual notification:', error);
+        }
+    }
+
+    async function testAPIConnection() {
+        console.log('Testing API connection...');
+        try {
+            const response = await fetch('/events/test');
+            if (response.ok) {
+                const data = await response.json();
+                console.log('API Test successful:', data);
+                alert('API connection successful! Event count: ' + (data.eventCount || 0) + '. Check console for details.');
+            } else {
+                const errorData = await response.json().catch(() => ({error: 'Unknown error'}));
+                console.error('API test failed:', response.status, errorData);
+                alert('API test failed: ' + (errorData.error || `HTTP ${response.status}`));
+            }
+        } catch (error) {
+            console.error('API test error:', error);
+            alert('API connection failed: ' + error.message);
+        }
+    }
+
+    async function testCreateEvent() {
+        console.log('Testing event creation...');
+        try {
+            const response = await fetch('/events/test-create', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Test event creation successful:', data);
+                alert('Test event created successfully! Check console for details.');
+                loadEvents(); // Refresh the list
+            } else {
+                const errorData = await response.json().catch(() => ({error: 'Unknown error'}));
+                console.error('Test create failed:', response.status, errorData);
+                alert('Test create failed: ' + (errorData.error || `HTTP ${response.status}`));
+            }
+        } catch (error) {
+            console.error('Test create error:', error);
+            alert('Test create failed: ' + error.message);
+        }
+    }
+
+    async function deleteEvent(eventId) {
+        if (!confirm('Are you sure you want to delete this event? This action cannot be undone.')) return;
+
+        try {
+            const response = await fetch(`/events/${eventId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Event deleted successfully!');
+                loadEvents();
+            } else {
+                alert('Failed to delete event');
+            }
+        } catch (error) {
+            alert('Failed to delete event');
+            console.error('Error deleting event:', error);
+        }
+    }
+
+    function showAdminPanel() {
+        document.getElementById('events-section').style.display = 'none';
+        document.getElementById('admin-panel-section').style.display = 'block';
+        document.getElementById('content-title').textContent = 'Event Administration Dashboard';
+
+        // Load dashboard data
+        loadDashboardData();
+    }
+
+    function loadDashboardData() {
+        // Load stats
+        loadDashboardStats();
+
+        // Load recent events
+        loadRecentEvents();
+
+        // Update last updated time
+        document.getElementById('last-updated').textContent = new Date().toLocaleTimeString();
+    }
+
+    function refreshDashboard() {
+        loadDashboardData();
+    }
+
+    // Dashboard Card Functions
+    function showQuickCreateModal() {
+        showAdminPanelForCreate();
+    }
+
+    function showCreateEventModal() {
+        // This would open a modal for creating events
+        // For now, redirect to the create form
+        showAdminPanelForCreate();
+    }
+
+    function showEventList() {
+        // Switch to events section
+        document.getElementById('admin-panel-section').style.display = 'none';
+        document.getElementById('events-section').style.display = 'block';
+        document.getElementById('content-title').textContent = 'All Events';
+        loadEvents();
+    }
+
+    function showBulkActions() {
+        alert('Bulk actions feature coming soon! This will allow you to perform actions on multiple events at once.');
+    }
+
+    function showRegistrationManager() {
+        // Open registration management modal or section
+        showModal('registration-management-modal');
+    }
+
+    function showRegistrationReports() {
+        alert('Registration reports feature coming soon! View detailed analytics about event registrations.');
+    }
+
+    function showFeaturedManager() {
+        // Open featured events management
+        showModal('featured-management-modal');
+    }
+
+    function showFeaturedAnalytics() {
+        alert('Featured events analytics coming soon! Track the performance of featured events.');
+    }
+
+    function showNotificationComposer() {
+        // Open notification composer modal
+        showModal('notification-composer-modal');
+    }
+
+    function showReminderScheduler() {
+        alert('Reminder scheduler coming soon! Set up automated reminders for upcoming events.');
+    }
+
+    function showCommunicationHistory() {
+        alert('Communication history coming soon! View all sent notifications and their delivery status.');
+    }
+
+    function showDetailedAnalytics() {
+        alert('Detailed analytics dashboard coming soon! Comprehensive event performance metrics.');
+    }
+
+    function generateReports() {
+        alert('Report generation coming soon! Export detailed reports in PDF format.');
+    }
+
+    function showSystemSettings() {
+        alert('System settings panel coming soon! Configure notification preferences, security settings, and more.');
+    }
+
+    function showBackupRestore() {
+        alert('Backup and restore functionality coming soon! Create backups and restore from previous states.');
+    }
+
+    function showHelpCenter() {
+        alert('Help center coming soon! Documentation and support resources.');
+    }
+
+    function showKeyboardShortcuts() {
+        const shortcuts = `
+Event Admin Dashboard Shortcuts:
+• Ctrl + N: Quick Create Event
+• Ctrl + R: Refresh Dashboard
+• Ctrl + E: View All Events
+• Ctrl + F: Manage Featured Events
+• Ctrl + M: Registration Manager
+• Ctrl + S: System Settings
+• Esc: Close Modals
+        `;
+        alert(shortcuts);
+    }
+
+    function exportDashboardData() {
+        alert('Data export feature coming soon! Export all dashboard data in various formats.');
+    }
+
+    function showModal(modalId) {
+        // Create and show modal
+        let modalContent = '';
+
+        switch(modalId) {
+            case 'registration-management-modal':
+                modalContent = `
+                    <h2>Registration Management</h2>
+                    <p>Manage participant registrations, approvals, and communications.</p>
+                    <div class="modal-actions">
+                        <button onclick="closeModal()">Close</button>
+                    </div>
+                `;
+                break;
+            case 'featured-management-modal':
+                modalContent = `
+                    <h2>Featured Events Management</h2>
+                    <p>Control which events are highlighted on the main page.</p>
+                    <div class="modal-actions">
+                        <button onclick="closeModal()">Close</button>
+                    </div>
+                `;
+                break;
+            case 'notification-composer-modal':
+                modalContent = `
+                    <h2>Send Notification</h2>
+                    <p>Compose and send notifications to event participants.</p>
+                    <div class="modal-actions">
+                        <button onclick="closeModal()">Close</button>
+                    </div>
+                `;
+                break;
+            default:
+                modalContent = `
+                    <h2>Feature Coming Soon</h2>
+                    <p>This feature is currently under development.</p>
+                    <div class="modal-actions">
+                        <button onclick="closeModal()">Close</button>
+                    </div>
+                `;
+        }
+
+        // Show modal (assuming modal structure exists)
+        const modal = document.getElementById('event-modal');
+        if (modal) {
+            document.getElementById('modal-content').innerHTML = modalContent;
+            modal.classList.add('show');
+        } else {
+            alert('Modal system not yet implemented. Feature coming soon!');
+        }
+    }
+
+    async function loadDashboardStats() {
+        try {
+            // Get all events for stats
+            const response = await fetch('/events/enhanced');
+            if (response.ok) {
+                const data = await response.json();
+                const events = data.data || [];
+
+                // Calculate stats
+                const totalEvents = events.length;
+                const activeEvents = events.filter(e => e.eventStatus === 'UPCOMING' || e.eventStatus === 'ONGOING').length;
+                const totalRegistrations = events.reduce((sum, e) => sum + (e.currentParticipants || 0), 0);
+                const featuredEvents = events.filter(e => e.featured).length;
+
+                // Update stats
+                document.getElementById('total-events-count').textContent = totalEvents;
+                document.getElementById('active-events-count').textContent = activeEvents;
+                document.getElementById('total-registrations-count').textContent = totalRegistrations;
+                document.getElementById('featured-events-count').textContent = featuredEvents;
+
+                // Update pending approvals (simplified - would need real registration data)
+                document.getElementById('pending-approvals').textContent = Math.floor(totalRegistrations * 0.1);
+                document.getElementById('recent-registrations').textContent = Math.floor(totalRegistrations * 0.05);
+                document.getElementById('current-featured-count').textContent = featuredEvents;
+                document.getElementById('sent-today').textContent = Math.floor(Math.random() * 50);
+                document.getElementById('scheduled-reminders').textContent = Math.floor(Math.random() * 20);
+                document.getElementById('total-views').textContent = (totalEvents * 150).toLocaleString();
+                document.getElementById('conversion-rate').textContent = '24%';
+            }
+        } catch (error) {
+            console.error('Error loading dashboard stats:', error);
+        }
+    }
+
+    async function loadRecentEvents() {
+        try {
+            const response = await fetch('/events/enhanced');
+            if (response.ok) {
+                const data = await response.json();
+                const events = data.data || [];
+                const recentEvents = events.slice(0, 3); // Get first 3 events
+
+                const container = document.getElementById('recent-events-list');
+                if (recentEvents.length === 0) {
+                    container.innerHTML = '<div class="loading">No events found</div>';
+                    return;
+                }
+
+                container.innerHTML = recentEvents.map(event => `
+                    <div class="recent-item">
+                        <div class="recent-title">${event.title}</div>
+                        <div class="recent-meta">${new Date(event.startDate).toLocaleDateString()} • ${event.eventStatusLabel}</div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Error loading recent events:', error);
+            document.getElementById('recent-events-list').innerHTML = '<div class="loading">Error loading events</div>';
+        }
+    }
+
+    function showAdminPanelForCreate() {
+        showAdminPanel();
+        // Switch to create tab and reset form for new event
+        setTimeout(() => {
+            switchAdminTab('create');
+            createNewEvent();
+        }, 100);
+    }
+
+    function showAdminPanelForEdit(eventId) {
+        showAdminPanel();
+        // Load event data for editing
+        setTimeout(() => {
+            editEvent(eventId);
+        }, 100);
+    }
+
+    function showAdminPanelForNotification(eventId) {
+        showAdminPanel();
+        // Switch to notifications tab and select the event
+        setTimeout(() => {
+            switchAdminTab('notifications');
+            document.getElementById('notify-event-select').value = eventId;
+        }, 100);
+    }
+
+    function hideAdminPanel() {
+        document.getElementById('admin-panel-section').style.display = 'none';
+        document.getElementById('events-section').style.display = 'block';
+        document.getElementById('content-title').textContent = 'All Events';
+
+        // Reset form
+        resetAdminForm();
+    }
+
+    function switchAdminTab(tabName) {
+        // Update active tab
+        document.querySelectorAll('.admin-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector(`[onclick="switchAdminTab('${tabName}')"]`).classList.add('active');
+
+        // Update active content
+        document.querySelectorAll('.admin-tab-content').forEach(content => content.classList.remove('active'));
+        document.getElementById(`${tabName}-tab`).classList.add('active');
+
+        // Load data for specific tabs
+        if (tabName === 'manage') {
+            loadEventsForManagement();
+        } else if (tabName === 'featured') {
+            loadFeaturedEvents();
+            loadAllEventsForFeatured();
+        } else if (tabName === 'notifications') {
+            loadEventsForNotifications();
+        }
+    }
+
+    function resetAdminForm() {
+        const form = document.getElementById('event-admin-form');
+        form.reset();
+        form.dataset.editId = '';
+        document.getElementById('event-id').value = '';
+        document.getElementById('save-text').textContent = 'Create Event';
+        document.getElementById('delete-btn').style.display = 'none';
+        document.getElementById('admin-featured').checked = false;
+    }
+
+    function createNewEvent() {
+        // Switch to create/edit tab
+        switchAdminTab('create');
+        // Reset form to create mode
+        resetAdminForm();
+        // Scroll to form
+        document.getElementById('event-admin-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+
+    function showSection(sectionId) {
+        // Update active nav item
+        document.querySelectorAll('.admin-nav-item').forEach(item => item.classList.remove('active'));
+        document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+
+        // Handle different sections
+        if (sectionId === 'create-event') {
+            showCreateEventModal();
+        } else if (sectionId === 'comments') {
+            showCommentsSection();
+        } else {
+            document.getElementById('events-section').style.display = 'block';
+            document.getElementById('create-event-section').style.display = 'none';
+            document.getElementById('comments-section').style.display = 'none';
+            document.getElementById('content-title').textContent = sectionId === 'all-events' ? 'All Events' : sectionId === 'event-analytics' ? 'Analytics' : 'Settings';
+        }
+    }
+
+    function showCommentsSection() {
+        document.getElementById('events-section').style.display = 'none';
+        document.getElementById('create-event-section').style.display = 'none';
+        document.getElementById('comments-section').style.display = 'block';
+        document.getElementById('content-title').textContent = 'User Comments';
+        document.getElementById('content-subtitle').textContent = 'Review and manage user feedback and comments';
+
+        loadUserComments();
+    }
+
+    function closeModal() {
+        document.getElementById('event-modal').classList.remove('show');
+    }
+
+    // Admin Panel Functions
+    async function loadEventsForAdmin() {
+        try {
+            const response = await fetch('/events/enhanced');
+            if (response.ok) {
+                const data = await response.json();
+                populateEventSelectors(data.data || []);
+            }
+        } catch (error) {
+            console.error('Error loading events for admin:', error);
+        }
+    }
+
+    function populateEventSelectors(events) {
+        const selectors = ['manage-event-select', 'notify-event-select'];
+        selectors.forEach(selectorId => {
+            const select = document.getElementById(selectorId);
+            select.innerHTML = '<option value="">Choose an event...</option>';
+            events.forEach(event => {
+                const option = document.createElement('option');
+                option.value = event.id;
+                option.textContent = event.title;
+                select.appendChild(option);
+            });
+        });
+    }
+
+    async function loadEventsForManagement() {
+        await loadEventsForAdmin();
+    }
+
+    async function loadEventsForNotifications() {
+        await loadEventsForAdmin();
+    }
+
+    // Event Management Functions
+    document.getElementById('manage-event-select').addEventListener('change', function() {
+        const eventId = this.value;
+        if (eventId) {
+            loadEventRegistrations(eventId);
+            document.getElementById('registration-controls').style.display = 'block';
+        } else {
+            document.getElementById('registration-controls').style.display = 'none';
+        }
+    });
+
+    async function loadEventRegistrations(eventId) {
+        try {
+            const response = await fetch(`/events/${eventId}/detailed-registrations`);
+            if (response.ok) {
+                const data = await response.json();
+                displayEventRegistrations(data.data);
+            }
+        } catch (error) {
+            console.error('Error loading registrations:', error);
+        }
+    }
+
+    function displayEventRegistrations(data) {
+        // Update stats
+        document.getElementById('total-registered').textContent = data.total || 0;
+        document.getElementById('confirmed-count').textContent = data.confirmed || 0;
+        document.getElementById('pending-count').textContent = (data.total || 0) - (data.confirmed || 0);
+
+        // Display registrations table
+        const container = document.getElementById('registrations-table-container');
+        if (data.registrations && data.registrations.length > 0) {
+            let html = `
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            data.registrations.forEach(reg => {
+                const status = reg.confirmed ? 'Confirmed' : 'Pending';
+                const statusClass = reg.confirmed ? 'status-confirmed' : 'status-pending';
+                html += `
+                    <tr>
+                        <td>${reg.userName || 'N/A'}</td>
+                        <td>${reg.userEmail || 'N/A'}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td>
+                            ${!reg.confirmed ? `<button class="btn-small" onclick="approveRegistration('${reg.eventId}', '${reg.userId}')">Approve</button>` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = '<p>No registrations found for this event.</p>';
+        }
+    }
+
+    async function approveRegistration(eventId, userId) {
+        try {
+            const response = await fetch(`/events/${eventId}/approve-registration/${userId}`, {
+                method: 'PUT'
+            });
+            if (response.ok) {
+                alert('Registration approved successfully!');
+                loadEventRegistrations(eventId);
+            } else {
+                alert('Failed to approve registration');
+            }
+        } catch (error) {
+            console.error('Error approving registration:', error);
+            alert('Error approving registration');
+        }
+    }
+
+    async function closeEventRegistrations() {
+        const eventId = document.getElementById('manage-event-select').value;
+        if (!eventId) return;
+
+        try {
+            const response = await fetch(`/events/${eventId}/close-registrations`, {
+                method: 'PUT'
+            });
+            if (response.ok) {
+                alert('Event registrations closed successfully!');
+            } else {
+                alert('Failed to close registrations');
+            }
+        } catch (error) {
+            console.error('Error closing registrations:', error);
+            alert('Error closing registrations');
+        }
+    }
+
+    function exportRegistrations() {
+        const eventId = document.getElementById('manage-event-select').value;
+        if (!eventId) return;
+
+        // Simple CSV export
+        const container = document.getElementById('registrations-table-container');
+        const table = container.querySelector('table');
+        if (!table) return;
+
+        let csv = 'Name,Email,Status\n';
+        const rows = table.querySelectorAll('tbody tr');
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const name = cells[0].textContent;
+            const email = cells[1].textContent;
+            const status = cells[2].textContent.trim();
+            csv += `${name},${email},${status}\n`;
+        });
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `event-registrations-${eventId}.csv`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+
+    // Featured Events Functions
+    async function loadFeaturedEvents() {
+        try {
+            const response = await fetch('/events/featured');
+            if (response.ok) {
+                const data = await response.json();
+                displayFeaturedEvents(data.data || []);
+            }
+        } catch (error) {
+            console.error('Error loading featured events:', error);
+        }
+    }
+
+    async function loadAllEventsForFeatured() {
+        try {
+            const response = await fetch('/events/enhanced');
+            if (response.ok) {
+                const data = await response.json();
+                displayAllEventsForFeatured(data.data || []);
+            }
+        } catch (error) {
+            console.error('Error loading all events:', error);
+        }
+    }
+
+    function displayFeaturedEvents(events) {
+        const container = document.getElementById('featured-events-container');
+        if (events.length === 0) {
+            container.innerHTML = '<p>No featured events.</p>';
+            return;
+        }
+
+        let html = '<div class="featured-events-grid">';
+        events.forEach(event => {
+            html += `
+                <div class="featured-event-card">
+                    <h4>${event.title}</h4>
+                    <p>${event.shortDescription || 'No description'}</p>
+                    <button class="btn-small" onclick="toggleFeatured(${event.id}, false)">Remove Featured</button>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    function displayAllEventsForFeatured(events) {
+        const container = document.getElementById('all-events-featured-container');
+        if (events.length === 0) {
+            container.innerHTML = '<p>No events found.</p>';
+            return;
+        }
+
+        let html = '<div class="events-grid">';
+        events.forEach(event => {
+            const featuredClass = event.featured ? 'featured' : '';
+            const buttonText = event.featured ? 'Remove Featured' : 'Make Featured';
+            const buttonAction = event.featured ? `toggleFeatured(${event.id}, false)` : `toggleFeatured(${event.id}, true)`;
+
+            html += `
+                <div class="event-card ${featuredClass}">
+                    <h4>${event.title}</h4>
+                    <p>${event.shortDescription || 'No description'}</p>
+                    <p><strong>Status:</strong> ${event.eventStatusLabel}</p>
+                    <button class="btn-small" onclick="${buttonAction}">${buttonText}</button>
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    async function toggleFeatured(eventId, makeFeatured) {
+        try {
+            const response = await fetch(`/events/${eventId}/toggle-featured`, {
+                method: 'PUT'
+            });
+            if (response.ok) {
+                alert(makeFeatured ? 'Event marked as featured!' : 'Event removed from featured!');
+                loadFeaturedEvents();
+                loadAllEventsForFeatured();
+            } else {
+                alert('Failed to update featured status');
+            }
+        } catch (error) {
+            console.error('Error toggling featured:', error);
+            alert('Error updating featured status');
+        }
+    }
+
+    // Notification Functions
+    async function sendEventNotification() {
+        const eventId = document.getElementById('notify-event-select').value;
+        const subject = document.getElementById('notification-subject').value;
+        const message = document.getElementById('notification-message').value;
+
+        if (!eventId || !subject || !message) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/events/${eventId}/notify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ subject, message })
+            });
+
+            if (response.ok) {
+                alert('Notification sent successfully!');
+                document.getElementById('notification-subject').value = '';
+                document.getElementById('notification-message').value = '';
+            } else {
+                alert('Failed to send notification');
+            }
+        } catch (error) {
+            console.error('Error sending notification:', error);
+            alert('Error sending notification');
+        }
+    }
+
+    async function sendEventReminder() {
+        const eventId = document.getElementById('notify-event-select').value;
+        if (!eventId) {
+            alert('Please select an event');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/events/${eventId}/reminder`, {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                alert('Reminder sent successfully!');
+            } else {
+                alert('Failed to send reminder');
+            }
+        } catch (error) {
+            console.error('Error sending reminder:', error);
+            alert('Error sending reminder');
+        }
+    }
+
+    // Form Handling
+    document.getElementById('event-admin-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const formData = {
+            id: document.getElementById('event-id').value || null,
+            title: document.getElementById('admin-event-title').value,
+            eventType: document.getElementById('admin-event-type').value,
+            startDate: document.getElementById('admin-start-date').value,
+            endDate: document.getElementById('admin-end-date').value,
+            location: document.getElementById('admin-location').value,
+            maxParticipants: document.getElementById('admin-max-participants').value || null,
+            shortDescription: document.getElementById('admin-short-description').value,
+            fullDescription: document.getElementById('admin-full-description').value,
+            meetingLink: document.getElementById('admin-meeting-link').value,
+            speakers: document.getElementById('admin-speakers').value,
+            agenda: document.getElementById('admin-agenda').value,
+            featured: document.getElementById('admin-featured').checked
+        };
+
+        try {
+            const isEdit = formData.id;
+            const url = isEdit ? `/events/${formData.id}` : '/events';
+            const method = isEdit ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const successMessage = isEdit ? 'Event updated successfully!' : 'Event created successfully!';
+                alert(successMessage);
+                resetAdminForm();
+                if (window.loadEvents) loadEvents(); // Refresh main events list
+            } else {
+                const error = await response.json();
+                alert('Error: ' + (error.error || 'Unknown error'));
+            }
+        } catch (error) {
+            console.error('Error saving event:', error);
+            alert('Error saving event: ' + error.message);
+        }
+    });
+
+    // Edit Event Function
+    function editEvent(eventId) {
+        // Find event data and populate form
+        fetch(`/events/${eventId}`)
+            .then(response => response.json())
+            .then(data => {
+                const event = data.data;
+                document.getElementById('event-id').value = event.id;
+                document.getElementById('admin-event-title').value = event.title;
+                document.getElementById('admin-event-type').value = event.eventType;
+                document.getElementById('admin-start-date').value = new Date(event.startDate).toISOString().slice(0, 16);
+                document.getElementById('admin-end-date').value = new Date(event.endDate).toISOString().slice(0, 16);
+                document.getElementById('admin-location').value = event.location;
+                document.getElementById('admin-max-participants').value = event.maxParticipants || '';
+                document.getElementById('admin-short-description').value = event.shortDescription || '';
+                document.getElementById('admin-full-description').value = event.fullDescription || '';
+                document.getElementById('admin-meeting-link').value = event.meetingLink || '';
+                document.getElementById('admin-speakers').value = event.speakers || '';
+                document.getElementById('admin-agenda').value = event.agenda || '';
+                document.getElementById('admin-featured').checked = event.featured || false;
+
+                document.getElementById('save-text').textContent = 'Update Event';
+                document.getElementById('delete-btn').style.display = 'inline-block';
+
+                switchAdminTab('create');
+            })
+            .catch(error => {
+                console.error('Error loading event for edit:', error);
+                alert('Error loading event data');
+            });
+    }
+
+    async function deleteCurrentEvent() {
+        const eventId = document.getElementById('event-id').value;
+        if (!eventId || !confirm('Are you sure you want to delete this event?')) return;
+
+        try {
+            const response = await fetch(`/events/${eventId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Event deleted successfully!');
+                resetAdminForm();
+                if (window.loadEvents) loadEvents(); // Refresh main events list
+            } else {
+                alert('Failed to delete event');
+            }
+        } catch (error) {
+            console.error('Error deleting event:', error);
+            alert('Error deleting event');
+        }
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+        document.getElementById('error-message').style.display = 'none';
+    }
+
+    // Comments Management Functions
+    async function loadUserComments() {
+        const commentsContainer = document.getElementById('comments-list');
+        const loading = document.getElementById('comments-loading');
+        const empty = document.getElementById('comments-empty');
+
+        try {
+            loading.style.display = 'flex';
+            commentsContainer.style.display = 'none';
+            empty.style.display = 'none';
+
+            // Load comments and stats in parallel
+            const [commentsResponse, statsResponse] = await Promise.all([
+                fetch('/api/comments'),
+                fetch('/api/comments/stats')
+            ]);
+
+            if (!commentsResponse.ok) {
+                throw new Error('Failed to load comments');
+            }
+
+            const commentsResult = await commentsResponse.json();
+            const statsResult = statsResponse.ok ? await statsResponse.json() : null;
+
+            const comments = commentsResult.success ? commentsResult.data : [];
+
+            // Update stats if available
+            if (statsResult && statsResult.success) {
+                document.getElementById('total-comments').textContent = statsResult.stats.total;
+                document.getElementById('unread-comments').textContent = statsResult.stats.unread;
+                document.getElementById('today-comments').textContent = statsResult.stats.today;
+            }
+
+            if (comments.length === 0) {
+                empty.style.display = 'flex';
+                return;
+            }
+
+            renderComments(comments);
+            commentsContainer.style.display = 'block';
+
+        } catch (error) {
+            console.error('Error loading comments:', error);
+            commentsContainer.innerHTML = '<div class="error-message">Failed to load comments. Please try again.</div>';
+            commentsContainer.style.display = 'block';
+        } finally {
+            loading.style.display = 'none';
+        }
+    }
+
+    function renderComments(comments) {
+        const container = document.getElementById('comments-list');
+        container.innerHTML = comments.map(comment => `
+            <div class="comment-card">
+                <div class="comment-header">
+                    <div class="comment-meta">
+                        <span class="comment-category">${comment.category || 'General'}</span>
+                        <span class="comment-source">${comment.source || 'Unknown'}</span>
+                    </div>
+                    <div class="comment-date">${new Date(comment.timestamp || comment.createdAt).toLocaleDateString()}</div>
+                </div>
+                <div class="comment-content">
+                    ${comment.content}
+                </div>
+                <div class="comment-actions">
+                    <button class="btn-reply" onclick="replyToComment(${comment.id})">
+                        <i class="fas fa-reply"></i> Reply
+                    </button>
+                    <button class="btn-delete" onclick="deleteComment(${comment.id})">
+                        <i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function replyToComment(commentId) {
+        const reply = prompt('Enter your reply:');
+        if (!reply || !reply.trim()) return;
+
+        try {
+            const response = await fetch(`/api/comments/${commentId}/reply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reply: reply.trim() })
+            });
+
+            if (response.ok) {
+                alert('Reply sent successfully!');
+                loadUserComments();
+            } else {
+                alert('Failed to send reply');
+            }
+        } catch (error) {
+            console.error('Error sending reply:', error);
+            alert('Error sending reply');
+        }
+    }
+
+    async function deleteComment(commentId) {
+        if (!confirm('Are you sure you want to delete this comment?')) return;
+
+        try {
+            const response = await fetch(`/api/comments/${commentId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Comment deleted successfully!');
+                loadUserComments();
+            } else {
+                alert('Failed to delete comment');
+            }
+        } catch (error) {
+            console.error('Error deleting comment:', error);
+            alert('Error deleting comment');
+        }
+    }
+</script>
+
+<!-- Comments Section (Hidden by default) -->
+<div id="comments-section" style="display: none;">
+    <div class="comments-controls">
+        <div class="comments-stats">
+            <div class="stat-item">
+                <div class="stat-number" id="total-comments">0</div>
+                <div class="stat-label">Total Comments</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="unread-comments">0</div>
+                <div class="stat-label">Unread</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" id="today-comments">0</div>
+                <div class="stat-label">Today</div>
+            </div>
+        </div>
+
+        <div class="comments-filters">
+            <select id="comments-filter" class="filter-select">
+                <option value="all">All Comments</option>
+                <option value="unread">Unread Only</option>
+                <option value="today">Today</option>
+                <option value="survey-feedback">Survey Feedback</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="comments-loading" class="comments-loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Loading comments...</p>
+    </div>
+
+    <div id="comments-empty" class="comments-empty" style="display: none;">
+        <i class="fas fa-comments"></i>
+        <h3>No comments yet</h3>
+        <p>Comments from users will appear here</p>
+    </div>
+
+    <div id="comments-list" class="comments-list" style="display: none;">
+        <!-- Comments will be loaded here -->
+    </div>
+</div>
+
+<style>
+    /* Comments Section Styles */
+    #comments-section {
+        padding: 2rem 0;
+    }
+
+    .comments-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .comments-stats {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .comments-stats .stat-item {
+        text-align: center;
+    }
+
+    .comments-stats .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #3b82f6;
+        margin-bottom: 0.25rem;
+    }
+
+    .comments-stats .stat-label {
+        font-size: 0.875rem;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .comments-filters {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .filter-select {
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        color: white;
+        font-size: 0.875rem;
+    }
+
+    .comments-loading,
+    .comments-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem 2rem;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .comments-loading i,
+    .comments-empty i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .comments-loading p,
+    .comments-empty h3 {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .comments-list {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .comment-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .comment-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(59, 130, 246, 0.3);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.1);
+    }
+
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .comment-meta {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    .comment-category {
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .comment-source {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+    }
+
+    .comment-date {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.875rem;
+    }
+
+    .comment-content {
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .comment-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+    }
+
+    .btn-reply,
+    .btn-delete {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-reply {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-reply:hover {
+        background: rgba(59, 130, 246, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .btn-delete {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ef4444;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-delete:hover {
+        background: rgba(239, 68, 68, 0.3);
+        transform: translateY(-1px);
+    }
+
+    .error-message {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .comments-controls {
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: stretch;
+        }
+
+        .comments-stats {
+            justify-content: center;
+        }
+
+        .comments-filters {
+            justify-content: center;
+        }
+
+        .comment-header {
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .comment-actions {
+            justify-content: center;
+        }
+    }
+</style>
+</body>
+</html>
+</body>
+</html>

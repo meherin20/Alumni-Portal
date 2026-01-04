@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumni Profile · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        .alumni-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.1fr);
+            gap: 18px;
+        }
+        @media (max-width: 900px) {
+            .alumni-layout {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+        .alumni-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #0B1E5B, #06143F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 28px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .alumni-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="app-nav">
+        <div class="app-nav-left">
+            <div class="app-logo">AP</div>
+            <div class="app-brand">
+                <div class="app-brand-title">Alumni Management Portal</div>
+                <div class="app-brand-sub">Alumni profile</div>
+            </div>
+        </div>
+        <nav class="app-nav-links">
+            <a href="/" class="app-nav-link">Home</a>
+            <a href="/student-view.html" class="app-nav-link">Student view</a>
+            <a href="/student-directory.html" class="app-nav-link">Alumni directory</a>
+            <button type="button" id="theme-toggle" class="btn-ghost" style="margin-left:8px;" aria-label="Change theme">
+                <span id="theme-toggle-icon">🌙</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="scene-card">
+        <header class="scene-header">
+            <div>
+                <div class="scene-title" id="alumni-name">Alumni</div>
+                <p class="scene-subtitle" id="alumni-subtitle">
+                    Updated alumni profile as seen in the directory.
+                </p>
+            </div>
+            <span class="scene-badge">Alumni</span>
+        </header>
+
+        <div class="alumni-layout">
+            <section class="list-card">
+                <div class="section-label">Basic information</div>
+                <div class="alumni-avatar" id="alumni-avatar">
+                    <span id="alumni-avatar-initials">AL</span>
+                </div>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td id="alumni-name-cell">–</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td id="alumni-email-cell">–</td>
+                    </tr>
+                    <tr>
+                        <td>Department</td>
+                        <td id="alumni-dept-cell">–</td>
+                    </tr>
+                    <tr>
+                        <td>Passing year</td>
+                        <td id="alumni-year-cell">–</td>
+                    </tr>
+                    <tr>
+                        <td>Current job</td>
+                        <td id="alumni-job-cell">–</td>
+                    </tr>
+                    <tr>
+                        <td>Phone</td>
+                        <td id="alumni-phone-cell">–</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="list-card">
+                <div class="section-label">Links</div>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <td>CV</td>
+                        <td id="alumni-cv-cell">–</td>
+                    </tr>
+                    <tr>
+                        <td>Portfolio</td>
+                        <td id="alumni-portfolio-cell">–</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p class="hint">Data comes from the alumni's own profile settings.</p>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function() {
+        const stored = window.localStorage.getItem('amp-theme');
+        if (stored === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        }
+        const btn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-toggle-icon');
+        if (!btn || !icon) return;
+        function syncIcon() {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            icon.textContent = isLight ? '☀' : '🌙';
+        }
+        syncIcon();
+        btn.addEventListener('click', () => {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.body.removeAttribute('data-theme');
+                window.localStorage.setItem('amp-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                window.localStorage.setItem('amp-theme', 'light');
+            }
+            syncIcon();
+        });
+    })();
+
+    function getQueryParam(name) {
+        const params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+
+    async function loadAlumniProfile() {
+        const email = getQueryParam('email');
+        if (!email) {
+            alert('No alumni email provided.');
+            return;
+        }
+        try {
+            const res = await fetch('/users/by-email?email=' + encodeURIComponent(email));
+            const json = await res.json().catch(() => ({}));
+            const user = json.data;
+            if (!user) {
+                alert('Alumni profile not found.');
+                return;
+            }
+            const fullName = ((user.firstName || '') + ' ' + (user.lastName || '')).trim() || 'Alumni';
+            document.getElementById('alumni-name').textContent = fullName;
+            document.getElementById('alumni-name-cell').textContent = fullName;
+            document.getElementById('alumni-email-cell').textContent = user.email || email;
+
+            const profile = user.profile || {};
+            document.getElementById('alumni-dept-cell').textContent = profile.department || '—';
+            document.getElementById('alumni-year-cell').textContent = profile.passingYear || '—';
+            document.getElementById('alumni-job-cell').textContent = profile.jobTitle || '—';
+            document.getElementById('alumni-phone-cell').textContent = profile.phone || '—';
+
+            const cv = profile.cvLink || '';
+            const portfolio = profile.portfolioLink || '';
+            const cvCell = document.getElementById('alumni-cv-cell');
+            const portCell = document.getElementById('alumni-portfolio-cell');
+            cvCell.textContent = cv ? cv : '—';
+            portCell.textContent = portfolio ? portfolio : '—';
+
+            const avatar = document.getElementById('alumni-avatar');
+            const initialsEl = document.getElementById('alumni-avatar-initials');
+            const imageUrl = profile.profileImage || '';
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                avatar.innerHTML = '';
+                avatar.appendChild(img);
+            } else {
+                const initials = (user.firstName ? user.firstName.charAt(0) : 'A') +
+                    (user.lastName ? user.lastName.charAt(0) : '');
+                initialsEl.textContent = initials.toUpperCase() || 'AL';
+            }
+        } catch (e) {
+            alert('Error loading alumni profile.');
+        }
+    }
+
+    loadAlumniProfile();
+</script>
+</body>
+</html>
+
+

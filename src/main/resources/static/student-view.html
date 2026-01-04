@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student View · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        .option-cards {
+            display: grid;
+            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            .option-cards {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #0B1E5B, #06143F);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 600;
+            font-size: 24px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="app-nav">
+        <div class="app-nav-left">
+            <div class="app-logo">AP</div>
+            <div class="app-brand">
+                <div class="app-brand-title">Alumni Management Portal</div>
+                <div class="app-brand-sub">Student view</div>
+            </div>
+        </div>
+        <nav class="app-nav-links">
+            <a href="/" class="app-nav-link">Home</a>
+            <a href="/student-view.html" class="app-nav-link">Student view</a>
+            <a href="/student-directory.html" class="app-nav-link">Alumni directory</a>
+            <a href="/login.html" class="app-nav-cta">Logout</a>
+            <button type="button" id="student-notif-bell" class="btn-ghost notif-bell" style="margin-left:8px;" aria-label="Notifications">
+                🔔
+            </button>
+            <button type="button" id="theme-toggle" class="btn-ghost" style="margin-left:8px;" aria-label="Change theme">
+                <span id="theme-toggle-icon">🌙</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="scene-card">
+        <header class="scene-header">
+            <div>
+                <div class="scene-title">Welcome, <span id="student-name-label">Student</span></div>
+                <p class="scene-subtitle">
+                    Manage your profile and explore the alumni directory.
+                </p>
+            </div>
+            <span class="scene-badge">Student</span>
+        </header>
+
+        <div class="option-cards">
+            <section class="list-card">
+                <div class="section-label">My profile</div>
+                <div class="profile-avatar" id="student-avatar">
+                    <span id="student-avatar-initials">ST</span>
+                </div>
+                <form id="student-profile-form">
+                    <div class="form-row-inline">
+                        <div class="form-row">
+                            <label for="studentId">ID</label>
+                            <input id="studentId" name="studentId" readonly />
+                        </div>
+                        <div class="form-row">
+                            <label for="studentEmail">Email</label>
+                            <input id="studentEmail" name="studentEmail" type="email" readonly />
+                        </div>
+                    </div>
+                    <div class="form-row-inline">
+                        <div class="form-row">
+                            <label for="studentFirstName">First name</label>
+                            <input id="studentFirstName" name="studentFirstName" />
+                        </div>
+                        <div class="form-row">
+                            <label for="studentLastName">Last name</label>
+                            <input id="studentLastName" name="studentLastName" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label for="studentDept">Department</label>
+                        <input id="studentDept" name="studentDept" placeholder="e.g. CSE" readonly />
+                    </div>
+                    <div class="form-row">
+                        <label for="studentImageUrl">Profile image URL</label>
+                        <input id="studentImageUrl" name="studentImageUrl" placeholder="https://..." />
+                    </div>
+
+                    <div class="btn-row">
+                        <button type="submit" class="btn">Save changes</button>
+                        <button type="button" id="student-delete-btn" class="btn-ghost">Delete my account</button>
+                    </div>
+                    <p class="hint">Your department is shown from your academic record. Contact admin to change it.</p>
+                    <div id="student-profile-message" class="alert" style="display:none;"></div>
+                </form>
+            </section>
+
+            <section class="list-card">
+                <div class="section-label">Alumni directory</div>
+                <p class="hint">
+                    Browse and connect with registered alumni using the dedicated directory.
+                </p>
+                <div class="btn-row" style="margin-top:8px;">
+                    <a href="/student-directory.html" class="btn">
+                        Open alumni directory →
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function() {
+        const stored = window.localStorage.getItem('amp-theme');
+        if (stored === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        }
+        const btn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-toggle-icon');
+        if (!btn || !icon) return;
+        function syncIcon() {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            icon.textContent = isLight ? '☀' : '🌙';
+        }
+        syncIcon();
+        btn.addEventListener('click', () => {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.body.removeAttribute('data-theme');
+                window.localStorage.setItem('amp-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                window.localStorage.setItem('amp-theme', 'light');
+            }
+            syncIcon();
+        });
+    })();
+
+    let currentUser = null;
+
+    async function loadStudentProfile() {
+        const email = window.localStorage.getItem('amp-user-email');
+        if (!email) {
+            alert('Please login as a student first.');
+            window.location.href = '/login.html';
+            return;
+        }
+        try {
+            const [userRes, notifRes] = await Promise.all([
+                fetch('/users/by-email?email=' + encodeURIComponent(email)),
+                fetch('/friend-requests/student?email=' + encodeURIComponent(email))
+            ]);
+            const userJson = await userRes.json().catch(() => ({}));
+            const notifJson = await notifRes.json().catch(() => ({}));
+            const user = userJson.data;
+            const acceptedRequests = notifJson.data || [];
+
+            if (!user) {
+                alert('Could not load your profile.');
+                return;
+            }
+            currentUser = user;
+            const fullName = (user.firstName || '') + ' ' + (user.lastName || '');
+            document.getElementById('student-name-label').textContent = fullName.trim() || 'Student';
+
+            document.getElementById('studentId').value = user.id != null ? String(user.id) : '';
+            document.getElementById('studentEmail').value = user.email || email;
+            document.getElementById('studentFirstName').value = user.firstName || '';
+            document.getElementById('studentLastName').value = user.lastName || '';
+
+            let dept = '';
+            if (user.profile && user.profile.educationDetails && user.profile.educationDetails.length) {
+                const firstEdu = user.profile.get ? user.profile.get(0) : user.profile[0];
+                if (firstEdu && firstEdu.course) {
+                    dept = firstEdu.course;
+                }
+            }
+            document.getElementById('studentDept').value = dept;
+
+            const avatar = document.getElementById('student-avatar');
+            const initialsEl = document.getElementById('student-avatar-initials');
+            const imageUrlInput = document.getElementById('studentImageUrl');
+            const imageUrl = user.profile && user.profile.profileImage ? user.profile.profileImage : '';
+            imageUrlInput.value = imageUrl;
+            if (imageUrl) {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                avatar.innerHTML = '';
+                avatar.appendChild(img);
+            } else {
+                const initials = (user.firstName ? user.firstName.charAt(0) : 'S') +
+                    (user.lastName ? user.lastName.charAt(0) : '');
+                initialsEl.textContent = initials.toUpperCase() || 'ST';
+            }
+
+            const bell = document.getElementById('student-notif-bell');
+            if (bell && acceptedRequests.length > 0) {
+                bell.classList.add('has-notification');
+                bell.title = 'You have new accepted requests';
+                bell.addEventListener('click', () => {
+                    window.location.href = '/student-directory.html';
+                });
+            }
+        } catch (e) {
+            alert('Error loading your profile or notifications.');
+        }
+    }
+
+    document.getElementById('student-profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('student-profile-message');
+        msg.style.display = 'none';
+        if (!currentUser || !currentUser.id) {
+            msg.className = 'alert alert-error';
+            msg.textContent = 'No profile loaded.';
+            msg.style.display = 'block';
+            return;
+        }
+        currentUser.firstName = document.getElementById('studentFirstName').value;
+        currentUser.lastName = document.getElementById('studentLastName').value;
+        const imgUrl = document.getElementById('studentImageUrl').value;
+        if (!currentUser.profile) {
+            currentUser.profile = {};
+        }
+        currentUser.profile.profileImage = imgUrl;
+
+        try {
+            const res = await fetch('/users/' + currentUser.id, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(currentUser)
+            });
+            const data = await res.json().catch(() => ({}));
+            msg.className = 'alert';
+            if (!res.ok) {
+                msg.classList.add('alert-error');
+                msg.textContent = data.message || 'Failed to update profile.';
+            } else {
+                msg.textContent = 'Profile updated.';
+            }
+            msg.style.display = 'block';
+        } catch (err) {
+            msg.className = 'alert alert-error';
+            msg.textContent = 'Network error while updating profile.';
+            msg.style.display = 'block';
+        }
+    });
+
+    document.getElementById('student-delete-btn').addEventListener('click', async () => {
+        if (!currentUser || !currentUser.id) return;
+        if (!window.confirm('Are you sure you want to delete your account? This cannot be undone.')) {
+            return;
+        }
+        try {
+            const res = await fetch('/users/' + currentUser.id, { method: 'DELETE' });
+            if (!res.ok) {
+                alert('Failed to delete account.');
+                return;
+            }
+            window.localStorage.removeItem('amp-user-email');
+            window.localStorage.removeItem('amp-user-role');
+            alert('Your account has been deleted.');
+            window.location.href = '/';
+        } catch (err) {
+            alert('Network error while deleting account.');
+        }
+    });
+
+    loadStudentProfile();
+</script>
+</body>
+</html>
+
+

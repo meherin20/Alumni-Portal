@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Details · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+        .event-detail-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .event-header {
+            background: linear-gradient(135deg, #ea580c 0%, #dc2626 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .event-category {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .event-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .event-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 24px;
+            line-height: 1.4;
+        }
+
+        .event-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .meta-icon {
+            font-size: 20px;
+        }
+
+        .meta-label {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .meta-value {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .event-status {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-upcoming { background: rgba(255, 255, 255, 0.2); }
+        .status-ongoing { background: rgba(34, 197, 94, 0.2); color: #dcfce7; }
+        .status-past { background: rgba(239, 68, 68, 0.2); color: #fecaca; }
+
+        .event-content {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .content-section {
+            margin-bottom: 32px;
+        }
+
+        .content-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-content {
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        .speakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 16px;
+        }
+
+        .speaker-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .speaker-name {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .speaker-title {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .speaker-bio {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .agenda-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .agenda-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .agenda-item:last-child {
+            border-bottom: none;
+        }
+
+        .agenda-time {
+            font-weight: 600;
+            color: #ea580c;
+            min-width: 80px;
+        }
+
+        .agenda-content h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .agenda-content p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .attachments-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .attachment-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f3f4f6;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .attachment-link:hover {
+            background: #e5e7eb;
+        }
+
+        .registration-section {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            border: 2px solid #ea580c;
+        }
+
+        .registration-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .registration-open { background: #fed7aa; color: #9a3412; }
+        .registration-applied { background: #bbf7d0; color: #166534; }
+        .registration-closed { background: #fecaca; color: #dc2626; }
+
+        .btn-register-large {
+            background: #ea580c;
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn-register-large:hover:not(:disabled) {
+            background: #dc2626;
+        }
+
+        .btn-register-large:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .seats-info {
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6b7280;
+            text-decoration: none;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            color: #374151;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #6b7280;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .event-header {
+                padding: 24px;
+            }
+
+            .event-title {
+                font-size: 24px;
+            }
+
+            .event-meta {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .speakers-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .event-content {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="app-nav">
+        <div class="app-nav-left">
+            <div class="app-logo">AP</div>
+            <div class="app-brand">
+                <div class="app-brand-title">Alumni Management Portal</div>
+                <div class="app-brand-sub">Event details and registration.</div>
+            </div>
+        </div>
+        <nav class="app-nav-links">
+            <a href="/" class="app-nav-link">Home</a>
+            <a href="/events.html" class="app-nav-link app-nav-link-active">Events</a>
+            <a href="/jobs.html" class="app-nav-link">Jobs</a>
+            <a href="/news.html" class="app-nav-link">News</a>
+            <a href="/surveys.html" class="app-nav-link">Surveys</a>
+            <a href="/login.html" class="app-nav-cta">Login</a>
+        </nav>
+    </header>
+
+    <main class="layout-main">
+        <section class="scene-card">
+            <a href="/events.html" class="back-link">← Back to Events</a>
+
+            <div id="error-message" class="error" style="display: none;"></div>
+            <div id="loading" class="loading">Loading event details...</div>
+
+            <div id="event-detail-container" class="event-detail-container" style="display: none;">
+                <!-- Event Header -->
+                <div id="event-header" class="event-header">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+
+                <!-- Registration Section -->
+                <div id="registration-section" class="registration-section">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+
+                <!-- Event Content -->
+                <div id="event-content" class="event-content">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    let currentEvent = null;
+    let currentUserId = 1; // This should come from authentication context
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+
+        if (eventId) {
+            loadEventDetails(eventId);
+        } else {
+            showError('No event ID provided');
+        }
+    });
+
+    async function loadEventDetails(eventId) {
+        try {
+            showLoading(true);
+            hideError();
+
+            const response = await fetch(`/events/${eventId}/enhanced`);
+            if (!response.ok) {
+                throw new Error('Failed to load event details');
+            }
+
+            currentEvent = await response.json();
+            displayEventDetails(currentEvent);
+
+        } catch (error) {
+            showError('Failed to load event details. Please try again later.');
+            console.error('Error loading event details:', error);
+        } finally {
+            showLoading(false);
+        }
+    }
+
+    function displayEventDetails(event) {
+        displayEventHeader(event);
+        displayRegistrationSection(event);
+        displayEventContent(event);
+
+        document.getElementById('event-detail-container').style.display = 'block';
+    }
+
+    function displayEventHeader(event) {
+        const startDate = new Date(event.startDate).toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        const startTime = new Date(event.startDate).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const endTime = new Date(event.endDate).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const headerHtml = `
+            <div class="event-category">${event.eventTypeLabel}</div>
+            <h1 class="event-title">${event.title}</h1>
+            <p class="event-subtitle">${event.shortDescription || 'Join us for this exciting event'}</p>
+
+            <div class="event-meta">
+                <div class="meta-item">
+                    <span class="meta-icon">📅</span>
+                    <div>
+                        <div class="meta-label">Date & Time</div>
+                        <div class="meta-value">${startDate}<br>${startTime} - ${endTime}</div>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">📍</span>
+                    <div>
+                        <div class="meta-label">Location</div>
+                        <div class="meta-value">${event.location}</div>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-icon">👥</span>
+                    <div>
+                        <div class="meta-label">Organizers</div>
+                        <div class="meta-value">${event.organizerNames ? event.organizerNames.join(', ') : 'Alumni Office'}</div>
+                    </div>
+                </div>
+                <div class="meta-item">
+                    <span class="event-status status-${event.eventStatus.toLowerCase()}">${event.eventStatus}</span>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('event-header').innerHTML = headerHtml;
+    }
+
+    function displayRegistrationSection(event) {
+        const registrationStatusClass = event.registrationStatus.toLowerCase().replace('_', '-');
+
+        let registrationHtml = `
+            <div class="registration-status registration-${registrationStatusClass}">
+                ${event.registrationStatusLabel}
+            </div>
+        `;
+
+        if (event.maxParticipants) {
+            registrationHtml += `
+                <div class="seats-info">
+                    ${event.seatsAvailable !== null ? `${event.seatsAvailable} seats available out of ${event.maxParticipants}` : 'Unlimited seats available'}
+                </div>
+            `;
+        }
+
+        if (event.registrationStatus === 'REGISTER_NOW') {
+            registrationHtml += `
+                <button class="btn-register-large" onclick="registerForEvent(${event.id})">
+                    Register Now
+                </button>
+            `;
+        } else if (event.registrationStatus === 'APPLIED') {
+            registrationHtml += `
+                <button class="btn-register-large" disabled>
+                    ✓ Registered
+                </button>
+            `;
+        } else {
+            registrationHtml += `
+                <button class="btn-register-large" disabled>
+                    Registration Closed
+                </button>
+            `;
+        }
+
+        if (event.meetingLink) {
+            registrationHtml += `
+                <div style="margin-top: 16px;">
+                    <a href="${event.meetingLink}" target="_blank" class="attachment-link">
+                        🔗 Join Meeting
+                    </a>
+                </div>
+            `;
+        }
+
+        document.getElementById('registration-section').innerHTML = registrationHtml;
+    }
+
+    function displayEventContent(event) {
+        let contentHtml = '';
+
+        // Full Description
+        if (event.fullDescription || event.description) {
+            contentHtml += `
+                <div class="content-section">
+                    <h2 class="section-title">📖 About This Event</h2>
+                    <div class="section-content">
+                        ${event.fullDescription || event.description}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Speakers
+        if (event.speakers) {
+            contentHtml += `
+                <div class="content-section">
+                    <h2 class="section-title">🎤 Speakers</h2>
+                    <div class="speakers-grid">
+                        ${parseSpeakers(event.speakers).map(speaker => `
+                            <div class="speaker-card">
+                                <div class="speaker-name">${speaker.name}</div>
+                                <div class="speaker-title">${speaker.title || 'Speaker'}</div>
+                                ${speaker.bio ? `<div class="speaker-bio">${speaker.bio}</div>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Agenda
+        if (event.agenda) {
+            contentHtml += `
+                <div class="content-section">
+                    <h2 class="section-title">🗓 Agenda</h2>
+                    <div class="section-content">
+                        <ul class="agenda-list">
+                            ${parseAgenda(event.agenda).map(item => `
+                                <li class="agenda-item">
+                                    <div class="agenda-time">${item.time}</div>
+                                    <div class="agenda-content">
+                                        <h4>${item.title}</h4>
+                                        ${item.description ? `<p>${item.description}</p>` : ''}
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Attachments
+        if (event.attachments || event.posterUrl) {
+            contentHtml += `
+                <div class="content-section">
+                    <h2 class="section-title">📎 Resources & Materials</h2>
+                    <div class="attachments-list">
+                        ${event.posterUrl ? `<a href="${event.posterUrl}" target="_blank" class="attachment-link">📄 Event Poster</a>` : ''}
+                        ${parseAttachments(event.attachments).map(attachment => `
+                            <a href="${attachment.url}" target="_blank" class="attachment-link">
+                                📎 ${attachment.name}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('event-content').innerHTML = contentHtml;
+    }
+
+    function parseSpeakers(speakersString) {
+        // Simple parsing - in a real app, this would be JSON
+        try {
+            return JSON.parse(speakersString);
+        } catch {
+            // Fallback: split by common separators
+            const speakers = speakersString.split(';').map(s => s.trim());
+            return speakers.map(name => ({ name, title: 'Speaker' }));
+        }
+    }
+
+    function parseAgenda(agendaString) {
+        // Simple parsing - in a real app, this would be structured data
+        try {
+            return JSON.parse(agendaString);
+        } catch {
+            // Fallback: split by lines
+            const lines = agendaString.split('\n').filter(line => line.trim());
+            return lines.map(line => {
+                const match = line.match(/^(\d{1,2}:\d{2})\s*-\s*(.+)/);
+                if (match) {
+                    return { time: match[1], title: match[2], description: '' };
+                }
+                return { time: '', title: line, description: '' };
+            });
+        }
+    }
+
+    function parseAttachments(attachmentsString) {
+        if (!attachmentsString) return [];
+        try {
+            return JSON.parse(attachmentsString);
+        } catch {
+            // Fallback: split by commas
+            return attachmentsString.split(',').map(url => ({
+                name: url.split('/').pop(),
+                url: url.trim()
+            }));
+        }
+    }
+
+    async function registerForEvent(eventId) {
+        try {
+            const response = await fetch('/events/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    eventId: eventId,
+                    userId: currentUserId
+                })
+            });
+
+            if (response.ok) {
+                alert('Successfully registered for the event!');
+                // Reload event details to update registration status
+                loadEventDetails(eventId);
+            } else {
+                const error = await response.json();
+                alert('Registration failed: ' + (error.message || 'Unknown error'));
+            }
+        } catch (error) {
+            alert('Registration failed. Please try again.');
+            console.error('Error registering for event:', error);
+        }
+    }
+
+    function showLoading(show) {
+        document.getElementById('loading').style.display = show ? 'block' : 'none';
+    }
+
+    function showError(message) {
+        const errorDiv = document.getElementById('error-message');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+
+    function hideError() {
+        document.getElementById('error-message').style.display = 'none';
+    }
+</script>
+</body>
+</html>

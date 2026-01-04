@@ -1,0 +1,1873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Surveys · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), var(--primary));
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 75%, #1a1a2e 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-logo::before {
+            content: "📊";
+            font-size: 1.75rem;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: #1e40af;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 1rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-icon {
+            width: 4rem;
+            height: 4rem;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .surveys-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+            margin-top: 2rem;
+        }
+
+        .surveys-list {
+            background: var(--bg-glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            height: fit-content;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .surveys-list::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+        }
+
+        .refresh-btn {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #a855f7;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: scale(1.05);
+        }
+
+        .survey-card {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .survey-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.08), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .survey-card:hover::before {
+            left: 100%;
+        }
+
+        .survey-card:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: var(--shadow-md);
+            border-color: rgba(99, 102, 241, 0.4);
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .survey-card.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .survey-card.selected::before {
+            left: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.15), transparent);
+        }
+
+        .survey-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .survey-title::before {
+            content: '📊';
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .survey-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.25rem;
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-clamp: 3;
+        }
+
+        .survey-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .survey-status {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+        }
+
+        .survey-status.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .survey-status.closed {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .survey-form {
+            background: var(--bg-glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            position: sticky;
+            top: 8rem;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .form-header {
+            margin-bottom: 2rem;
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: 0.25px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            accent-color: #1e40af;
+        }
+
+        .checkbox-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+            cursor: pointer;
+        }
+
+        .question-card {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .question-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            background: rgba(15, 23, 42, 0.5);
+            transform: translateX(4px);
+        }
+
+        .question-card:hover::before {
+            opacity: 1;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .question-number {
+            background: var(--gradient-primary);
+            color: #ffffff;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .question-content {
+            flex: 1;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .question-type {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .option-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .option-input {
+            width: 18px;
+            height: 18px;
+            accent-color: #1e40af;
+        }
+
+        .option-label {
+            font-size: 0.875rem;
+            color: #e2e8f0;
+            cursor: pointer;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 0.875rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 0.875rem;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.2s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+            background: rgba(15, 23, 42, 0.7);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1.25rem 2rem;
+            background: var(--gradient-primary);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-md);
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-btn:hover:not(:disabled)::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-message {
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        /* Light Mode */
+        [data-theme="light"] {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #ffffff 75%, #f8fafc 100%);
+            color: #1e293b;
+        }
+
+        [data-theme="light"]::before {
+            background:
+                radial-gradient(circle at 20% 80%, rgba(37, 99, 235, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(30, 64, 175, 0.06) 0%, transparent 50%);
+        }
+
+        [data-theme="light"] .navbar {
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .page-title {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="light"] .page-subtitle {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        [data-theme="light"] .surveys-list,
+        [data-theme="light"] .survey-form {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .survey-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        [data-theme="light"] .question-card {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 1024px) {
+            .surveys-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .survey-form {
+                position: static;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .surveys-section {
+                gap: 1.5rem;
+            }
+        }
+
+        /* Comments Section Styles */
+        .comments-section {
+            margin-bottom: 3rem;
+            padding: 3rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .comments-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .comments-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+        }
+
+        .comments-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+        }
+
+        .comments-title i {
+            color: var(--primary);
+            font-size: 1.3rem;
+            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+        }
+
+        .comments-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .comment-box {
+            background: rgba(15, 23, 42, 0.3);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .comment-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(99, 102, 241, 0.08),
+                rgba(139, 92, 246, 0.05),
+                transparent);
+            transition: left 0.8s ease;
+            z-index: 1;
+        }
+
+        .comment-box:hover::before {
+            left: 100%;
+        }
+
+        .comment-box:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .comment-input-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        .comment-textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 1.25rem 1.5rem;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .comment-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .comment-textarea::placeholder {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .comment-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .character-count {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            background: rgba(99, 102, 241, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .character-count span {
+            color: var(--primary);
+            font-weight: 800;
+        }
+
+        .comment-submit-btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .comment-submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .comment-submit-btn:active:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .comment-submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .comment-alert {
+            padding: 1.25rem 1.5rem;
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            animation: slideInFromBottom 0.4s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
+        .comment-alert i {
+            font-size: 1.2rem;
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Comments Section Responsive */
+        @media (max-width: 768px) {
+            .comments-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .comment-box {
+                padding: 1.25rem;
+            }
+
+            .comment-footer {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            .character-count {
+                text-align: center;
+            }
+
+            .comment-submit-btn {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .comment-textarea {
+                min-height: 100px;
+                padding: 0.875rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                Alumni Portal
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/events.html" class="nav-link">Events</a>
+                <a href="/jobs.html" class="nav-link">Jobs</a>
+                <a href="/news.html" class="nav-link">News</a>
+                <a href="/surveys.html" class="nav-link active">Surveys</a>
+                <a href="/login.html" class="nav-link">Login</a>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="hero-section">
+            <h1 class="hero-title">Voice Your Thoughts</h1>
+            <p class="hero-subtitle">
+                Participate in meaningful surveys that help shape our alumni community and drive positive change.
+            </p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <span class="stat-number" id="total-surveys">0</span>
+                <span class="stat-label">Active Surveys</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <span class="stat-number" id="total-responses">0</span>
+                <span class="stat-label">Total Responses</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎯</div>
+                <span class="stat-number" id="completion-rate">0%</span>
+                <span class="stat-label">Avg. Completion</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <span class="stat-number" id="satisfaction-score">0</span>
+                <span class="stat-label">Satisfaction Score</span>
+            </div>
+        </div>
+
+        <div class="surveys-section">
+            <div class="surveys-list">
+                <div class="section-header">
+                    <h2 class="section-title">Available Surveys</h2>
+                    <button class="refresh-btn" id="refresh-surveys">🔄 Refresh</button>
+                </div>
+
+                <div id="survey-list">
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <h3 class="empty-title">No Active Surveys</h3>
+                        <p class="empty-message">Check back later for new surveys and polls from the alumni community.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="survey-form">
+                <div class="form-header">
+                    <h3 class="form-title" id="selected-survey-title">Select a Survey</h3>
+                    <p class="form-subtitle" id="selected-survey-meta">Choose a survey from the list to begin participating</p>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span id="progress-text">0 / 0 questions answered</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="comments-section">
+                    <div class="comments-header">
+                        <h2 class="comments-title">
+                            <i class="fas fa-comments"></i>
+                            Share Your Thoughts
+                        </h2>
+                        <p class="comments-subtitle">Help us improve by sharing your problems or suggestions. Your feedback matters!</p>
+                    </div>
+
+                    <div class="comment-box">
+                        <div class="comment-input-wrapper">
+                            <textarea
+                                id="user-comment"
+                                class="comment-textarea"
+                                placeholder="Describe any problems you've faced, share suggestions for improvement, or just let us know what's on your mind..."
+                                maxlength="1000"
+                                rows="5"></textarea>
+                            <div class="comment-footer">
+                                <div class="character-count">
+                                    <span id="char-count">0</span>/1000
+                                </div>
+                                <button type="button" class="comment-submit-btn" id="submit-comment">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>Send Feedback</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="comment-success-message" class="comment-alert" style="display: none;">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Thank you for your feedback! Your comment has been submitted successfully.</span>
+                    </div>
+                </div>
+
+                <form id="survey-response-form">
+                    <div class="form-group">
+                        <label class="form-label" for="respondentKey">Your Email Address</label>
+                        <input type="email" id="respondentKey" name="respondentKey" class="form-input" placeholder="your.email@domain.com" required />
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="anonymousFlag" name="anonymousFlag" class="checkbox-input" />
+                        <label for="anonymousFlag" class="checkbox-label">Submit anonymously</label>
+                    </div>
+
+                    <div id="survey-questions">
+                        <div class="empty-state">
+                            <div class="empty-icon">📝</div>
+                            <h3 class="empty-title">Ready to Participate</h3>
+                            <p class="empty-message">Select a survey from the left to start answering questions.</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submit-btn" disabled>
+                        🚀 Submit Response
+                    </button>
+
+                    <div id="survey-response-message" class="alert" style="display: none;"></div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+<script>
+    // Navbar scroll effect
+    (function() {
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    })();
+
+    // Theme toggle with enhanced functionality
+    (function() {
+        const stored = window.localStorage.getItem('amp-theme');
+        if (stored === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        }
+        const btn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-toggle-icon');
+        if (!btn || !icon) return;
+
+        function syncIcon() {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            icon.textContent = isLight ? '☀️' : '🌙';
+        }
+        syncIcon();
+
+        btn.addEventListener('click', () => {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.body.removeAttribute('data-theme');
+                window.localStorage.setItem('amp-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                window.localStorage.setItem('amp-theme', 'light');
+            }
+            syncIcon();
+
+            // Animate theme transition
+            document.body.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 300);
+        });
+    })();
+
+    let selectedSurveyId = null;
+    let selectedSurveyDetail = null;
+    let surveyCache = [];
+
+    function getStoredProfileFilters() {
+        // In a more advanced version, you could derive dept/year/country from profile.
+        return { dept: null, year: null, country: null };
+    }
+
+    function renderSurveyList(surveys) {
+        const listEl = document.getElementById('survey-list');
+        const statsEl = document.getElementById('total-surveys');
+
+        // Update stats
+        statsEl.textContent = surveys.length;
+
+        if (!surveys.length) {
+            listEl.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <h3 class="empty-title">No Active Surveys</h3>
+                    <p class="empty-message">Check back later for new surveys and polls from the alumni community.</p>
+                </div>
+            `;
+            return;
+        }
+
+        listEl.innerHTML = surveys.map((s, index) => {
+            const isActive = new Date(s.closeAt) > new Date();
+            const statusClass = isActive ? 'active' : 'closed';
+            const statusText = isActive ? 'Active' : 'Closed';
+
+            return `
+                <article class="survey-card" data-survey-id="${s.id}" style="animation-delay: ${index * 0.1}s;">
+                    <div class="survey-title">${s.title || 'Untitled Survey'}</div>
+                    <div class="survey-description">${(s.description || '').substring(0, 120)}${(s.description || '').length > 120 ? '...' : ''}</div>
+                    <div class="survey-meta">
+                        <span class="survey-status ${statusClass}">${statusText}</span>
+                        <span>Due: ${s.deadline || s.closeAt || 'No deadline'}</span>
+                    </div>
+                </article>
+            `;
+        }).join('');
+    }
+
+    async function loadSurveys() {
+        const listEl = document.getElementById('survey-list');
+        listEl.innerHTML = '<div class="hint">Loading surveys...</div>';
+        const { dept, year, country } = getStoredProfileFilters();
+        const params = new URLSearchParams();
+        if (dept) params.append('dept', dept);
+        if (year) params.append('year', year);
+        if (country) params.append('country', country);
+
+        let url = '/api/surveys-module';
+        const qs = params.toString();
+        if (qs) url += '?' + qs;
+
+        try {
+            const res = await fetch(url);
+            const json = await res.json().catch(() => ({}));
+            const surveys = (json.data || []).map(s => ({
+                id: s.id,
+                title: s.title,
+                description: s.description,
+                createdAt: (s.publishAt || '').split('T')[0],
+                deadline: (s.closeAt || '').split('T')[0],
+                closeAt: s.closeAt
+            }));
+            surveyCache = surveys;
+            renderSurveyList(surveys);
+        } catch (e) {
+            surveyCache = [];
+            listEl.innerHTML = '<div class="alert alert-error">Failed to load surveys.</div>';
+        }
+    }
+
+    async function loadSurveyDetailFromApi(id) {
+        const metaEl = document.getElementById('selected-survey-meta');
+        const qContainer = document.getElementById('survey-questions');
+        const titleEl = document.getElementById('selected-survey-title');
+        metaEl.style.display = 'none';
+        titleEl.textContent = 'Loading...';
+        qContainer.innerHTML = '<div class="hint">Loading survey questions...</div>';
+        try {
+            const res = await fetch('/api/surveys-module/' + encodeURIComponent(id));
+            const json = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                const errMsg = json.error || json.message || 'Failed to load survey.';
+                qContainer.innerHTML = `<div class="alert alert-error">${errMsg}</div>`;
+                titleEl.textContent = 'Error loading survey';
+                return;
+            }
+            const survey = json.data;
+            if (!survey) {
+                qContainer.innerHTML = '<div class="alert alert-error">Survey not found.</div>';
+                titleEl.textContent = 'Survey not found';
+                return;
+            }
+            selectedSurveyId = survey.id;
+            selectedSurveyDetail = survey;
+            titleEl.textContent = survey.title || 'Selected survey';
+            metaEl.textContent = (survey.description || '') + (survey.closeAt ? ' · Deadline: ' + survey.closeAt.replace('T',' ') : '');
+            metaEl.style.display = 'block';
+
+            qContainer.innerHTML = (survey.questions || []).map((q, idx) => {
+                const requiredMark = q.required ? ' <span style="color: #ef4444;">*</span>' : '';
+                let controls = '';
+
+                if (q.type === 'SINGLE_CHOICE' || q.type === 'YES_NO') {
+                    controls = `
+                        <div class="options-grid">
+                            ${(q.options || []).map(opt => `
+                                <label class="option-item">
+                                    <input type="radio" name="q_${q.id}" value="${opt.value}" class="option-input" />
+                                    <span class="option-label">${opt.label}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                } else if (q.type === 'MULTI_CHOICE') {
+                    controls = `
+                        <div class="options-grid">
+                            ${(q.options || []).map(opt => `
+                                <label class="option-item">
+                                    <input type="checkbox" name="q_${q.id}" value="${opt.value}" class="option-input" />
+                                    <span class="option-label">${opt.label}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                } else if (q.type === 'RATING_1_5') {
+                    controls = `
+                        <div class="options-grid" style="grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+                            ${[1,2,3,4,5].map(v => `
+                                <label class="option-item" style="padding: 0.75rem; text-align: center; font-weight: 600;">
+                                    <input type="radio" name="q_${q.id}" value="${v}" class="option-input" />
+                                    <span class="option-label">${v} ⭐</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                } else { // TEXT
+                    controls = `
+                        <textarea class="text-input" rows="4" name="q_${q.id}" placeholder="Type your answer here..."></textarea>
+                    `;
+                }
+
+                return `
+                    <div class="question-card" data-question-id="${q.id}" data-type="${q.type}" data-required="${q.required}" style="animation-delay: ${idx * 0.1}s;">
+                        <div class="question-header">
+                            <div class="question-number">${idx + 1}</div>
+                            <div class="question-content">
+                                <div class="question-text">${q.text}${requiredMark}</div>
+                                <div class="question-type">${q.type.replace('_', ' ').toLowerCase()}</div>
+                            </div>
+                        </div>
+                        ${controls}
+                    </div>
+                `;
+            }).join('') || `
+                <div class="empty-state">
+                    <div class="empty-icon">❓</div>
+                    <h3 class="empty-title">No Questions Available</h3>
+                    <p class="empty-message">This survey doesn't have any questions configured yet.</p>
+                </div>
+            `;
+            updateProgressBar();
+        } catch (e) {
+            qContainer.innerHTML = '<div class="alert alert-error">Error loading survey details.</div>';
+            document.getElementById('selected-survey-title').textContent = 'Error loading survey';
+        }
+    }
+
+    function updateProgressBar() {
+        const qNodes = Array.from(document.querySelectorAll('.question-card'));
+        const total = qNodes.length;
+        let answered = 0;
+
+        qNodes.forEach(node => {
+            const qId = node.getAttribute('data-question-id');
+            const type = node.getAttribute('data-type');
+            const name = 'q_' + qId;
+
+            if (type === 'SINGLE_CHOICE' || type === 'YES_NO' || type === 'RATING_1_5') {
+                const checked = document.querySelector('input[name="' + name + '"]:checked');
+                if (checked) answered++;
+            } else if (type === 'MULTI_CHOICE') {
+                const checked = Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'));
+                if (checked.length) answered++;
+            } else { // TEXT
+                const el = document.querySelector('textarea[name="' + name + '"]');
+                if (el && el.value.trim()) answered++;
+            }
+        });
+
+        const pct = total ? Math.round((answered / total) * 100) : 0;
+        const progressText = document.getElementById('progress-text');
+        const progressPercentage = document.getElementById('progress-percentage');
+        const progressFill = document.getElementById('progress-fill');
+        const submitBtn = document.getElementById('submit-btn');
+
+        progressText.textContent = `${answered} / ${total} questions answered`;
+        progressPercentage.textContent = `${pct}%`;
+        progressFill.style.width = `${pct}%`;
+
+        // Enable/disable submit button
+        if (submitBtn) {
+            submitBtn.disabled = answered === 0;
+            submitBtn.style.opacity = answered === 0 ? '0.6' : '1';
+        }
+
+        // Update progress bar color based on completion
+        if (pct === 100) {
+            progressFill.style.background = 'linear-gradient(135deg, #059669, #047857)';
+        } else if (pct >= 75) {
+            progressFill.style.background = 'linear-gradient(135deg, #1e40af, #1d4ed8)';
+        } else if (pct >= 50) {
+            progressFill.style.background = 'linear-gradient(135deg, #06b6d4, #0891b2)';
+        } else {
+            progressFill.style.background = 'linear-gradient(135deg, #1e40af, #1d4ed8)';
+        }
+    }
+
+    // Update progress on input/change events
+    document.getElementById('survey-questions').addEventListener('input', updateProgressBar);
+    document.getElementById('survey-questions').addEventListener('change', updateProgressBar);
+
+    // Refresh surveys with animation
+    document.getElementById('refresh-surveys').addEventListener('click', async () => {
+        const btn = document.getElementById('refresh-surveys');
+        const originalText = btn.textContent;
+        btn.textContent = '⟳ Loading...';
+        btn.disabled = true;
+
+        await loadSurveys();
+
+        setTimeout(() => {
+            btn.textContent = originalText;
+            btn.disabled = false;
+        }, 500);
+    });
+
+    // Survey card selection with modern interactions
+    document.addEventListener('click', (e) => {
+        const card = e.target.closest('.survey-card');
+        if (card && !e.target.closest('.btn')) {
+            const surveyId = card.getAttribute('data-survey-id');
+
+            // Remove selected class from all cards
+            document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
+            // Add selected class to clicked card
+            card.classList.add('selected');
+
+            // Load survey details
+            if (surveyId) {
+                loadSurveyDetailFromApi(surveyId);
+            }
+        }
+    });
+
+    // Add visual feedback for form interactions
+    document.addEventListener('focus', (e) => {
+        if (e.target.classList.contains('form-input') || e.target.classList.contains('text-input')) {
+            e.target.parentElement.style.transform = 'translateY(-2px)';
+        }
+    }, true);
+
+    document.addEventListener('blur', (e) => {
+        if (e.target.classList.contains('form-input') || e.target.classList.contains('text-input')) {
+            e.target.parentElement.style.transform = 'translateY(0)';
+        }
+    }, true);
+
+    // Comment functionality
+    (function initializeComments() {
+        const commentTextarea = document.getElementById('user-comment');
+        const charCount = document.getElementById('char-count');
+        const submitBtn = document.getElementById('submit-comment');
+        const successMessage = document.getElementById('comment-success-message');
+
+        // Character counter
+        commentTextarea.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+
+            // Change color based on character count
+            if (length > 900) {
+                charCount.style.color = '#ef4444'; // Red for near limit
+            } else if (length > 800) {
+                charCount.style.color = '#f59e0b'; // Orange for warning
+            } else {
+                charCount.style.color = 'var(--primary)'; // Default color
+            }
+        });
+
+        // Submit comment
+        submitBtn.addEventListener('click', async function() {
+            const comment = commentTextarea.value.trim();
+
+            if (!comment) {
+                showCommentAlert('Please enter a comment before submitting.', 'error');
+                return;
+            }
+
+            if (comment.length > 1000) {
+                showCommentAlert('Comment is too long. Please keep it under 1000 characters.', 'error');
+                return;
+            }
+
+            // Disable button and show loading
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
+
+            try {
+                const response = await fetch('/api/comments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: comment,
+                        category: 'survey-feedback',
+                        source: 'survey-page',
+                        timestamp: new Date().toISOString()
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    commentTextarea.value = '';
+                    charCount.textContent = '0';
+                    showCommentAlert('Thank you for your feedback! Your comment has been submitted.', 'success');
+
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                } else {
+                    throw new Error('Failed to submit comment');
+                }
+            } catch (error) {
+                console.error('Error submitting comment:', error);
+                showCommentAlert('Failed to submit comment. Please try again later.', 'error');
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i><span>Send Feedback</span>';
+            }
+        });
+
+        function showCommentAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `comment-alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                <span>${message}</span>
+            `;
+
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.comment-alert');
+            existingAlerts.forEach(alert => alert.remove());
+
+            // Add new alert
+            const commentBox = document.querySelector('.comment-box');
+            commentBox.parentNode.insertBefore(alertDiv, commentBox.nextSibling);
+
+            // Auto-remove after 3 seconds for non-success messages
+            if (type !== 'success') {
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 3000);
+            }
+        }
+    })();
+
+    // Prefill respondent email from login
+    (function prefillRespondentKey() {
+        try {
+            const email = window.localStorage.getItem('amp-user-email');
+            if (email) {
+                const input = document.getElementById('respondentKey');
+                if (input) input.value = email;
+            }
+        } catch (e) {}
+    })();
+
+    // Enhanced form submission with modern feedback
+    document.getElementById('survey-response-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('survey-response-message');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Reset message display
+        msg.style.display = 'none';
+        msg.className = 'alert';
+
+        if (!selectedSurveyId || !selectedSurveyDetail) {
+            msg.classList.add('alert-error');
+            msg.textContent = 'Please select a survey from the list first.';
+            msg.style.display = 'block';
+            return;
+        }
+
+        const form = e.target;
+        const respondentKey = form.respondentKey.value;
+        if (!respondentKey) {
+            msg.classList.add('alert-error');
+            msg.textContent = 'Please provide your email address.';
+            msg.style.display = 'block';
+            return;
+        }
+
+        const anonymous = form.anonymousFlag.checked === true;
+
+        // Disable submit button and show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '⏳ Submitting...';
+
+        const answers = [];
+        const qNodes = Array.from(document.querySelectorAll('.question-card'));
+        qNodes.forEach(node => {
+            const qId = node.getAttribute('data-question-id');
+            const type = node.getAttribute('data-type');
+            if (!qId) return;
+            const name = 'q_' + qId;
+            const entry = { questionId: Number(qId) };
+
+            if (type === 'SINGLE_CHOICE' || type === 'YES_NO') {
+                const checked = document.querySelector('input[name="' + name + '"]:checked');
+                if (checked) entry.choiceValue = checked.value;
+            } else if (type === 'MULTI_CHOICE') {
+                const checked = Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'));
+                if (checked.length) {
+                    entry.multiChoiceValues = checked.map(c => c.value).join(',');
+                }
+            } else if (type === 'RATING_1_5') {
+                const checked = document.querySelector('input[name="' + name + '"]:checked');
+                if (checked) entry.ratingValue = Number(checked.value);
+            } else { // TEXT
+                const el = document.querySelector('textarea[name="' + name + '"]');
+                if (el) entry.textValue = el.value;
+            }
+            answers.push(entry);
+        });
+
+        const payload = { respondentKey, answers };
+
+        try {
+            const res = await fetch('/api/surveys-module/' + encodeURIComponent(selectedSurveyId) +
+                '/responses?anonymous=' + encodeURIComponent(String(anonymous)), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                msg.classList.add('alert-error');
+                msg.textContent = data.error || data.message || 'Failed to submit response.';
+            } else {
+                msg.classList.add('alert-success');
+                msg.innerHTML = '✅ ' + (data.message || 'Response submitted successfully! Thank you for your feedback.');
+
+                // Reset form after successful submission
+                setTimeout(() => {
+                    form.reset();
+                    document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
+                    document.getElementById('selected-survey-title').textContent = 'Select a Survey';
+                    document.getElementById('selected-survey-meta').textContent = 'Choose a survey from the list to begin participating';
+                    document.getElementById('selected-survey-meta').style.display = 'block';
+                    document.getElementById('survey-questions').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📝</div>
+                            <h3 class="empty-title">Ready to Participate</h3>
+                            <p class="empty-message">Select a survey from the left to start answering questions.</p>
+                        </div>
+                    `;
+                    updateProgressBar();
+                }, 2000);
+            }
+        } catch (err) {
+            msg.classList.add('alert-error');
+            msg.textContent = 'Network error while submitting response. Please try again.';
+        } finally {
+            msg.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '🚀 Submit Response';
+        }
+    });
+
+    // Update stats display (mock data for demo - replace with real API calls)
+    function updateStats() {
+        // These would normally come from API calls
+        document.getElementById('total-responses').textContent = '1,247';
+        document.getElementById('completion-rate').textContent = '87%';
+        document.getElementById('satisfaction-score').textContent = '4.6';
+    }
+
+    // Add loading animations to cards
+    function addCardAnimations() {
+        const cards = document.querySelectorAll('.survey-card, .question-card, .stat-card');
+        cards.forEach((card, index) => {
+            card.style.animation = `fadeInUp 0.6s ease-out ${index * 0.1}s both`;
+        });
+    }
+
+    // CSS animation keyframes (added via JavaScript for dynamic content)
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .survey-card, .question-card {
+            animation-fill-mode: both;
+        }
+
+        .stat-card {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    `;
+    document.head.appendChild(style);
+
+    // Initial load with animations
+    async function initializePage() {
+        await loadSurveys();
+        updateStats();
+        addCardAnimations();
+    }
+
+    initializePage();
+</script>
+</body>
+</html>
+
+

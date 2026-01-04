@@ -1,0 +1,2490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --admin-primary: #6366f1;
+            --admin-secondary: #8b5cf6;
+            --admin-accent: #f59e0b;
+            --admin-success: #10b981;
+            --admin-warning: #f59e0b;
+            --admin-error: #ef4444;
+            --admin-surface: rgba(15, 23, 42, 0.95);
+            --admin-surface-hover: rgba(30, 41, 59, 0.98);
+            --admin-border: rgba(148, 163, 184, 0.2);
+            --admin-border-hover: rgba(148, 163, 184, 0.4);
+            --admin-text-primary: #f8fafc;
+            --admin-text-secondary: #94a3b8;
+            --admin-text-muted: #64748b;
+            --admin-gradient: linear-gradient(135deg, var(--admin-primary), var(--admin-secondary));
+            --admin-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            --admin-shadow-hover: 0 32px 64px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: var(--admin-text-primary);
+        }
+
+        /* Modern Layout */
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        /* Enhanced Sidebar */
+        .admin-sidebar {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+            border-right: 1px solid var(--admin-border);
+            backdrop-filter: blur(20px);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            margin-bottom: 32px;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--admin-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .sidebar-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--admin-text-primary);
+        }
+
+        .sidebar-subtitle {
+            font-size: 12px;
+            color: var(--admin-text-muted);
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--admin-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding-left: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--admin-text-secondary);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: var(--admin-surface-hover);
+            color: var(--admin-text-primary);
+            transform: translateX(4px);
+        }
+
+        .nav-item.active {
+            background: var(--admin-gradient);
+            color: white;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 20px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .admin-main {
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--admin-text-primary);
+            margin: 0 0 4px 0;
+            background: linear-gradient(135deg, var(--admin-text-primary), var(--admin-text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            color: var(--admin-text-muted);
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Metrics Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .metric-card {
+            background: var(--admin-surface);
+            border: 1px solid var(--admin-border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--admin-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--admin-shadow-hover);
+            border-color: var(--admin-border-hover);
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .metric-icon.users { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .metric-icon.new-users { background: linear-gradient(135deg, #10b981, #059669); }
+        .metric-icon.active { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .metric-icon.content { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--admin-text-primary);
+            margin-bottom: 4px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: var(--admin-text-secondary);
+            font-weight: 500;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-change.positive {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .metric-change.negative {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .content-main {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Modern Card */
+        .admin-card {
+            background: var(--admin-surface);
+            border: 1px solid var(--admin-border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: var(--admin-shadow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--admin-text-primary);
+            margin: 0;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Modern Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--admin-text-secondary);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--admin-surface-hover);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--admin-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-active { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-inactive { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-upcoming { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-ongoing { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .status-completed { background: rgba(107, 114, 128, 0.2); color: #6b7280; }
+        .status-cancelled { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Modern Buttons */
+        .btn-modern {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--admin-gradient);
+            color: white;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--admin-surface-hover);
+            color: var(--admin-text-primary);
+            border: 1px solid var(--admin-border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--admin-surface);
+            border-color: var(--admin-border-hover);
+        }
+
+        .btn-success { background: var(--admin-success); color: white; }
+        .btn-warning { background: var(--admin-warning); color: white; }
+        .btn-danger { background: var(--admin-error); color: white; }
+
+        /* Modern Form */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--admin-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            padding: 12px 16px;
+            border: 1px solid var(--admin-border);
+            border-radius: 8px;
+            background: var(--admin-surface);
+            color: var(--admin-text-primary);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--admin-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Modal Enhancements */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            z-index: 9999;
+            padding: 20px;
+            overflow: auto;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .modal-card {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: var(--admin-surface);
+            border: 1px solid var(--admin-border);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--admin-shadow);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--admin-border);
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--admin-text-primary);
+            margin: 0;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: none;
+            background: var(--admin-surface-hover);
+            color: var(--admin-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--admin-error);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+            .admin-sidebar {
+                display: none;
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-main {
+                padding: 16px;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .header-left h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--admin-border);
+            border-top: 2px solid var(--admin-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-layout">
+    <!-- Modern Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon">AP</div>
+                <div>
+                    <div class="sidebar-title">Alumni Portal</div>
+                    <div class="sidebar-subtitle">Admin Panel</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Overview</div>
+                <a href="/dashboard.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/admin-dashboard.html" class="nav-item active">
+                    <div class="nav-icon"><i class="fas fa-users"></i></div>
+                    <span>Alumni Directory</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Management</div>
+                <a id="survey-nav-btn" href="#survey-management" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-poll"></i></div>
+                    <span>Survey Management</span>
+                </a>
+                <a id="job-nav-btn" href="#job-management" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-briefcase"></i></div>
+                    <span>Job Management</span>
+                </a>
+                <a href="/news.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-newspaper"></i></div>
+                    <span>News & Announcements</span>
+                </a>
+                <a id="events-nav-btn" href="#events-management" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <span>Events</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">System</div>
+                <a href="/signup.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-cogs"></i></div>
+                    <span>Settings</span>
+                </a>
+                <a href="/login.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Modern Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <h1>Admin Dashboard</h1>
+                <p class="header-subtitle">Monitor portal activity and manage alumni data</p>
+            </div>
+            <div class="header-actions">
+                <button type="button" id="theme-toggle" class="btn-modern btn-secondary" aria-label="Change theme">
+                    <i class="fas fa-moon" id="theme-toggle-icon"></i>
+                </button>
+                <button type="button" class="btn-modern btn-primary">
+                    <i class="fas fa-plus"></i>
+                    Quick Actions
+                </button>
+            </div>
+        </header>
+
+        <!-- Metrics Dashboard -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon users">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="metric-change positive">+12%</div>
+                </div>
+                <div class="metric-value" id="metric-total-users">–</div>
+                <div class="metric-label">Total Users</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon new-users">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="metric-change positive">+8%</div>
+                </div>
+                <div class="metric-value" id="metric-new-users">–</div>
+                <div class="metric-label">New Registrations</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon active">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="metric-change positive">+15%</div>
+                </div>
+                <div class="metric-value" id="metric-active-users">–</div>
+                <div class="metric-label">Active Users</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-icon content">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <div class="metric-change neutral">–</div>
+                </div>
+                <div class="metric-value" id="metric-content-counts">–</div>
+                <div class="metric-label">Content Items</div>
+            </div>
+        </section>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Main Content Area -->
+            <div class="content-main">
+                <!-- User Management Card -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Alumni Directory</h2>
+                        <div class="card-actions">
+                            <button type="button" class="btn-modern btn-secondary" id="clear-filters">
+                                <i class="fas fa-times"></i>
+                                Clear
+                            </button>
+                            <button type="button" class="btn-modern btn-primary">
+                                <i class="fas fa-plus"></i>
+                                Add User
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search Form -->
+                    <form id="admin-directory-form" class="search-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="gradYear">Graduation Year</label>
+                                <input type="text" id="gradYear" name="gradYear" class="form-input" placeholder="e.g. 2020" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="department">Department</label>
+                                <input type="text" id="department" name="department" class="form-input" placeholder="e.g. CSE" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="company">Company</label>
+                                <input type="text" id="company" name="company" class="form-input" placeholder="e.g. Tech Corp" />
+                            </div>
+                        </div>
+                        <div style="margin-top: 16px;">
+                            <button type="submit" class="btn-modern btn-primary">
+                                <i class="fas fa-search"></i>
+                                Search Alumni
+                            </button>
+                        </div>
+                        <p class="hint" style="margin-top: 12px;">Search by graduation year, department, or current company to filter results.</p>
+                    </form>
+
+                    <!-- Users Table -->
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" id="admin-directory-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Email</th>
+                                    <th>Graduation</th>
+                                    <th>Department</th>
+                                    <th>Company</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar Content -->
+            <div class="content-sidebar">
+                <!-- Quick Actions Card -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Quick Actions</h3>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <button type="button" class="btn-modern btn-success" id="job-open-btn">
+                            <i class="fas fa-briefcase"></i>
+                            Job Management
+                        </button>
+                        <button type="button" class="btn-modern btn-primary" id="survey-open-btn">
+                            <i class="fas fa-poll"></i>
+                            Survey Management
+                        </button>
+                        <button type="button" class="btn-modern btn-secondary">
+                            <i class="fas fa-calendar-plus"></i>
+                            Create Event
+                        </button>
+                        <button type="button" class="btn-modern btn-secondary">
+                            <i class="fas fa-bullhorn"></i>
+                            Post Announcement
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity Card -->
+                <div class="admin-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Activity</h3>
+                    </div>
+                    <div class="activity-list">
+                        <!-- Activity items will be populated -->
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-check"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-text">User approved</div>
+                                <div class="activity-time">2 minutes ago</div>
+                            </div>
+                        </div>
+                        <!-- Add more activity items as needed -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Survey Modal -->
+<div id="survey-modal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-poll" style="margin-right: 12px;"></i>
+                Survey Management
+            </h2>
+            <button id="survey-modal-close" class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <p style="color: var(--admin-text-secondary); margin-bottom: 2rem; font-size: 14px; line-height: 1.5;">
+            Create, publish, manage, and analyze surveys for the alumni community. Build engaging surveys with multiple question types.
+        </p>
+
+        <form id="admin-survey-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="surveyTitle">Survey Title</label>
+                    <input type="text" id="surveyTitle" name="surveyTitle" class="form-input" placeholder="e.g. Alumni Feedback Survey" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="surveyDesc">Description</label>
+                    <input type="text" id="surveyDesc" name="surveyDesc" class="form-input" placeholder="Brief description of the survey" />
+                </div>
+            </div>
+
+            <div style="margin: 24px 0; padding: 20px; background: var(--admin-surface-hover); border-radius: 12px; border: 1px solid var(--admin-border);">
+                <h4 style="margin: 0 0 16px 0; color: var(--admin-text-primary); font-size: 16px; font-weight: 600;">Add Question</h4>
+
+                <div class="form-group">
+                    <label class="form-label" for="surveyQuestionText">Question Text</label>
+                    <input type="text" id="surveyQuestionText" name="surveyQuestionText" class="form-input" placeholder="Enter your question here" />
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="surveyQuestionType">Question Type</label>
+                        <select id="surveyQuestionType" name="surveyQuestionType" class="form-input">
+                            <option value="TEXT">Text Answer</option>
+                            <option value="MULTIPLE_CHOICE">Multiple Choice</option>
+                            <option value="RATING">Rating (1-5)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="surveyQuestionRequired" style="margin: 0;" />
+                            <span style="font-size: 14px; color: var(--admin-text-secondary);">Required</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group" id="surveyOptionsRow" style="display: none;">
+                    <label class="form-label" for="surveyQuestionOptions">Options (comma-separated)</label>
+                    <input type="text" id="surveyQuestionOptions" name="surveyQuestionOptions" class="form-input" placeholder="Option A, Option B, Option C" />
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 16px;">
+                    <button type="button" class="btn-modern btn-primary" id="done-question-btn">
+                        <i class="fas fa-plus"></i>
+                        Add Question
+                    </button>
+                    <button type="button" class="btn-modern btn-secondary" id="add-more-question-btn">
+                        <i class="fas fa-plus-circle"></i>
+                        Add Another
+                    </button>
+                </div>
+            </div>
+
+            <div id="survey-question-status" style="margin: 16px 0; font-size: 14px; color: var(--admin-text-secondary);"></div>
+            <div id="survey-questions-count" style="color: var(--admin-text-secondary); font-size: 14px; margin-bottom: 16px;">0 questions added</div>
+            <div id="survey-questions-empty" style="color: var(--admin-text-muted); font-style: italic; padding: 20px; text-align: center; border: 2px dashed var(--admin-border); border-radius: 8px;">No questions added yet.</div>
+            <div id="survey-questions-list" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+            <div style="margin: 24px 0; padding: 16px; background: var(--admin-surface-hover); border-radius: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--admin-text-secondary);">
+                    <input type="checkbox" id="surveyAnonymous" style="margin: 0;" />
+                    <span>Allow anonymous responses</span>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn-modern btn-success">
+                    <i class="fas fa-rocket"></i>
+                    Create Survey
+                </button>
+                <button type="button" class="btn-modern btn-secondary" id="refresh-admin-surveys">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh List
+                </button>
+            </div>
+
+            <input type="hidden" id="survey-payload-debug" />
+            <div id="survey-create-status" class="hint" style="margin-top: 16px;"></div>
+        </form>
+
+        <!-- Surveys Table -->
+        <div style="margin-top: 32px;">
+            <h3 style="margin-bottom: 16px; color: var(--admin-text-primary); font-size: 18px; font-weight: 600;">Existing Surveys</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table" id="admin-survey-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Questions</th>
+                            <th>Responses</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Modal -->
+<div id="job-modal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-briefcase" style="margin-right: 12px;"></i>
+                Job Management
+            </h2>
+            <button id="job-modal-close" class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <p style="color: var(--admin-text-secondary); margin-bottom: 2rem; font-size: 14px; line-height: 1.5;">
+            Create, publish, and manage job postings for alumni opportunities. Help connect graduates with career opportunities.
+        </p>
+
+        <form id="admin-job-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="jobTitle">Job Title</label>
+                    <input type="text" id="jobTitle" name="jobTitle" class="form-input" placeholder="e.g. Senior Software Engineer" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="jobCompanyName">Company Name</label>
+                    <input type="text" id="jobCompanyName" name="jobCompanyName" class="form-input" placeholder="e.g. Tech Corp" required />
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="jobType">Job Type</label>
+                    <select id="jobType" name="jobType" class="form-input">
+                        <option value="FULL_TIME">Full Time</option>
+                        <option value="PART_TIME">Part Time</option>
+                        <option value="CONTRACT">Contract</option>
+                        <option value="INTERNSHIP">Internship</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="jobLocation">Location</label>
+                    <input type="text" id="jobLocation" name="jobLocation" class="form-input" placeholder="e.g. Dhaka, Bangladesh" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="jobState">Status</label>
+                    <select id="jobState" name="jobState" class="form-input">
+                        <option value="OPEN">Open</option>
+                        <option value="CLOSED">Closed</option>
+                        <option value="ON_HOLD">On Hold</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="jobDescription">Job Description</label>
+                <textarea id="jobDescription" name="jobDescription" class="form-input" rows="4" placeholder="Detailed job description, requirements, and responsibilities" required></textarea>
+            </div>
+
+            <div style="margin: 24px 0; padding: 16px; background: var(--admin-surface-hover); border-radius: 8px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px; color: var(--admin-text-secondary);">
+                    <input type="checkbox" id="jobPublished" style="margin: 0;" />
+                    <span>Publish immediately</span>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn-modern btn-success">
+                    <i class="fas fa-plus"></i>
+                    Create Job Post
+                </button>
+                <button type="button" class="btn-modern btn-warning" id="publish-all-jobs">
+                    <i class="fas fa-upload"></i>
+                    Publish All
+                </button>
+                <button type="button" class="btn-modern btn-secondary" id="refresh-admin-jobs">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+                <button type="button" class="btn-modern btn-primary" id="view-applications-btn">
+                    <i class="fas fa-eye"></i>
+                    View Applications
+                </button>
+            </div>
+
+            <div id="job-create-status" class="hint" style="margin-top: 16px;"></div>
+        </form>
+
+        <!-- Job Applications Section -->
+        <div class="admin-card" style="margin-top: 32px;">
+            <div class="card-header">
+                <h3 class="card-title">Job Applications</h3>
+            </div>
+            <div id="job-applications-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Applications will be rendered here -->
+            </div>
+            <p class="hint" style="margin-top: 12px;">Shows all job applications received. Click on any application to view details.</p>
+        </div>
+
+        <!-- Job Posts Table -->
+        <div class="admin-card" style="margin-top: 24px;">
+            <div class="card-header">
+                <h3 class="card-title">Job Posts</h3>
+                <div class="card-actions">
+                    <button type="button" class="btn-modern btn-secondary" id="refresh-jobs-list">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh List
+                    </button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="data-table" id="admin-job-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Published</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Events Modal -->
+<div id="events-modal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 class="modal-title">
+                <i class="fas fa-calendar-alt" style="margin-right: 12px;"></i>
+                Event Management
+            </h2>
+            <button id="events-modal-close" class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <p style="color: var(--admin-text-secondary); margin-bottom: 2rem; font-size: 14px; line-height: 1.5;">
+            Create, publish, and manage events for the alumni community. Organize gatherings, workshops, and networking opportunities.
+        </p>
+
+        <form id="admin-event-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="eventTitle">Event Title</label>
+                    <input type="text" id="eventTitle" name="eventTitle" class="form-input" placeholder="e.g. Alumni Networking Mixer" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="eventType">Event Type</label>
+                    <select id="eventType" name="eventType" class="form-input">
+                        <option value="WORKSHOPS_WEBINARS">Workshop/Webinar</option>
+                        <option value="NETWORKING_EVENTS">Networking Event</option>
+                        <option value="CAREER_JOB_FAIR">Career & Job Fair</option>
+                        <option value="ALUMNI_MEETUPS">Alumni Meetup</option>
+                        <option value="REUNION_SOCIAL_EVENTS">Reunion/Social Event</option>
+                        <option value="STARTUP_TECH_TALKS">Startup/Tech Talk</option>
+                        <option value="UNIVERSITY_PROGRAMS">University Program</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="eventDate">Start Date & Time</label>
+                    <input type="datetime-local" id="eventDate" name="eventDate" class="form-input" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="eventEndDate">End Date & Time</label>
+                    <input type="datetime-local" id="eventEndDate" name="eventEndDate" class="form-input" required />
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label" for="eventLocation">Location</label>
+                    <input type="text" id="eventLocation" name="eventLocation" class="form-input" placeholder="Venue or online platform" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="maxAttendees">Max Attendees</label>
+                    <input type="number" id="maxAttendees" name="maxAttendees" class="form-input" placeholder="Leave empty for unlimited" />
+                </div>
+            </div>
+
+
+                <div class="form-group">
+                    <label class="form-label" for="registrationDeadline">Registration Deadline</label>
+                    <input type="datetime-local" id="registrationDeadline" name="registrationDeadline" class="form-input" />
+                </div>
+
+
+            <div class="form-group">
+                <label class="form-label" for="eventDescription">Description</label>
+                <textarea id="eventDescription" name="eventDescription" class="form-input" rows="4" placeholder="Detailed description of the event" required></textarea>
+            </div>
+
+            <div class="form-group" style="border: 2px solid var(--admin-primary); border-radius: 12px; padding: 16px; background: rgba(99, 102, 241, 0.05);">
+                <label class="form-label" for="eventLink" style="color: var(--admin-primary); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-link" style="color: var(--admin-primary);"></i>
+                    Event Hyperlink (Optional)
+                </label>
+                <input type="url" id="eventLink" name="eventLink" class="form-input" placeholder="https://zoom.us/meeting/123456789 or https://meet.google.com/abc-defg-hij" style="border-color: var(--admin-primary); background: rgba(99, 102, 241, 0.05);" />
+                <small style="color: var(--admin-text-secondary); font-size: 12px; margin-top: 4px; display: block;">
+                    Add a link for online events (Zoom, Google Meet), registration forms, or event details page
+                </small>
+            </div>
+
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn-modern btn-success">
+                    <i class="fas fa-plus"></i>
+                    Create Event
+                </button>
+                <button type="button" class="btn-modern btn-warning" onclick="createTestEvent()">
+                    <i class="fas fa-flask"></i>
+                    Test Event
+                </button>
+                <button type="button" class="btn-modern btn-secondary" id="refresh-admin-events">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh List
+                </button>
+                <button type="button" class="btn-modern btn-primary" id="view-event-registrations-btn">
+                    <i class="fas fa-users"></i>
+                    View Registrations
+                </button>
+            </div>
+
+            <div id="event-create-status" class="hint" style="margin-top: 16px;"></div>
+        </form>
+
+        <!-- Event Registrations Section -->
+        <div class="admin-card" style="margin-top: 32px;">
+            <div class="card-header">
+                <h3 class="card-title">Event Registrations</h3>
+            </div>
+            <div id="event-registrations-list" style="display: flex; flex-direction: column; gap: 12px;">
+                <!-- Registrations will be rendered here -->
+            </div>
+            <p class="hint" style="margin-top: 12px;">Shows registrations for selected events. Click on any event above to view its registrations.</p>
+        </div>
+
+        <!-- Events Table -->
+        <div class="admin-card" style="margin-top: 24px;">
+            <div class="card-header">
+                <h3 class="card-title">Events</h3>
+                <div class="card-actions">
+                    <button type="button" class="btn-modern btn-secondary" id="refresh-events-list">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh List
+                    </button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="data-table" id="admin-events-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Link</th>
+                            <th>Status</th>
+                            <th>Registrations</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Application detail modal -->
+<div id="application-detail-modal" class="modal-overlay">
+    <div class="modal-card">
+        <div class="modal-header">
+            <h2 id="application-detail-title" class="modal-title">Application Details</h2>
+            <button id="application-detail-modal-close" class="modal-close">×</button>
+        </div>
+        <div id="application-detail-content">
+            <!-- Application details will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Modern Theme toggle functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-toggle-icon');
+
+    function updateTheme() {
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        themeIcon.className = currentTheme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = localStorage.getItem('theme') || 'dark';
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        localStorage.setItem('theme', newTheme);
+        updateTheme();
+    });
+
+    updateTheme();
+
+    // Modal functionality
+    const surveyModal = document.getElementById('survey-modal');
+    const jobModal = document.getElementById('job-modal');
+    const eventsModal = document.getElementById('events-modal');
+    const applicationDetailModal = document.getElementById('application-detail-modal');
+
+    document.getElementById('survey-nav-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        surveyModal.style.display = 'block';
+        document.getElementById('survey-management').style.display = 'block';
+    });
+
+    document.getElementById('job-nav-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        jobModal.style.display = 'block';
+    });
+
+    document.getElementById('events-nav-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        eventsModal.style.display = 'block';
+        // Load events when modal opens
+        setTimeout(() => loadAdminEvents(), 100);
+    });
+
+    document.getElementById('job-open-btn').addEventListener('click', () => {
+        jobModal.style.display = 'block';
+    });
+
+    document.getElementById('survey-nav-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        surveyModal.style.display = 'block';
+        document.getElementById('survey-management').style.display = 'block';
+    });
+
+    document.getElementById('survey-open-btn').addEventListener('click', () => {
+        surveyModal.style.display = 'block';
+        document.getElementById('survey-management').style.display = 'block';
+    });
+
+    document.getElementById('job-open-btn').addEventListener('click', () => {
+        jobModal.style.display = 'block';
+    });
+
+    document.getElementById('survey-modal-close').addEventListener('click', () => {
+        surveyModal.style.display = 'none';
+    });
+
+    document.getElementById('job-modal-close').addEventListener('click', () => {
+        jobModal.style.display = 'none';
+    });
+
+    document.getElementById('events-modal-close').addEventListener('click', () => {
+        eventsModal.style.display = 'none';
+    });
+
+    document.getElementById('application-detail-modal-close').addEventListener('click', () => {
+        applicationDetailModal.style.display = 'none';
+    });
+
+    // Close modals when clicking outside
+    surveyModal.addEventListener('click', (e) => {
+        if (e.target === surveyModal) {
+            surveyModal.style.display = 'none';
+        }
+    });
+
+    jobModal.addEventListener('click', (e) => {
+        if (e.target === jobModal) {
+            jobModal.style.display = 'none';
+        }
+    });
+
+    eventsModal.addEventListener('click', (e) => {
+        if (e.target === eventsModal) {
+            eventsModal.style.display = 'none';
+        }
+    });
+
+    applicationDetailModal.addEventListener('click', (e) => {
+        if (e.target === applicationDetailModal) {
+            applicationDetailModal.style.display = 'none';
+        }
+            });
+
+    // Load data on page load
+    loadAdminMetrics();
+    loadAlumniDirectory();
+
+    function loadAdminMetrics() {
+        fetch('/api/admin/metrics')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    document.getElementById('metric-total-users').textContent = data.data.totalUsers || '–';
+                    document.getElementById('metric-new-users').textContent = data.data.newUsers || '–';
+                    document.getElementById('metric-active-users').textContent = data.data.activeUsers || '–';
+                    document.getElementById('metric-content-counts').textContent = data.data.contentCounts || '–';
+                }
+            })
+            .catch(error => console.error('Error loading admin metrics:', error));
+        }
+
+    function loadAlumniDirectory(searchParams = {}) {
+        const params = new URLSearchParams(searchParams);
+        fetch(`/api/admin/users?${params}`)
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('admin-directory-table').querySelector('tbody');
+                tbody.innerHTML = '';
+
+                if (data.success && data.data) {
+                    data.data.forEach(user => {
+                        const nameParts = (user.name || 'Unknown User').split(' ');
+                        const initials = nameParts.map(n => n.charAt(0)).join('').toUpperCase();
+                        const isActive = user.is_active !== false; // Assume active if not specified as false
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div class="user-avatar">${initials}</div>
+                                    <div>
+                                        <div style="font-weight: 600; color: var(--admin-text-primary);">${user.name || 'Unknown'}</div>
+                                        <div style="font-size: 12px; color: var(--admin-text-muted);">ID: ${user.id}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color: var(--admin-text-secondary);">${user.email || '–'}</td>
+                            <td>${user.graduationYear || '–'}</td>
+                            <td>${user.course || '–'}</td>
+                            <td>${user.industry || '–'}</td>
+                            <td>
+                                <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
+                                    ${isActive ? 'Active' : 'Inactive'}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    ${!isActive ?
+                                        `<button class="btn-modern btn-success" onclick="approveUser(${user.id})">
+                                            <i class="fas fa-check"></i>
+                                         </button>` :
+                                        `<button class="btn-modern btn-warning" onclick="deactivateUser(${user.id})">
+                                            <i class="fas fa-ban"></i>
+                                         </button>`
+                                    }
+                                    <button class="btn-modern btn-secondary" onclick="resetPassword(${user.id})">
+                                        <i class="fas fa-key"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                                <i class="fas fa-users" style="font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.5;"></i>
+                                No users found matching your criteria.
+                            </td>
+                        </tr>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading alumni directory:', error);
+                const tbody = document.getElementById('admin-directory-table').querySelector('tbody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-error);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>
+                            Error loading user data. Please try again.
+                        </td>
+                    </tr>
+                `;
+            });
+    }
+
+    // Form handlers
+    document.getElementById('admin-directory-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const searchParams = {
+            year: formData.get('gradYear'),
+            department: formData.get('department'),
+            company: formData.get('company')
+        };
+        loadAlumniDirectory(searchParams);
+    });
+
+    document.getElementById('clear-filters').addEventListener('click', () => {
+        document.getElementById('admin-directory-form').reset();
+        loadAlumniDirectory();
+    });
+
+    // User management functions
+    function approveUser(userId) {
+        if (confirm('Are you sure you want to approve this user? This will activate their account.')) {
+            // Show loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+
+            fetch(`/api/admin/users/${userId}/approve`, { method: 'PUT' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('User approved successfully', 'success');
+                        loadAlumniDirectory();
+                    } else {
+                        showNotification('Error approving user: ' + (data.message || 'Unknown error'), 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error approving user:', error);
+                    showNotification('Network error while approving user', 'error');
+                })
+                .finally(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                });
+        }
+    }
+
+    function deactivateUser(userId) {
+        if (confirm('Are you sure you want to deactivate this user? They will lose access to the platform.')) {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+
+            fetch(`/api/admin/users/${userId}/deactivate`, { method: 'PUT' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification('User deactivated successfully', 'success');
+                        loadAlumniDirectory();
+                    } else {
+                        showNotification('Error deactivating user: ' + (data.message || 'Unknown error'), 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deactivating user:', error);
+                    showNotification('Network error while deactivating user', 'error');
+                })
+                .finally(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                });
+        }
+    }
+
+    function resetPassword(userId) {
+        if (confirm('Are you sure you want to reset this user\'s password? A new password will be generated.')) {
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            button.disabled = true;
+
+            fetch(`/api/admin/users/${userId}/reset-password`, { method: 'PUT' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const message = data.newPassword
+                            ? `Password reset successfully. New password: ${data.newPassword}`
+                            : 'Password reset successfully';
+                        showNotification(message, 'success');
+                    } else {
+                        showNotification('Error resetting password: ' + (data.message || 'Unknown error'), 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error resetting password:', error);
+                    showNotification('Network error while resetting password', 'error');
+                })
+                .finally(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                });
+        }
+    }
+
+    // Modern notification system
+    function showNotification(message, type = 'info') {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notif => notif.remove());
+
+        // Create new notification
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: var(--admin-shadow);
+            z-index: 10000;
+            max-width: 400px;
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(20px);
+            animation: slideInRight 0.3s ease-out;
+        `;
+
+        const colors = {
+            success: 'linear-gradient(135deg, #10b981, #059669)',
+            error: 'linear-gradient(135deg, #ef4444, #dc2626)',
+            warning: 'linear-gradient(135deg, #f59e0b, #d97706)',
+            info: 'var(--admin-gradient)'
+        };
+
+        notification.style.background = colors[type] || colors.info;
+        notification.style.color = 'white';
+
+        notification.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+                <span>${message}</span>
+                <button onclick="this.parentElement.parentElement.remove()" style="margin-left: auto; background: none; border: none; color: white; cursor: pointer; opacity: 0.8;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        `;
+
+        document.body.appendChild(notification);
+
+        // Auto remove after 5 seconds
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.style.animation = 'slideOutRight 0.3s ease-out';
+                setTimeout(() => notification.remove(), 300);
+            }
+        }, 5000);
+    }
+
+    // Job management functionality
+    const adminJobForm = document.getElementById('admin-job-form');
+    const adminJobTableBody = document.querySelector('#admin-job-table tbody');
+    const jobCreateStatus = document.getElementById('job-create-status');
+    const publishAllJobsBtn = document.getElementById('publish-all-jobs');
+    const refreshAdminJobsBtn = document.getElementById('refresh-admin-jobs');
+    const viewApplicationsBtn = document.getElementById('view-applications-btn');
+    const jobApplicationsList = document.getElementById('job-applications-list');
+
+    // Job form submission
+    adminJobForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        jobCreateStatus.textContent = '';
+
+        const formData = new FormData(adminJobForm);
+        const jobData = {
+            title: formData.get('jobTitle'),
+            companyName: formData.get('jobCompanyName'),
+            jobType: formData.get('jobType'),
+            location: formData.get('jobLocation'),
+            description: formData.get('jobDescription'),
+            published: document.getElementById('jobPublished').checked,
+            status: formData.get('jobState')
+        };
+
+        try {
+            const response = await fetch('/api/admin/jobs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(jobData)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                jobCreateStatus.textContent = 'Job created successfully!';
+                jobCreateStatus.style.color = 'green';
+                adminJobForm.reset();
+                loadAdminJobs(); // Refresh the jobs list
+            } else {
+                jobCreateStatus.textContent = result.message || 'Error creating job';
+                jobCreateStatus.style.color = 'red';
+            }
+        } catch (error) {
+            jobCreateStatus.textContent = 'Network error creating job';
+            jobCreateStatus.style.color = 'red';
+            console.error('Error creating job:', error);
+        }
+    });
+
+    // Load admin jobs
+    function loadAdminJobs() {
+        fetch('/api/admin/jobs')
+            .then(response => response.json())
+            .then(data => {
+                adminJobTableBody.innerHTML = '';
+
+                if (data.success && data.data && data.data.length > 0) {
+                    data.data.forEach(job => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${job.title}</td>
+                            <td>${job.companyName}</td>
+                            <td>${job.location}</td>
+                            <td>${job.published ? 'Yes' : 'No'}</td>
+                            <td>${job.status || 'ACTIVE'}</td>
+                            <td>
+                                <button class="btn-ghost" onclick="editJob(${job.id})">Edit</button>
+                                <button class="btn-ghost" onclick="deleteJob(${job.id})">Delete</button>
+                                <button class="btn-ghost" onclick="togglePublish(${job.id}, ${job.published})">
+                                    ${job.published ? 'Unpublish' : 'Publish'}
+                                </button>
+                            </td>
+                        `;
+                        adminJobTableBody.appendChild(row);
+                    });
+                } else {
+                    adminJobTableBody.innerHTML = '<tr><td colspan="6">No jobs found</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading jobs:', error);
+                adminJobTableBody.innerHTML = '<tr><td colspan="6">Error loading jobs</td></tr>';
+            });
+    }
+
+    // Job management functions
+    function editJob(jobId) {
+        // For now, just show alert. Could be enhanced to populate form
+        alert('Edit functionality can be implemented to populate the form with existing job data.');
+    }
+
+    function deleteJob(jobId) {
+        if (confirm('Are you sure you want to delete this job?')) {
+            fetch(`/api/admin/jobs/${jobId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Job deleted successfully');
+                        loadAdminJobs();
+                    } else {
+                        alert('Error deleting job');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting job:', error);
+                    alert('Network error deleting job');
+                });
+        }
+    }
+
+    function togglePublish(jobId, currentlyPublished) {
+        const action = currentlyPublished ? 'unpublish' : 'publish';
+        const endpoint = `/api/admin/jobs/${jobId}/${action}`;
+
+        fetch(endpoint, { method: 'PUT' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Job ${action}ed successfully`);
+                    loadAdminJobs();
+                } else {
+                    alert(`Error ${action}ing job`);
+                }
+            })
+            .catch(error => {
+                console.error(`Error ${action}ing job:`, error);
+                alert(`Network error ${action}ing job`);
+            });
+    }
+
+    // Publish all jobs
+    publishAllJobsBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to publish all jobs?')) {
+            fetch('/api/admin/jobs/publish-all', { method: 'PUT' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('All jobs published successfully');
+                        loadAdminJobs();
+                    } else {
+                        alert('Error publishing all jobs');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error publishing all jobs:', error);
+                    alert('Network error publishing all jobs');
+                });
+        }
+    });
+
+    // Refresh jobs list
+    refreshAdminJobsBtn.addEventListener('click', () => {
+        loadAdminJobs();
+    });
+
+    // View job applications
+    viewApplicationsBtn.addEventListener('click', () => {
+        fetch('/jobPosts')
+            .then(response => response.json())
+            .then(data => {
+                if (data.data && data.data.length > 0) {
+                    const applicationsHtml = data.data.map(job => `
+                        <div class="application-item" style="padding: 1rem; border: 1px solid #ddd; margin-bottom: 0.5rem; border-radius: 8px;">
+                            <h4>${job.title} at ${job.companyName}</h4>
+                            <p><strong>Location:</strong> ${job.location}</p>
+                            <p><strong>Type:</strong> ${job.jobType}</p>
+                            <p><strong>Status:</strong> ${job.published ? 'Published' : 'Draft'}</p>
+                            <button class="btn-ghost" onclick="viewJobApplications(${job.id})">View Applications</button>
+                        </div>
+                    `).join('');
+
+                    jobApplicationsList.innerHTML = applicationsHtml;
+                } else {
+                    jobApplicationsList.innerHTML = '<p>No jobs available</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading job applications:', error);
+                jobApplicationsList.innerHTML = '<p>Error loading job applications</p>';
+            });
+    });
+
+    function viewJobApplications(jobId) {
+        fetch(`/job-applications/job/${jobId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.data && data.data.length > 0) {
+                    const applicationsHtml = data.data.map(application => `
+                        <div class="application-detail-card" style="border: 1px solid var(--admin-border); border-radius: 12px; padding: 20px; margin-bottom: 16px; background: var(--admin-surface);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                                <div>
+                                    <h4 style="margin: 0 0 8px 0; color: var(--admin-text-primary); font-size: 18px;">${application.fullName}</h4>
+                                    <p style="margin: 0; color: var(--admin-text-secondary); font-size: 14px;">Applied for: ${application.jobTitle || 'Job Position'}</p>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <span class="status-badge" style="padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; background: ${getStatusColor(application.status)}; color: white;">
+                                        ${application.status || 'PENDING'}
+                                    </span>
+                                    <select onchange="updateApplicationStatus(${application.id}, this.value)" style="padding: 4px 8px; border: 1px solid var(--admin-border); border-radius: 6px; background: var(--admin-surface); color: var(--admin-text-primary);">
+                                        <option value="PENDING" ${application.status === 'PENDING' ? 'selected' : ''}>Pending</option>
+                                        <option value="REVIEWED" ${application.status === 'REVIEWED' ? 'selected' : ''}>Reviewed</option>
+                                        <option value="ACCEPTED" ${application.status === 'ACCEPTED' ? 'selected' : ''}>Accepted</option>
+                                        <option value="REJECTED" ${application.status === 'REJECTED' ? 'selected' : ''}>Rejected</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                                <div>
+                                    <h5 style="margin: 0 0 8px 0; color: var(--admin-text-primary); font-size: 14px;">Contact Information</h5>
+                                    <p style="margin: 4px 0; font-size: 14px;"><strong>Email:</strong> ${application.email}</p>
+                                    <p style="margin: 4px 0; font-size: 14px;"><strong>Phone:</strong> ${application.phoneNumber || 'Not provided'}</p>
+                                    <p style="margin: 4px 0; font-size: 14px;"><strong>Current Workplace:</strong> ${application.currentWorkplace || 'Not specified'}</p>
+                                </div>
+                                <div>
+                                    <h5 style="margin: 0 0 8px 0; color: var(--admin-text-primary); font-size: 14px;">Links & Files</h5>
+                                    ${application.portfolioLink ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Portfolio:</strong> <a href="${application.portfolioLink}" target="_blank" style="color: var(--admin-primary); text-decoration: none;">View Portfolio</a></p>` : '<p style="margin: 4px 0; font-size: 14px; color: var(--admin-text-muted);">No portfolio link</p>'}
+                                    ${application.githubLink ? `<p style="margin: 4px 0; font-size: 14px;"><strong>GitHub:</strong> <a href="${application.githubLink}" target="_blank" style="color: var(--admin-primary); text-decoration: none;">View GitHub</a></p>` : '<p style="margin: 4px 0; font-size: 14px; color: var(--admin-text-muted);">No GitHub link</p>'}
+                                    ${application.resumeFileName ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Resume:</strong> <a href="/uploads/job-applications/${application.resumeFileName}" target="_blank" style="color: var(--admin-success); text-decoration: none;">Download Resume</a></p>` : '<p style="margin: 4px 0; font-size: 14px; color: var(--admin-text-muted);">No resume uploaded</p>'}
+                                    ${application.photoFileName ? `<p style="margin: 4px 0; font-size: 14px;"><strong>Photo:</strong> <a href="/uploads/job-applications/${application.photoFileName}" target="_blank" style="color: var(--admin-primary); text-decoration: none;">View Photo</a></p>` : '<p style="margin: 4px 0; font-size: 14px; color: var(--admin-text-muted);">No photo uploaded</p>'}
+                                </div>
+                            </div>
+
+                            ${application.experience ? `<div style="margin-bottom: 16px;">
+                                <h5 style="margin: 0 0 8px 0; color: var(--admin-text-primary); font-size: 14px;">Experience</h5>
+                                <p style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--admin-text-secondary);">${application.experience}</p>
+                            </div>` : ''}
+
+                            ${application.skills ? `<div style="margin-bottom: 16px;">
+                                <h5 style="margin: 0 0 8px 0; color: var(--admin-text-primary); font-size: 14px;">Skills & Technologies</h5>
+                                <p style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--admin-text-secondary);">${application.skills}</p>
+                            </div>` : ''}
+
+                            ${application.coverLetter ? `<div style="margin-bottom: 16px;">
+                                <h5 style="margin: 0 0 8px 0; color: var(--admin-text-primary); font-size: 14px;">Cover Letter</h5>
+                                <p style="margin: 0; font-size: 14px; line-height: 1.5; color: var(--admin-text-secondary);">${application.coverLetter}</p>
+                            </div>` : ''}
+
+                            <div style="display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--admin-border);">
+                                <button onclick="updateApplicationStatus(${application.id}, 'ACCEPTED')" class="btn-modern btn-success" style="padding: 8px 16px; font-size: 12px;">
+                                    <i class="fas fa-check"></i> Accept
+                                </button>
+                                <button onclick="updateApplicationStatus(${application.id}, 'REJECTED')" class="btn-modern btn-danger" style="padding: 8px 16px; font-size: 12px;">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                                <button onclick="deleteApplication(${application.id})" class="btn-modern btn-danger" style="padding: 8px 16px; font-size: 12px;">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    jobApplicationsList.innerHTML = `
+                        <div style="margin-bottom: 20px;">
+                            <button onclick="viewApplicationsBtn.click()" class="btn-modern btn-secondary" style="margin-bottom: 16px;">
+                                <i class="fas fa-arrow-left"></i> Back to Jobs List
+                            </button>
+                            <h3 style="margin: 0 0 16px 0; color: var(--admin-text-primary);">Applications for Job ID: ${jobId}</h3>
+                        </div>
+                        ${applicationsHtml}
+                    `;
+                } else {
+                    jobApplicationsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-inbox" style="font-size: 48px; color: var(--admin-text-muted); margin-bottom: 16px;"></i>
+                            <h4 style="margin: 0 0 8px 0; color: var(--admin-text-primary);">No Applications Yet</h4>
+                            <p style="margin: 0; color: var(--admin-text-secondary);">This job hasn't received any applications yet.</p>
+                            <button onclick="viewApplicationsBtn.click()" class="btn-modern btn-secondary" style="margin-top: 16px;">
+                                <i class="fas fa-arrow-left"></i> Back to Jobs List
+                            </button>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading job applications:', error);
+                jobApplicationsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; color: var(--admin-error); margin-bottom: 16px;"></i>
+                        <h4 style="margin: 0 0 8px 0; color: var(--admin-text-primary);">Error Loading Applications</h4>
+                        <p style="margin: 0; color: var(--admin-text-secondary);">Failed to load applications. Please try again.</p>
+                        <button onclick="viewApplicationsBtn.click()" class="btn-modern btn-secondary" style="margin-top: 16px;">
+                            <i class="fas fa-arrow-left"></i> Back to Jobs List
+                        </button>
+                    </div>
+                `;
+            });
+    }
+
+    function updateApplicationStatus(applicationId, status) {
+        fetch(`/job-applications/${applicationId}/status?status=${status}`, {
+            method: 'PUT'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                showNotification(data.message, 'success');
+                // Refresh the current view
+                const currentJobId = getCurrentJobIdFromView();
+                if (currentJobId) {
+                    viewJobApplications(currentJobId);
+                }
+            } else {
+                showNotification('Failed to update application status', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating application status:', error);
+            showNotification('Error updating application status', 'error');
+        });
+    }
+
+    function deleteApplication(applicationId) {
+        if (confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+            fetch(`/job-applications/${applicationId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    showNotification(data.message, 'success');
+                    // Refresh the current view
+                    const currentJobId = getCurrentJobIdFromView();
+                    if (currentJobId) {
+                        viewJobApplications(currentJobId);
+                    }
+                } else {
+                    showNotification('Failed to delete application', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting application:', error);
+                showNotification('Error deleting application', 'error');
+            });
+        }
+    }
+
+    function getCurrentJobIdFromView() {
+        // Try to extract job ID from the current view
+        const titleElement = jobApplicationsList.querySelector('h3');
+        if (titleElement && titleElement.textContent.includes('Job ID:')) {
+            const match = titleElement.textContent.match(/Job ID: (\d+)/);
+            return match ? parseInt(match[1]) : null;
+        }
+        return null;
+    }
+
+    function getStatusColor(status) {
+        switch (status) {
+            case 'ACCEPTED': return '#10b981';
+            case 'REJECTED': return '#ef4444';
+            case 'REVIEWED': return '#f59e0b';
+            case 'PENDING': default: return '#6b7280';
+        }
+    }
+
+    // Refresh jobs list button
+    document.getElementById('refresh-jobs-list').addEventListener('click', () => {
+        loadAdminJobs();
+    });
+
+    // Load jobs on page load
+    loadAdminJobs();
+
+    // Survey management functionality
+    const adminSurveyForm = document.getElementById('admin-survey-form');
+    const adminSurveyTableBody = document.querySelector('#admin-survey-table tbody');
+    const surveyCreateStatus = document.getElementById('survey-create-status');
+    const refreshAdminSurveysBtn = document.getElementById('refresh-admin-surveys');
+
+    let surveyQuestions = [];
+
+    // Survey form submission
+    adminSurveyForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        surveyCreateStatus.textContent = '';
+
+        const formData = new FormData(adminSurveyForm);
+        const surveyData = {
+            title: formData.get('surveyTitle'),
+            description: formData.get('surveyDesc'),
+            anonymous: document.getElementById('surveyAnonymous').checked,
+            questions: surveyQuestions
+        };
+
+        try {
+            const response = await fetch('/api/admin/surveys', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(surveyData)
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                surveyCreateStatus.textContent = 'Survey created successfully!';
+                surveyCreateStatus.style.color = 'green';
+                adminSurveyForm.reset();
+                surveyQuestions = [];
+                updateSurveyQuestionsDisplay();
+                loadAdminSurveys(); // Refresh the surveys list
+            } else {
+                surveyCreateStatus.textContent = result.message || 'Error creating survey';
+                surveyCreateStatus.style.color = 'red';
+            }
+        } catch (error) {
+            surveyCreateStatus.textContent = 'Network error creating survey';
+            surveyCreateStatus.style.color = 'red';
+            console.error('Error creating survey:', error);
+        }
+    });
+
+    // Add question button
+    document.getElementById('done-question-btn').addEventListener('click', () => {
+        const questionText = document.getElementById('surveyQuestionText').value;
+        const questionType = document.getElementById('surveyQuestionType').value;
+        const required = document.getElementById('surveyQuestionRequired').checked;
+        const options = document.getElementById('surveyQuestionOptions').value;
+
+        if (!questionText.trim()) {
+            alert('Please enter question text');
+            return;
+        }
+
+        const question = {
+            questionText: questionText,
+            questionType: questionType,
+            required: required
+        };
+
+        if (questionType === 'MULTIPLE_CHOICE') {
+            question.options = options.split(',').map(opt => opt.trim()).filter(opt => opt);
+        }
+
+        surveyQuestions.push(question);
+
+        // Clear form
+        document.getElementById('surveyQuestionText').value = '';
+        document.getElementById('surveyQuestionOptions').value = '';
+        document.getElementById('surveyQuestionRequired').checked = false;
+
+        updateSurveyQuestionsDisplay();
+    });
+
+    // Add more question button
+    document.getElementById('add-more-question-btn').addEventListener('click', () => {
+        // Just clear the current question fields for adding another
+        document.getElementById('surveyQuestionText').value = '';
+        document.getElementById('surveyQuestionOptions').value = '';
+        document.getElementById('surveyQuestionRequired').checked = false;
+    });
+
+    // Update survey questions display
+    function updateSurveyQuestionsDisplay() {
+        const questionsCount = document.getElementById('survey-questions-count');
+        const questionsList = document.getElementById('survey-questions-list');
+        const questionsEmpty = document.getElementById('survey-questions-empty');
+
+        questionsCount.textContent = surveyQuestions.length + ' questions added';
+
+        if (surveyQuestions.length === 0) {
+            questionsEmpty.style.display = 'block';
+            questionsList.innerHTML = '';
+        } else {
+            questionsEmpty.style.display = 'none';
+            questionsList.innerHTML = surveyQuestions.map((q, index) => `
+                <div class="question-item" style="padding: 1rem; border: 1px solid #ddd; margin-bottom: 0.5rem; border-radius: 8px;">
+                    <h4>${q.questionText}</h4>
+                    <p><strong>Type:</strong> ${q.questionType}</p>
+                    <p><strong>Required:</strong> ${q.required ? 'Yes' : 'No'}</p>
+                    ${q.options ? `<p><strong>Options:</strong> ${q.options.join(', ')}</p>` : ''}
+                    <button class="btn-ghost" onclick="removeSurveyQuestion(${index})">Remove</button>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Remove survey question
+    function removeSurveyQuestion(index) {
+        surveyQuestions.splice(index, 1);
+        updateSurveyQuestionsDisplay();
+    }
+
+    // Load admin surveys
+    function loadAdminSurveys() {
+        fetch('/api/admin/surveys')
+            .then(response => response.json())
+            .then(data => {
+                adminSurveyTableBody.innerHTML = '';
+
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(survey => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${survey.title}</td>
+                            <td>${survey.questions ? survey.questions.length : 0}</td>
+                            <td>${survey.responses || 0}</td>
+                            <td>${new Date(survey.createdAt).toLocaleDateString()}</td>
+                            <td>
+                                <button class="btn-ghost" onclick="viewSurveyResults(${survey.id})">Results</button>
+                                <button class="btn-ghost" onclick="deleteSurvey(${survey.id})">Delete</button>
+                            </td>
+                        `;
+                        adminSurveyTableBody.appendChild(row);
+                    });
+                } else {
+                    adminSurveyTableBody.innerHTML = '<tr><td colspan="5">No surveys found</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading surveys:', error);
+                adminSurveyTableBody.innerHTML = '<tr><td colspan="5">Error loading surveys</td></tr>';
+            });
+    }
+
+    // Survey management functions
+    function viewSurveyResults(surveyId) {
+        // This would typically load survey results
+        alert('Survey results viewing would be implemented here to show responses for survey ID: ' + surveyId);
+    }
+
+    function deleteSurvey(surveyId) {
+        if (confirm('Are you sure you want to delete this survey?')) {
+            fetch(`/api/admin/surveys/${surveyId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message && data.message.includes('deleted')) {
+                        alert('Survey deleted successfully');
+                        loadAdminSurveys();
+                    } else {
+                        alert('Error deleting survey');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting survey:', error);
+                    alert('Network error deleting survey');
+                });
+        }
+    }
+
+    // Question type change handler
+    document.getElementById('surveyQuestionType').addEventListener('change', (e) => {
+        const optionsRow = document.getElementById('surveyOptionsRow');
+        if (e.target.value === 'MULTIPLE_CHOICE') {
+            optionsRow.style.display = 'block';
+        } else {
+            optionsRow.style.display = 'none';
+        }
+    });
+
+    // Refresh surveys list
+    refreshAdminSurveysBtn.addEventListener('click', () => {
+        loadAdminSurveys();
+    });
+
+    // Load surveys on page load
+    loadAdminSurveys();
+
+    // Event management functionality
+    const adminEventForm = document.getElementById('admin-event-form');
+    const adminEventsTableBody = document.querySelector('#admin-events-table tbody');
+    const eventCreateStatus = document.getElementById('event-create-status');
+    const refreshAdminEventsBtn = document.getElementById('refresh-admin-events');
+    const viewEventRegistrationsBtn = document.getElementById('view-event-registrations-btn');
+    const eventRegistrationsList = document.getElementById('event-registrations-list');
+
+    // Event form submission
+    adminEventForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        eventCreateStatus.textContent = '';
+
+        const formData = new FormData(adminEventForm);
+        const eventData = {
+            title: formData.get('eventTitle'),
+            eventType: formData.get('eventType'),
+            startDate: formData.get('eventDate'), // This maps to the EventDto startDate field
+            endDate: formData.get('eventEndDate'), // This maps to the EventDto endDate field
+            location: formData.get('eventLocation'),
+            maxParticipants: formData.get('maxAttendees') ? parseInt(formData.get('maxAttendees')) : null,
+            description: formData.get('eventDescription'),
+            hyperlink: formData.get('eventLink') || null
+        };
+
+        // Validate required fields
+        if (!eventData.title || !eventData.eventType || !eventData.startDate || !eventData.endDate || !eventData.location) {
+            eventCreateStatus.textContent = 'Please fill in all required fields (title, type, dates, location)';
+            eventCreateStatus.style.color = 'var(--admin-error)';
+            return;
+        }
+
+        // Validate date logic
+        if (new Date(eventData.startDate) >= new Date(eventData.endDate)) {
+            eventCreateStatus.textContent = 'End date must be after start date';
+            eventCreateStatus.style.color = 'var(--admin-error)';
+            return;
+        }
+
+        console.log('Sending event data:', eventData);
+        console.log('Event data types:', {
+            title: typeof eventData.title,
+            eventType: typeof eventData.eventType,
+            startDate: typeof eventData.startDate,
+            endDate: typeof eventData.endDate,
+            location: typeof eventData.location,
+            maxParticipants: typeof eventData.maxParticipants,
+            description: typeof eventData.description,
+            hyperlink: typeof eventData.hyperlink
+        });
+
+        try {
+            const response = await fetch('/events', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(eventData)
+            });
+
+            const result = await response.json();
+            console.log('Event creation response:', result);
+            console.log('Response status:', response.status);
+            if (result.success) {
+                eventCreateStatus.textContent = result.message || 'Event created successfully!';
+                eventCreateStatus.style.color = 'var(--admin-success)';
+                adminEventForm.reset();
+                console.log('About to refresh events list...');
+                setTimeout(() => loadAdminEvents(), 500); // Delay to ensure DB commit
+                showNotification(result.message || 'Event created successfully!', 'success');
+            } else {
+                const errorMsg = result.message || 'Error creating event';
+                const errorType = result.errorType ? ` (${result.errorType})` : '';
+                eventCreateStatus.textContent = errorMsg + errorType;
+                eventCreateStatus.style.color = 'var(--admin-error)';
+                showNotification(errorMsg + errorType, 'error');
+                console.error('Server error details:', result);
+            }
+        } catch (error) {
+            console.error('Network error creating event:', error);
+            eventCreateStatus.textContent = `Network error: ${error.message}`;
+            eventCreateStatus.style.color = 'var(--admin-error)';
+            showNotification(`Network error: ${error.message}`, 'error');
+        }
+    });
+
+    // Load admin events
+    function loadAdminEvents() {
+        console.log('Loading admin events...');
+        fetch('/events')
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Events data received:', data);
+                adminEventsTableBody.innerHTML = '';
+
+                if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                    console.log('Processing events:', data.data);
+                    data.data.forEach(event => {
+                        console.log('Processing event:', event);
+                        const row = document.createElement('tr');
+                        const eventDate = event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A';
+                        const status = event.eventStatus || event.status || 'UPCOMING';
+
+                        const hyperlinkDisplay = event.hyperlink ?
+                            `<a href="${event.hyperlink}" target="_blank" class="btn-modern btn-secondary" style="font-size: 11px; padding: 4px 8px; background: var(--admin-primary); color: white; text-decoration: none;">
+                                <i class="fas fa-external-link-alt"></i> Link
+                            </a>` : '<span style="color: var(--admin-text-muted); font-size: 12px;">No link</span>';
+
+                        row.innerHTML = `
+                            <td>${event.title}</td>
+                            <td>${event.eventType}</td>
+                            <td>${eventDate}</td>
+                            <td>${event.location}</td>
+                            <td>${hyperlinkDisplay}</td>
+                            <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
+                            <td>${event.attendants ? event.attendants.length : 0}/${event.maxParticipants || '∞'}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-modern btn-secondary" onclick="editEvent(${event.id})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-modern btn-danger" onclick="deleteEvent(${event.id})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button class="btn-modern btn-primary" onclick="viewEventRegistrations(${event.id})">
+                                        <i class="fas fa-users"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        adminEventsTableBody.appendChild(row);
+                    });
+                } else {
+                    adminEventsTableBody.innerHTML = '<tr><td colspan="8">No events found</td></tr>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading events:', error);
+                adminEventsTableBody.innerHTML = '<tr><td colspan="8">Error loading events</td></tr>';
+            });
+    }
+
+    // Event management functions
+    function editEvent(eventId) {
+        // For now, just show alert. Could be enhanced to populate form
+        alert('Edit functionality can be implemented to populate the form with existing event data.');
+    }
+
+    function deleteEvent(eventId) {
+        if (confirm('Are you sure you want to delete this event? This action cannot be undone.')) {
+            fetch(`/events/${eventId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message && data.message.includes('deleted')) {
+                        showNotification('Event deleted successfully', 'success');
+                        loadAdminEvents();
+                    } else {
+                        showNotification('Error deleting event', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting event:', error);
+                    showNotification('Network error deleting event', 'error');
+                });
+        }
+    }
+
+    function viewEventRegistrations(eventId) {
+        fetch(`/events/${eventId}/registrations`)
+            .then(response => response.json())
+            .then(data => {
+                eventRegistrationsList.innerHTML = '';
+
+                if (data.data && data.data.length > 0) {
+                    data.data.forEach(registration => {
+                        const registrationDiv = document.createElement('div');
+                        registrationDiv.style.cssText = `
+                            padding: 12px;
+                            border: 1px solid var(--admin-border);
+                            border-radius: 8px;
+                            background: var(--admin-surface-hover);
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                        `;
+
+                        registrationDiv.innerHTML = `
+                            <div>
+                                <div style="font-weight: 600;">${registration.userName || 'Unknown User'}</div>
+                                <div style="font-size: 12px; color: var(--admin-text-muted);">Email: ${registration.userEmail || 'N/A'}</div>
+                                <div style="font-size: 12px; color: var(--admin-text-muted);">Registered: ${new Date(registration.registrationDate).toLocaleDateString()}</div>
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn-modern btn-danger" onclick="removeRegistration(${registration.id})">
+                                    <i class="fas fa-user-minus"></i>
+                                </button>
+                            </div>
+                        `;
+
+                        eventRegistrationsList.appendChild(registrationDiv);
+                    });
+                } else {
+                    eventRegistrationsList.innerHTML = '<p style="text-align: center; color: var(--admin-text-muted); padding: 20px;">No registrations found for this event.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading registrations:', error);
+                eventRegistrationsList.innerHTML = '<p style="text-align: center; color: var(--admin-error); padding: 20px;">Error loading registrations.</p>';
+            });
+    }
+
+    function removeRegistration(registrationId) {
+        if (confirm('Are you sure you want to remove this registration?')) {
+            fetch(`/events/registrations/${registrationId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message && data.message.includes('removed')) {
+                        showNotification('Registration removed successfully', 'success');
+                        // Refresh the current event's registrations
+                        const currentEventId = getCurrentEventId(); // You'd need to track this
+                        if (currentEventId) viewEventRegistrations(currentEventId);
+                    } else {
+                        showNotification('Error removing registration', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error removing registration:', error);
+                    showNotification('Network error removing registration', 'error');
+                });
+        }
+    }
+
+    // Refresh events list
+    refreshAdminEventsBtn.addEventListener('click', () => {
+        loadAdminEvents();
+    });
+
+    document.getElementById('refresh-events-list').addEventListener('click', () => {
+        loadAdminEvents();
+    });
+
+    // View event registrations button
+    viewEventRegistrationsBtn.addEventListener('click', () => {
+        // This could be enhanced to show registrations for all events or a specific event
+        alert('Select an event from the table above to view its registrations.');
+    });
+
+    // Test event creation
+    function createTestEvent() {
+        console.log('Creating test event...');
+
+        const testData = {
+            title: "TEST_EVENT",
+            eventType: "WORKSHOPS_WEBINARS",
+            startDate: new Date().toISOString().slice(0, 16),
+            endDate: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16), // 2 hours later
+            location: "Test Location",
+            description: "Test event description",
+            maxParticipants: 50,
+            hyperlink: "https://example.com"
+        };
+
+        fetch('/events', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(testData)
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Test event result:', result);
+            if (result.success) {
+                showNotification('Test event created successfully! ID: ' + result.eventId, 'success');
+                loadAdminEvents();
+            } else {
+                showNotification('Test event failed: ' + result.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Test event error:', error);
+            showNotification('Test event network error', 'error');
+        });
+    }
+
+    // Load events on page load
+    loadAdminEvents();
+
+    // Add event listeners for modal close buttons
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ensure events load when modal opens
+        document.getElementById('events-nav-btn').addEventListener('click', function() {
+            setTimeout(() => loadAdminEvents(), 100);
+        });
+    });
+</script>
+</body>
+</html>

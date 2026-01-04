@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #16a34a;
+            --warning: #ca8a04;
+            --error: #dc2626;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --border: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .nav-logo img {
+            height: 50px;
+            width: auto;
+            filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.3));
+            transition: filter 0.3s ease;
+        }
+
+        .nav-logo:hover img {
+            filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.6));
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 1rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+
+        .main-content {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-section {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero-content {
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #f8fafc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes textGlow {
+            from { filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.3)); }
+            to { filter: drop-shadow(0 0 30px rgba(102, 126, 234, 0.6)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(30, 64, 175, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-neon {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 25%, #dcfce7 50%, #bbf7d0 75%, #86efac 100%);
+            color: #1f2937 !important;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            box-shadow: 0 8px 25px rgba(134, 239, 172, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            border: 2px solid #16a34a;
+        }
+
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-neon:hover::before {
+            left: 100%;
+        }
+
+        .btn-neon:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(134, 239, 172, 0.6);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 25%, #bbf7d0 50%, #86efac 75%, #4ade80 100%);
+            color: #0f172a !important;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #60a5fa;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .hero-visual {
+            position: relative;
+            z-index: 2;
+        }
+
+        .preview-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: cardFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+        }
+
+        .preview-badge {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            color: #ffffff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .feature-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .feature-content h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin: 0 0 0.25rem 0;
+        }
+
+        .feature-content p {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin: 0;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            animation: floatRandom 15s ease-in-out infinite;
+        }
+
+        .floating-circle:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 10s;
+        }
+
+        @keyframes floatRandom {
+            0%, 100% {
+                transform: translateY(0px) translateX(0px) scale(1);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px) scale(1.1);
+            }
+            50% {
+                transform: translateY(-10px) translateX(-10px) scale(0.9);
+            }
+            75% {
+                transform: translateY(10px) translateX(5px) scale(1.05);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        /* Light Mode Styles */
+        [data-theme="light"] {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #ffffff 75%, #f8fafc 100%);
+            color: #1e293b;
+        }
+
+        [data-theme="light"]::before {
+            background:
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+        }
+
+        [data-theme="light"] .navbar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .nav-logo {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .nav-logo img {
+            filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.4));
+        }
+
+        [data-theme="light"] .nav-logo:hover img {
+            filter: drop-shadow(0 0 15px rgba(59, 130, 246, 0.7));
+        }
+
+        [data-theme="light"] .nav-link {
+            color: rgba(30, 41, 59, 0.8);
+        }
+
+        [data-theme="light"] .nav-link:hover {
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .nav-link::after {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+        }
+
+        [data-theme="light"] .nav-cta {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        [data-theme="light"] .nav-cta:hover {
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        [data-theme="light"] .theme-toggle {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] .hero-title {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 50%, #0f172a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="light"] .hero-subtitle {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        [data-theme="light"] .btn-primary {
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        [data-theme="light"] .btn-primary:hover {
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        [data-theme="light"] .btn-secondary {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            color: #1e293b;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.95);
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+
+        [data-theme="light"] .btn-neon {
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 25%, #dcfce7 50%, #bbf7d0 75%, #86efac 100%);
+            color: #1f2937 !important;
+            box-shadow: 0 8px 25px rgba(134, 239, 172, 0.4);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            border: 2px solid #16a34a;
+        }
+
+        [data-theme="light"] .btn-neon:hover {
+            box-shadow: 0 15px 40px rgba(134, 239, 172, 0.6);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 25%, #bbf7d0 50%, #86efac 75%, #4ade80 100%);
+            color: #0f172a !important;
+        }
+
+        [data-theme="light"] .stat-item {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .stat-number {
+            color: #3b82f6;
+        }
+
+        [data-theme="light"] .stat-label {
+            color: rgba(30, 41, 59, 0.7);
+        }
+
+        [data-theme="light"] .preview-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="light"] .preview-title,
+        [data-theme="light"] .preview-subtitle {
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .preview-badge {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+        }
+
+        [data-theme="light"] .feature-item {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="light"] .feature-item:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .feature-icon {
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+        }
+
+        [data-theme="light"] .feature-content h4 {
+            color: #1e293b;
+        }
+
+        [data-theme="light"] .feature-content p {
+            color: rgba(30, 41, 59, 0.6);
+        }
+
+        [data-theme="light"] .floating-circle {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15));
+        }
+
+        [data-theme="light"] .footer {
+            color: rgba(30, 41, 59, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 6rem 1rem 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+        }
+
+        /* Alumni Events Section */
+        .alumni-events-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alumni-events-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .events-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .events-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .events-main-title {
+            font-size: clamp(2.8rem, 6vw, 4rem);
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 16px 0;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+            position: relative;
+        }
+
+        .events-main-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .events-subtitle {
+            font-size: 1.3rem;
+            color: #64748b;
+            margin: 0;
+            font-weight: 400;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        /* Event Card */
+        .event-card-landing {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+        }
+
+        .event-card-landing::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(99, 102, 241, 0.08),
+                rgba(139, 92, 246, 0.06),
+                transparent);
+            transition: left 0.6s ease;
+            z-index: 1;
+        }
+
+        .event-card-landing:hover::before {
+            left: 100%;
+        }
+
+        .event-card-landing:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow:
+                0 24px 64px rgba(0, 0, 0, 0.12),
+                0 0 32px rgba(99, 102, 241, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        .event-card-content-landing {
+            position: relative;
+            z-index: 2;
+        }
+
+        .event-card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .event-category-landing {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .event-category-landing i {
+            font-size: 0.7rem;
+        }
+
+        .event-status-landing {
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1.5px solid;
+        }
+
+        .event-status-landing.upcoming {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .event-status-landing.ongoing {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .event-title-landing {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .event-description-landing {
+            color: #64748b;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .event-details-landing {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .event-detail-landing {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .event-detail-icon-landing {
+            width: 18px;
+            height: 18px;
+            color: #6366f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .event-card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .event-date-landing {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.95rem;
+        }
+
+        .event-join-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .event-join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #5855eb, #7c3aed);
+        }
+
+        .event-join-btn i {
+            font-size: 0.85rem;
+        }
+
+        /* Loading Placeholder */
+        .loading-placeholder {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+        }
+
+        .loading-placeholder .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-placeholder p {
+            color: #64748b;
+            font-size: 1.1rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        /* Empty State */
+        .events-empty {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+        }
+
+        .events-empty .empty-icon {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 24px;
+            animation: pulse 2s infinite;
+        }
+
+        .events-empty .empty-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 12px;
+        }
+
+        .events-empty .empty-description {
+            font-size: 1.1rem;
+            color: #6b7280;
+            max-width: 500px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Events Footer */
+        .events-footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .view-all-events-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-all-events-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .view-all-events-btn:hover::before {
+            left: 100%;
+        }
+
+        .view-all-events-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #5855eb, #7c3aed);
+        }
+
+        .view-all-events-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .view-all-events-btn:hover i {
+            transform: translateX(4px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .events-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .alumni-events-section {
+                padding: 80px 0;
+            }
+
+            .events-header {
+                margin-bottom: 60px;
+            }
+
+            .events-main-title {
+                font-size: clamp(2.2rem, 7vw, 3.2rem);
+            }
+
+            .events-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                margin-bottom: 50px;
+            }
+
+            .event-card-landing {
+                padding: 28px;
+            }
+
+            .event-card-bottom {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 14px;
+            }
+
+            .event-join-btn {
+                justify-content: center;
+                width: 100%;
+                padding: 14px 24px;
+            }
+
+            .event-title-landing {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .events-container {
+                padding: 0 16px;
+            }
+
+            .events-main-title {
+                font-size: clamp(1.8rem, 9vw, 2.6rem);
+            }
+
+            .event-card-landing {
+                padding: 24px;
+            }
+
+            .event-title-landing {
+                font-size: 1.3rem;
+            }
+
+            .view-all-events-btn {
+                padding: 14px 28px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <img src="/images/UIU_LOGOpng.png" alt="UIU Logo">
+                Alumni Portal
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/events.html" class="nav-link">Events</a>
+                <a href="/jobs.html" class="nav-link">Jobs</a>
+                <a href="/news.html" class="nav-link">News</a>
+                <a href="/surveys.html" class="nav-link">Surveys</a>
+                <a href="/login.html" class="nav-cta">Login</a>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="hero-section">
+            <div class="floating-elements">
+                <div class="floating-circle"></div>
+                <div class="floating-circle"></div>
+                <div class="floating-circle"></div>
+            </div>
+
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Connect Beyond
+                    <br>
+                    Graduation
+                </h1>
+                <p class="hero-subtitle">
+                    Join a vibrant alumni network where opportunities meet connections.
+                    Discover jobs, attend exclusive events, and stay connected with your alma mater.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="/login.html" class="btn-primary">
+                        Get Started
+                        <span>→</span>
+                    </a>
+                    <a href="/jobs.html" class="btn-secondary">
+                        Explore Jobs
+                    </a>
+                    <a href="/apply-now.html" class="btn-neon">
+                        Apply Now
+                    </a>
+                </div>
+
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="events-count">50+</span>
+                        <span class="stat-label">Events</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="jobs-count">200+</span>
+                        <span class="stat-label">Job Posts</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="alumni-count">5K+</span>
+                        <span class="stat-label">Alumni</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="companies-count">100+</span>
+                        <span class="stat-label">Companies</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="preview-card">
+                    <div class="preview-header">
+                        <div>
+                            <h3 class="preview-title">Alumni Dashboard</h3>
+                            <p class="preview-subtitle">Everything you need in one place</p>
+                        </div>
+                        <span class="preview-badge">Live Preview</span>
+                    </div>
+
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <div class="feature-icon">📅</div>
+                            <div class="feature-content">
+                                <h4>Exclusive Events</h4>
+                                <p>Network with alumni and industry leaders</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">💼</div>
+                            <div class="feature-content">
+                                <h4>Job Opportunities</h4>
+                                <p>Discover career opportunities posted by alumni</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📰</div>
+                            <div class="feature-content">
+                                <h4>Campus News</h4>
+                                <p>Stay updated with latest university news</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">📊</div>
+                            <div class="feature-content">
+                                <h4>Surveys & Feedback</h4>
+                                <p>Share your thoughts and shape the future</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Alumni Events Section -->
+        <section class="alumni-events-section" id="alumni-events-section">
+            <div class="events-container">
+                <div class="events-header">
+                    <h2 class="events-main-title">Upcoming Alumni Events</h2>
+                    <p class="events-subtitle">Discover exclusive networking opportunities and professional development events</p>
+                </div>
+
+                <div class="events-grid" id="events-grid">
+                    <!-- Events will be loaded here -->
+                    <div class="loading-placeholder">
+                        <div class="loading-spinner"></div>
+                        <p>Loading events...</p>
+                    </div>
+                </div>
+
+                <div class="events-footer">
+                    <a href="/events.html" class="view-all-events-btn">
+                        <span>View All Events</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>🚀 Built with Spring Boot & MySQL · Modern Alumni Management Portal</p>
+            <p>Connect • Network • Grow</p>
+        </footer>
+    </main>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Theme toggle functionality
+        (function() {
+            const stored = window.localStorage.getItem('amp-theme');
+            if (stored === 'light') {
+                document.body.setAttribute('data-theme', 'light');
+            }
+
+            const btn = document.getElementById('theme-toggle');
+            const icon = document.getElementById('theme-toggle-icon');
+
+            function syncTheme() {
+                const isLight = document.body.getAttribute('data-theme') === 'light';
+                icon.textContent = isLight ? '☀️' : '🌙';
+
+                // The CSS now handles theme colors via [data-theme="light"] selectors
+                // No need to manually set background here as CSS takes care of it
+            }
+
+            syncTheme();
+
+            btn.addEventListener('click', () => {
+                const isLight = document.body.getAttribute('data-theme') === 'light';
+                if (isLight) {
+                    document.body.removeAttribute('data-theme');
+                    window.localStorage.setItem('amp-theme', 'dark');
+                } else {
+                    document.body.setAttribute('data-theme', 'light');
+                    window.localStorage.setItem('amp-theme', 'light');
+                }
+                syncTheme();
+            });
+        })();
+
+        // Load dynamic stats and events
+        async function loadStats() {
+            try {
+                const [events, jobs, users] = await Promise.all([
+                    fetch('/events/enhanced').then(r => r.json()).catch(() => ({data: []})),
+                    fetch('/jobPosts/published').then(r => r.json()).catch(() => ({data: []})),
+                    fetch('/users').then(r => r.json()).catch(() => ({data: []}))
+                ]);
+
+                // Update hero stats
+                document.getElementById('events-count').textContent = events.data?.length || '0';
+                document.getElementById('jobs-count').textContent = jobs.data?.length || '200+';
+                document.getElementById('alumni-count').textContent = users.data?.length || '5K+';
+                document.getElementById('companies-count').textContent = '100+';
+
+                // Load events for display
+                loadEvents(events.data || []);
+            } catch (error) {
+                console.log('Stats loading failed, using defaults');
+                // Still try to load events even if stats fail
+                loadEvents([]);
+            }
+        }
+
+        // Load and display events on the landing page
+        function loadEvents(events) {
+            const eventsGrid = document.getElementById('events-grid');
+
+            if (!events || events.length === 0) {
+                eventsGrid.innerHTML = `
+                    <div class="events-empty">
+                        <div class="empty-icon">
+                            <i class="fas fa-calendar-times"></i>
+                        </div>
+                        <h3 class="empty-title">No Upcoming Events</h3>
+                        <p class="empty-description">
+                            We're working on exciting alumni events and networking opportunities.
+                            Check back soon for exclusive gatherings and professional development sessions.
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort events by date and take first 6
+            const sortedEvents = events
+                .filter(event => event.startDate)
+                .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+                .slice(0, 6);
+
+            eventsGrid.innerHTML = sortedEvents.map(event => createLandingEventCard(event)).join('');
+        }
+
+        // Create modern event card for landing page
+        function createLandingEventCard(event) {
+            const startDate = event.startDate ? new Date(event.startDate).toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric'
+            }) : 'Date TBD';
+
+            const startTime = event.startDate ? new Date(event.startDate).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : '';
+
+            const statusClass = (event.eventStatus || 'UPCOMING').toLowerCase();
+            const statusLabel = event.eventStatusLabel || event.eventStatus || 'Upcoming';
+
+            const eventType = event.eventTypeLabel || event.eventType || 'Event';
+            const eventIcon = getEventTypeIcon(eventType);
+
+            const hyperlinkBtn = event.hyperlink ? `
+                <a href="${event.hyperlink}" target="_blank" class="event-join-btn" title="Join this online event">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>Join Event</span>
+                </a>
+            ` : '';
+
+            return `
+                <div class="event-card-landing" onclick="openEventDetails('${event.id}')">
+                    <div class="event-card-content-landing">
+                        <div class="event-card-top">
+                            <span class="event-category-landing">
+                                <i class="${eventIcon}"></i>
+                                ${eventType}
+                            </span>
+                            <span class="event-status-landing ${statusClass}">${statusLabel}</span>
+                        </div>
+
+                        <h3 class="event-title-landing">${event.title}</h3>
+                        <p class="event-description-landing">${event.shortDescription || event.description || 'Join us for this exciting alumni event and networking opportunity!'}</p>
+
+                        <div class="event-details-landing">
+                            <div class="event-detail-landing">
+                                <i class="fas fa-calendar-alt event-detail-icon-landing"></i>
+                                <span><strong>${startDate}</strong> ${startTime ? `at ${startTime}` : ''}</span>
+                            </div>
+                            <div class="event-detail-landing">
+                                <i class="fas fa-map-marker-alt event-detail-icon-landing"></i>
+                                <span>${event.location || 'Location TBD'}</span>
+                            </div>
+                        </div>
+
+                        <div class="event-card-bottom">
+                            <div class="event-date-landing">${startDate}</div>
+                            ${hyperlinkBtn}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Get appropriate icon for event type
+        function getEventTypeIcon(eventType) {
+            const type = eventType.toLowerCase();
+            if (type.includes('workshop') || type.includes('webinar')) {
+                return 'fas fa-tools';
+            } else if (type.includes('meetup') || type.includes('networking')) {
+                return 'fas fa-users';
+            } else if (type.includes('seminar') || type.includes('lecture')) {
+                return 'fas fa-graduation-cap';
+            } else if (type.includes('career') || type.includes('job')) {
+                return 'fas fa-briefcase';
+            } else if (type.includes('social') || type.includes('party')) {
+                return 'fas fa-glass-cheers';
+            } else {
+                return 'fas fa-calendar-alt';
+            }
+        }
+
+        // Handle event card clicks
+        function openEventDetails(eventId) {
+            // Navigate to full events page with event ID
+            window.location.href = `/events.html?id=${eventId}`;
+        }
+
+        loadStats();
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.preview-card, .stat-item').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+
