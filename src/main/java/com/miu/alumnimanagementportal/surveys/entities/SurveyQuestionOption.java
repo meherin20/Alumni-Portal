@@ -10,13 +10,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "survey_question_option")
 public class SurveyQuestionOption extends BaseEntity {
 
-    @EqualsAndHashCode.Include
-    private Long id;
+    // ID is handled by BaseEntity equals/hashCode
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)

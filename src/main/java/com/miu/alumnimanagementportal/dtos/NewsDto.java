@@ -34,4 +34,5 @@ public class NewsDto implements Serializable {
     @NotEmpty
     @NotBlank
     private String description;
+    private String photoUrl;
 }

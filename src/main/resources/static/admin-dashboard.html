@@ -654,7 +654,7 @@
                     <div class="nav-icon"><i class="fas fa-briefcase"></i></div>
                     <span>Job Management</span>
                 </a>
-                <a href="/news.html" class="nav-item">
+                <a href="/admin-news.html" class="nav-item">
                     <div class="nav-icon"><i class="fas fa-newspaper"></i></div>
                     <span>News & Announcements</span>
                 </a>
@@ -904,8 +904,10 @@
                         <label class="form-label" for="surveyQuestionType">Question Type</label>
                         <select id="surveyQuestionType" name="surveyQuestionType" class="form-input">
                             <option value="TEXT">Text Answer</option>
-                            <option value="MULTIPLE_CHOICE">Multiple Choice</option>
-                            <option value="RATING">Rating (1-5)</option>
+                            <option value="SINGLE_CHOICE">Single Choice</option>
+                            <option value="MULTI_CHOICE">Multiple Choice</option>
+                            <option value="YES_NO">Yes/No</option>
+                            <option value="RATING_1_5">Rating (1-5)</option>
                         </select>
                     </div>
                     <div class="form-group" style="display: flex; align-items: flex-end;">
@@ -2012,12 +2014,26 @@
         surveyCreateStatus.textContent = '';
 
         const formData = new FormData(adminSurveyForm);
+        if (surveyQuestions.length === 0) {
+            surveyCreateStatus.textContent = 'Please add at least one question to the survey';
+            surveyCreateStatus.style.color = 'red';
+            return;
+        }
+
+        const title = formData.get('surveyTitle')?.trim();
+        if (!title) {
+            surveyCreateStatus.textContent = 'Please enter a survey title';
+            surveyCreateStatus.style.color = 'red';
+            return;
+        }
+
         const surveyData = {
-            title: formData.get('surveyTitle'),
+            title: title,
             description: formData.get('surveyDesc'),
             anonymous: document.getElementById('surveyAnonymous').checked,
             questions: surveyQuestions
         };
+
 
         try {
             const response = await fetch('/api/admin/surveys', {
@@ -2027,6 +2043,8 @@
             });
 
             const result = await response.json();
+            console.log('Response:', response.status, result);
+
             if (response.ok) {
                 surveyCreateStatus.textContent = 'Survey created successfully!';
                 surveyCreateStatus.style.color = 'green';
@@ -2035,7 +2053,13 @@
                 updateSurveyQuestionsDisplay();
                 loadAdminSurveys(); // Refresh the surveys list
             } else {
-                surveyCreateStatus.textContent = result.message || 'Error creating survey';
+                let errorMessage = result.error || result.message || 'Error creating survey';
+                if (result.details) {
+                    // Handle validation errors
+                    const details = Object.entries(result.details).map(([field, message]) => `${field}: ${message}`).join(', ');
+                    errorMessage = `Validation error: ${details}`;
+                }
+                surveyCreateStatus.textContent = errorMessage;
                 surveyCreateStatus.style.color = 'red';
             }
         } catch (error) {
@@ -2058,13 +2082,30 @@
         }
 
         const question = {
-            questionText: questionText,
-            questionType: questionType,
-            required: required
+            text: questionText,
+            type: questionType,
+            required: required,
+            orderIndex: surveyQuestions.length
         };
 
-        if (questionType === 'MULTIPLE_CHOICE') {
-            question.options = options.split(',').map(opt => opt.trim()).filter(opt => opt);
+        if (questionType === 'MULTI_CHOICE' || questionType === 'SINGLE_CHOICE' || questionType === 'YES_NO') {
+            if (!options.trim()) {
+                alert('Please provide options for choice questions (comma-separated)');
+                return;
+            }
+            question.options = options.split(',').map((opt, index) => ({
+                label: opt.trim(),
+                value: opt.trim(),
+                orderIndex: index
+            })).filter(opt => opt.label);
+
+            if (question.options.length === 0) {
+                alert('Please provide at least one valid option for choice questions');
+                return;
+            }
+        } else {
+            // For TEXT and RATING_1_5 questions, ensure options is an empty array
+            question.options = [];
         }
 
         surveyQuestions.push(question);
@@ -2130,7 +2171,7 @@
                             <td>${survey.title}</td>
                             <td>${survey.questions ? survey.questions.length : 0}</td>
                             <td>${survey.responses || 0}</td>
-                            <td>${new Date(survey.createdAt).toLocaleDateString()}</td>
+                            <td>${survey.id ? 'Created' : 'N/A'}</td>
                             <td>
                                 <button class="btn-ghost" onclick="viewSurveyResults(${survey.id})">Results</button>
                                 <button class="btn-ghost" onclick="deleteSurvey(${survey.id})">Delete</button>
@@ -2176,7 +2217,7 @@
     // Question type change handler
     document.getElementById('surveyQuestionType').addEventListener('change', (e) => {
         const optionsRow = document.getElementById('surveyOptionsRow');
-        if (e.target.value === 'MULTIPLE_CHOICE') {
+        if (e.target.value === 'MULTI_CHOICE' || e.target.value === 'SINGLE_CHOICE' || e.target.value === 'YES_NO') {
             optionsRow.style.display = 'block';
         } else {
             optionsRow.style.display = 'none';

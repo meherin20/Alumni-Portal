@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News Feed · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-accent: linear-gradient(135deg, var(--accent), var(--primary));
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 75%, #1a1a2e 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(1deg); }
+            66% { transform: translateY(10px) rotate(-1deg); }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(15, 15, 35, 0.95);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-logo::before {
+            content: "📰";
+            font-size: 1.75rem;
+            filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: #1e40af;
+        }
+
+        .nav-link:hover {
+            color: #ffffff;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #1e40af, #1d4ed8);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-left: 1rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .main-content {
+            min-height: 100vh;
+            padding: 8rem 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 4.5rem);
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .filters-section {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+        }
+
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .news-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+        }
+
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.08), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .news-card:hover::before {
+            left: 100%;
+        }
+
+        .news-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .news-category {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 1.5rem;
+            border: 1px solid transparent;
+        }
+
+        .news-category.alumni-achievements {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .news-category.career-milestones {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .news-category.awards {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .news-category.startups {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .news-category.publications {
+            background: rgba(6, 182, 212, 0.15);
+            color: #06b6d4;
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .news-category.research-innovation {
+            background: rgba(236, 72, 153, 0.15);
+            color: #ec4899;
+            border-color: rgba(236, 72, 153, 0.3);
+        }
+
+        .news-category.campus-memories {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .news-category.throwback-stories {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        .news-category.announcement {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+
+        .news-category.university-updates {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .news-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .news-title::before {
+            content: '📄';
+            font-size: 1.5rem;
+            opacity: 0.8;
+            flex-shrink: 0;
+        }
+
+        .news-description {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .news-photo {
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: rgba(15, 23, 42, 0.3);
+            width: 100%;
+            position: relative;
+            min-height: 250px;
+            max-height: 400px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .news-photo img {
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+            max-height: 400px;
+            object-fit: cover;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        .news-photo img[style*="display: none"] {
+            display: none !important;
+        }
+
+        .news-photo:has(img[style*="display: none"]) {
+            display: none !important;
+        }
+
+        .news-photo:hover {
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: var(--shadow-md);
+        }
+
+        .news-photo:hover img {
+            transform: scale(1.05);
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .news-date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .news-date::before {
+            content: '📅';
+            font-size: 0.9rem;
+        }
+
+        .news-read-more {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: var(--transition);
+        }
+
+        .news-read-more:hover {
+            color: var(--secondary);
+            transform: translateX(2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.6);
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 1rem;
+        }
+
+        .empty-message {
+            font-size: 1rem;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1 / -1;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .stat-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .stat-card:hover::before {
+            left: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-icon {
+            width: 4rem;
+            height: 4rem;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .news-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .filters-section {
+                gap: 0.75rem;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+
+            .news-card {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/index.html" class="nav-logo">
+                Alumni Portal
+            </a>
+            <div class="nav-links">
+                <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/events.html" class="nav-link">Events</a>
+                <a href="/jobs.html" class="nav-link">Jobs</a>
+                <a href="/news-feed.html" class="nav-link active">News</a>
+                <a href="/surveys.html" class="nav-link">Surveys</a>
+                <a href="/login.html" class="nav-link">Login</a>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="hero-section">
+            <h1 class="hero-title">Alumni News Feed</h1>
+            <p class="hero-subtitle">
+                Stay connected with your alma mater through inspiring stories, achievements, and updates from the alumni community.
+            </p>
+        </div>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-icon">📰</div>
+                <span class="stat-number" id="total-news">0</span>
+                <span class="stat-label">News Items</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎓</div>
+                <span class="stat-number" id="alumni-stories">0</span>
+                <span class="stat-label">Alumni Stories</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏆</div>
+                <span class="stat-number" id="achievements">0</span>
+                <span class="stat-label">Achievements</span>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🚀</div>
+                <span class="stat-number" id="innovations">0</span>
+                <span class="stat-label">Innovations</span>
+            </div>
+        </div>
+
+        <div class="filters-section">
+            <button class="filter-btn active" data-filter="all">All News</button>
+            <button class="filter-btn" data-filter="ALUMNI_ACHIEVEMENTS">Alumni Achievements</button>
+            <button class="filter-btn" data-filter="CAREER_MILESTONES">Career Milestones</button>
+            <button class="filter-btn" data-filter="AWARDS">Awards & Recognition</button>
+            <button class="filter-btn" data-filter="STARTUPS">Startups</button>
+            <button class="filter-btn" data-filter="PUBLICATIONS">Publications</button>
+            <button class="filter-btn" data-filter="RESEARCH_INNOVATION">Research & Innovation</button>
+            <button class="filter-btn" data-filter="CAMPUS_MEMORIES">Campus Memories</button>
+            <button class="filter-btn" data-filter="THROWBACK_STORIES">Throwback Stories</button>
+            <button class="filter-btn" data-filter="ANNOUNCEMENT">Announcements</button>
+            <button class="filter-btn" data-filter="UNIVERSITY_UPDATES">University Updates</button>
+        </div>
+
+        <div class="news-grid" id="news-grid">
+            <div class="loading-state">
+                <div class="loading-spinner"></div>
+                <h3 class="empty-title">Loading News...</h3>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Navbar scroll effect
+        (function() {
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+        })();
+
+        // Theme toggle
+        (function() {
+            const stored = window.localStorage.getItem('amp-theme');
+            if (stored === 'light') {
+                document.body.setAttribute('data-theme', 'light');
+            }
+            const btn = document.getElementById('theme-toggle');
+            const icon = document.getElementById('theme-toggle-icon');
+            if (!btn || !icon) return;
+
+            function syncIcon() {
+                const isLight = document.body.getAttribute('data-theme') === 'light';
+                icon.textContent = isLight ? '☀️' : '🌙';
+            }
+            syncIcon();
+
+            btn.addEventListener('click', () => {
+                const isLight = document.body.getAttribute('data-theme') === 'light';
+                if (isLight) {
+                    document.body.removeAttribute('data-theme');
+                    window.localStorage.setItem('amp-theme', 'dark');
+                } else {
+                    document.body.setAttribute('data-theme', 'light');
+                    window.localStorage.setItem('amp-theme', 'light');
+                }
+                syncIcon();
+
+                document.body.style.transition = 'all 0.3s ease';
+                setTimeout(() => {
+                    document.body.style.transition = '';
+                }, 300);
+            });
+        })();
+
+        let newsData = [];
+        let currentFilter = 'all';
+
+        function getNewsTypeClass(type) {
+            const classMap = {
+                'ALUMNI_ACHIEVEMENTS': 'alumni-achievements',
+                'CAREER_MILESTONES': 'career-milestones',
+                'AWARDS': 'awards',
+                'STARTUPS': 'startups',
+                'PUBLICATIONS': 'publications',
+                'RESEARCH_INNOVATION': 'research-innovation',
+                'CAMPUS_MEMORIES': 'campus-memories',
+                'THROWBACK_STORIES': 'throwback-stories',
+                'ANNOUNCEMENT': 'announcement',
+                'UNIVERSITY_UPDATES': 'university-updates'
+            };
+            return classMap[type] || 'announcement';
+        }
+
+        function getNewsTypeDisplay(type) {
+            const displayMap = {
+                'ALUMNI_ACHIEVEMENTS': 'Alumni Achievements',
+                'CAREER_MILESTONES': 'Career Milestones',
+                'AWARDS': 'Awards & Recognition',
+                'STARTUPS': 'Startups & Entrepreneurship',
+                'PUBLICATIONS': 'Publications & Research',
+                'RESEARCH_INNOVATION': 'Research & Innovation Highlights',
+                'CAMPUS_MEMORIES': 'Fun Campus Memories',
+                'THROWBACK_STORIES': 'Throwback Stories',
+                'ANNOUNCEMENT': 'Announcements',
+                'UNIVERSITY_UPDATES': 'University Updates'
+            };
+            return displayMap[type] || type;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+    function renderNews(newsItems) {
+        const grid = document.getElementById('news-grid');
+        console.log('Rendering news items:', newsItems);
+
+        if (!newsItems.length) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📰</div>
+                        <h3 class="empty-title">No News Available</h3>
+                        <p class="empty-message">Check back later for the latest updates from the alumni community.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = newsItems.map((news, index) => {
+                const typeClass = getNewsTypeClass(news.newsType);
+                const typeDisplay = getNewsTypeDisplay(news.newsType);
+                const formattedDate = formatDate(news.createdDate || news.lastModifiedDate);
+
+                // Debug logging
+                console.log(`Rendering news ${news.id}:`, {
+                    title: news.title,
+                    photoUrl: news.photoUrl,
+                    hasPhotoUrl: !!news.photoUrl
+                });
+
+                // Build photo HTML if photoUrl exists
+                let photoHtml = '';
+                if (news.photoUrl && news.photoUrl.trim() !== '') {
+                    let photoUrl = news.photoUrl.trim();
+                    console.log(`Building photo HTML for news ${news.id} with photoUrl: "${photoUrl}"`);
+                    
+                    // Extract filename from photoUrl (handle both "/uploads/news/filename" and just "filename")
+                    let filename = photoUrl;
+                    if (photoUrl.includes('/')) {
+                        filename = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
+                    }
+                    // Remove any leading slashes
+                    filename = filename.replace(/^\/+/, '');
+                    
+                    console.log(`Extracted filename: "${filename}"`);
+                    
+                    // Try static resource path first (most reliable)
+                    const photoSrc = `/uploads/news/${encodeURIComponent(filename)}`;
+                    console.log(`Photo source URL: ${photoSrc}`);
+                    
+                    photoHtml = `
+                        <div class="news-photo" data-news-id="${news.id}">
+                            <img 
+                                src="${photoSrc}" 
+                                alt="${(news.title || 'News photo').replace(/"/g, '&quot;')}" 
+                                loading="lazy"
+                                onerror="
+                                    console.error('❌ Failed to load image from static path:', this.src);
+                                    const fallbackSrc = '/news/photo/${encodeURIComponent(filename)}';
+                                    console.log('🔄 Trying controller endpoint:', fallbackSrc);
+                                    if (this.dataset.retryCount === undefined) {
+                                        this.dataset.retryCount = '1';
+                                        this.src = fallbackSrc;
+                                    } else {
+                                        console.error('❌ Both paths failed. Original photoUrl: ${photoUrl.replace(/'/g, "\\'")}');
+                                        this.style.display = 'none';
+                                        this.parentElement.style.display = 'none';
+                                    }
+                                " 
+                                onload="console.log('✅ Image loaded successfully:', this.src);"
+                            />
+                        </div>
+                    `;
+                } else {
+                    console.log(`News ${news.id} has no photoUrl`);
+                }
+
+                return `
+                    <article class="news-card" style="animation-delay: ${index * 0.1}s;">
+                        <span class="news-category ${typeClass}">${typeDisplay}</span>
+                        ${photoHtml}
+                        <h3 class="news-title">${news.title || 'Untitled News'}</h3>
+                        <p class="news-description">${news.description || ''}</p>
+                        <div class="news-meta">
+                            <span class="news-date">${formattedDate}</span>
+                            <a href="#" class="news-read-more" onclick="showNewsDetail(${news.id})">
+                                Read More
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function filterNews() {
+            let filteredNews = newsData;
+
+            if (currentFilter !== 'all') {
+                filteredNews = newsData.filter(news => news.newsType === currentFilter);
+            }
+
+            renderNews(filteredNews);
+        }
+
+        function updateStats() {
+            const totalNews = newsData.length;
+            const alumniStories = newsData.filter(news =>
+                ['ALUMNI_ACHIEVEMENTS', 'THROWBACK_STORIES', 'CAMPUS_MEMORIES'].includes(news.newsType)
+            ).length;
+            const achievements = newsData.filter(news =>
+                ['AWARDS', 'CAREER_MILESTONES', 'STARTUPS'].includes(news.newsType)
+            ).length;
+            const innovations = newsData.filter(news =>
+                ['RESEARCH_INNOVATION', 'PUBLICATIONS'].includes(news.newsType)
+            ).length;
+
+            document.getElementById('total-news').textContent = totalNews;
+            document.getElementById('alumni-stories').textContent = alumniStories;
+            document.getElementById('achievements').textContent = achievements;
+            document.getElementById('innovations').textContent = innovations;
+        }
+
+        async function loadNews() {
+            const grid = document.getElementById('news-grid');
+            grid.innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <h3 class="empty-title">Loading News...</h3>
+                </div>
+            `;
+
+            try {
+                const response = await fetch('/news');
+                const data = await response.json();
+
+                if (data.data && Array.isArray(data.data)) {
+                    newsData = data.data;
+                    console.log('=== LOADED NEWS DATA ===');
+                    console.log('Total news items:', newsData.length);
+                    console.log('Full data:', JSON.stringify(newsData, null, 2));
+                    
+                    newsData.forEach((news, idx) => {
+                        console.log(`News ${idx + 1} (ID: ${news.id}):`, {
+                            title: news.title,
+                            photoUrl: news.photoUrl,
+                            photoUrlType: typeof news.photoUrl,
+                            photoUrlLength: news.photoUrl ? news.photoUrl.length : 0,
+                            hasPhotoUrl: !!news.photoUrl
+                        });
+                    });
+                    
+                    updateStats();
+                    filterNews();
+                } else {
+                    newsData = [];
+                    grid.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">📰</div>
+                            <h3 class="empty-title">No News Available</h3>
+                            <p class="empty-message">Check back later for the latest updates from the alumni community.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading news:', error);
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">⚠️</div>
+                        <h3 class="empty-title">Unable to Load News</h3>
+                        <p class="empty-message">Please check your connection and try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function showNewsDetail(newsId) {
+            // In a real implementation, this could open a modal or navigate to a detail page
+            const news = newsData.find(n => n.id === newsId);
+            if (news) {
+                const photoInfo = news.photoUrl ? '\n\n📸 Photo available' : '';
+                alert(`📄 ${news.title}\n\n${news.description}\n\n🏷️ Category: ${getNewsTypeDisplay(news.newsType)}\n📅 Date: ${formatDate(news.createdDate || news.lastModifiedDate)}${photoInfo}`);
+            }
+        }
+
+        // Filter button event listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                e.target.classList.add('active');
+
+                // Update current filter
+                currentFilter = e.target.getAttribute('data-filter');
+
+                // Filter news
+                filterNews();
+            });
+        });
+
+        // Initialize
+        loadNews();
+
+        // Add card animations
+        const style = document.createElement('style');
+        style.textContent = `
+            .news-card {
+                animation: fadeInUp 0.6s ease-out both;
+            }
+
+            .news-card:nth-child(1) { animation-delay: 0.1s; }
+            .news-card:nth-child(2) { animation-delay: 0.2s; }
+            .news-card:nth-child(3) { animation-delay: 0.3s; }
+            .news-card:nth-child(4) { animation-delay: 0.4s; }
+            .news-card:nth-child(5) { animation-delay: 0.5s; }
+            .news-card:nth-child(6) { animation-delay: 0.6s; }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
