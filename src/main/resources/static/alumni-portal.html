@@ -9,56 +9,456 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
     <style>
-        body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-success: linear-gradient(135deg, #10b981, #34d399);
+        }
 
-        /* Job management specific styles */
+        body { 
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Modern Scene Card */
+        .scene-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .scene-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+        }
+
+        .scene-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .scene-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .scene-badge {
+            background: var(--gradient-success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Modern Form Cards */
+        .form-card, .list-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before, .list-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .form-card:hover::before, .list-card:hover::before {
+            left: 100%;
+        }
+
+        .form-card:hover, .list-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        /* Modern Form Inputs */
+        .form-row {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-row input,
+        .form-row textarea,
+        .form-row select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-row input:focus,
+        .form-row textarea:focus,
+        .form-row select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .form-row input::placeholder,
+        .form-row textarea::placeholder {
+            color: var(--text-muted);
+        }
+
         .form-row-inline {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-row-inline .form-row {
             margin-bottom: 0;
         }
 
-        .status-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
+        /* Modern Buttons */
+        .btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
             border-radius: 50%;
-            margin-right: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
 
-        .status-success {
-            background-color: #10b981;
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
-        .status-warning {
-            background-color: #f59e0b;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-ghost {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
             cursor: pointer;
             font-size: 0.875rem;
-            transition: all 0.2s ease;
+            font-weight: 500;
+            transition: var(--transition);
         }
 
         .btn-ghost:hover {
             background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
+            color: var(--primary);
+            transform: translateY(-1px);
         }
 
+        .btn-ghost.btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Modern Tables */
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+        }
+
+        .table thead {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .table th {
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .table td {
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Dots */
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .status-dot.status-alert {
+            background-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .status-success {
+            background-color: var(--success);
+            color: var(--success);
+        }
+
+        .status-warning {
+            background-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Hints */
+        .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        .hint code {
+            background: rgba(99, 102, 241, 0.2);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border: 1px solid;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        /* Request Action Buttons */
+        .btn-request-accept {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .btn-request-accept:hover {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .btn-request-decline {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .btn-request-decline:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* Notification Bell */
+        .notif-bell.has-notification {
+            position: relative;
+        }
+
+        .notif-bell.has-notification::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: var(--error);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--error);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
             .form-row-inline {
                 grid-template-columns: 1fr;
             }
+
+            .scene-header {
+                padding: 1.5rem;
+            }
+
+            .scene-title {
+                font-size: 1.5rem;
+            }
+
+            .form-card, .list-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -99,9 +499,9 @@
         <section class="scene-card">
             <header class="scene-header">
                 <div>
-                    <div class="scene-title">My alumni profile</div>
+                    <div class="scene-title">My Alumni Profile</div>
                     <p class="scene-subtitle">
-                        Update your basic information, upload CV / portfolio links, and change your password.
+                        Manage your profile information, connections, and account settings. Keep your information up to date to help students connect with you.
                     </p>
                 </div>
                 <span class="scene-badge">Alumni</span>
@@ -241,17 +641,16 @@
                             <button type="submit" class="btn-ghost">Load messages</button>
                         </div>
                     </form>
-                    <table class="table" id="alumni-messages-table">
-                        <thead>
-                        <tr>
-                            <th>From</th>
-                            <th>Message</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <p class="hint">Messages are visible only if the add request was accepted.</p>
+                    <div id="alumni-messages-container" style="display: none; margin-top: 1.5rem;">
+                        <div id="alumni-conversations-list" style="display: grid; gap: 1rem;">
+                            <!-- Conversations will be loaded here -->
+                        </div>
+                    </div>
+                    <div id="alumni-messages-empty" style="text-align: center; padding: 2rem; color: var(--text-secondary); display: none;">
+                        <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.5; margin-bottom: 1rem; display: block;"></i>
+                        <p>No messages yet. Messages will appear here once students send them.</p>
+                    </div>
+                    <p class="hint">Messages are visible only if the add request was accepted. Click on a conversation to view and reply.</p>
                 </div>
 
                 <div class="form-card" id="job-management-section" style="display: none;">
@@ -415,28 +814,134 @@
             requestsTableBody.innerHTML = '<tr><td colspan="3">No pending requests.</td></tr>';
             return;
         }
-        requestsTableBody.innerHTML = requests.map(r => `
+        
+        // Get the alumni email from the form to validate against
+        const formAlumniEmail = (document.getElementById('alumniEmailRequests')?.value || '').toLowerCase().trim();
+        
+        requestsTableBody.innerHTML = requests.map(r => {
+            // CRITICAL FIX: The backend returns studentEmail and alumniEmail
+            // We MUST use studentEmail (the person who SENT the request)
+            // NOT alumniEmail (the person who RECEIVED the request)
+            
+            // Get raw values from API response
+            let rawStudentName = r.studentName || '';
+            let rawStudentEmail = r.studentEmail || '';
+            let rawAlumniName = r.alumniName || '';
+            let rawAlumniEmail = r.alumniEmail || '';
+            
+            // CRITICAL FIX: If studentEmail matches the form's alumni email, 
+            // it means the backend returned swapped data. We MUST swap them back.
+            let studentName = rawStudentName;
+            let studentEmail = rawStudentEmail;
+            
+            if (formAlumniEmail && rawStudentEmail.toLowerCase().trim() === formAlumniEmail) {
+                // Backend returned wrong data - studentEmail field contains alumni email
+                // Swap: use alumniEmail as studentEmail, and alumniName as studentName
+                console.error('FIXING SWAPPED DATA: studentEmail field contains alumni email!');
+                console.error('Before fix - studentEmail:', rawStudentEmail, 'alumniEmail:', rawAlumniEmail);
+                
+                studentEmail = rawAlumniEmail; // Swap: use alumniEmail as studentEmail
+                studentName = rawAlumniName;   // Swap: use alumniName as studentName
+                
+                console.error('After fix - studentEmail:', studentEmail, 'studentName:', studentName);
+            }
+            
+            // Final validation - studentEmail should NOT equal form's alumni email
+            if (formAlumniEmail && studentEmail.toLowerCase().trim() === formAlumniEmail) {
+                console.error('CRITICAL: After fix attempt, studentEmail still equals alumni email!');
+                console.error('This means both emails in response are the same or backend has serious issue');
+                console.error('Full request object:', JSON.stringify(r, null, 2));
+            }
+            
+            // Final validation before rendering
+            const finalStudentEmail = studentEmail || '';
+            const finalStudentName = studentName || 'Unknown Student';
+            
+            console.log('=== FINAL RENDER VALUES ===');
+            console.log('Request ID:', r.id);
+            console.log('Form Alumni Email:', formAlumniEmail);
+            console.log('Final Student Name:', finalStudentName);
+            console.log('Final Student Email:', finalStudentEmail);
+            console.log('Does studentEmail match alumni email?', finalStudentEmail.toLowerCase().trim() === formAlumniEmail);
+            console.log('Raw API Response:', JSON.stringify(r, null, 2));
+            console.log('===========================');
+            
+            // Ensure we're displaying student email, NOT alumni email
+            const displayEmail = finalStudentEmail;
+            const displayName = finalStudentName;
+            
+            return `
             <tr data-request-id="${r.id}">
-                <td><span class="status-dot status-alert"></span>${r.studentName}</td>
-                <td>${r.studentEmail}</td>
+                <td><span class="status-dot status-alert"></span>${displayName}</td>
+                <td>${displayEmail}</td>
                 <td>
                     <button type="button" class="btn-ghost btn-request-accept">Accept</button>
                     <button type="button" class="btn-ghost btn-request-decline">Delete</button>
                 </td>
             </tr>
-        `).join('');
+            `;
+        }).join('');
     }
 
     requestsForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = requestsForm.alumniEmailRequests.value || '';
         if (!email) return;
+        
+        requestsTableBody.innerHTML = '<tr><td colspan="3">Loading...</td></tr>';
+        
         try {
             const res = await fetch('/friend-requests/alumni?email=' + encodeURIComponent(email));
             const json = await res.json().catch(() => ({}));
+            
+            if (!res.ok) {
+                requestsTableBody.innerHTML = `<tr><td colspan="3">Error: ${json.message || 'Failed to load requests'}</td></tr>`;
+                return;
+            }
+            
             const requests = json.data || [];
-            renderRequests(requests);
+            console.log('Connection requests received:', requests); // Debug log
+            
+            // Verify we have student data and fix any swapped fields
+            const fixedRequests = requests.map((req, idx) => {
+                // Handle both camelCase and snake_case JSON formats
+                const studentName = req.studentName || req.student_name || '';
+                const studentEmail = req.studentEmail || req.student_email || '';
+                const alumniName = req.alumniName || req.alumni_name || '';
+                const alumniEmail = req.alumniEmail || req.alumni_email || '';
+                
+                console.log(`Request ${idx} - Raw:`, req);
+                console.log(`Request ${idx} - Parsed:`, {
+                    id: req.id,
+                    studentName: studentName,
+                    studentEmail: studentEmail,
+                    alumniName: alumniName,
+                    alumniEmail: alumniEmail
+                });
+                
+                // Safety check: If studentEmail equals alumniEmail, something is wrong
+                // In this case, we know the alumni email from the form, so we can detect the swap
+                const formAlumniEmail = requestsForm.alumniEmailRequests.value.toLowerCase().trim();
+                if (studentEmail.toLowerCase().trim() === formAlumniEmail) {
+                    console.error('ERROR DETECTED: Student email matches form alumni email! Fields may be swapped.');
+                    console.error('This means the API returned studentEmail as the alumni email. This is a backend issue.');
+                }
+                
+                // Return normalized request object
+                return {
+                    id: req.id,
+                    studentName: studentName,
+                    studentEmail: studentEmail,
+                    alumniName: alumniName,
+                    alumniEmail: alumniEmail,
+                    status: req.status,
+                    createdDate: req.createdDate || req.created_date
+                };
+            });
+            
+            renderRequests(fixedRequests);
         } catch (err) {
+            console.error('Error loading requests:', err);
             requestsTableBody.innerHTML = '<tr><td colspan="3">Error loading requests.</td></tr>';
         }
     });
@@ -468,17 +973,73 @@
     const contactsTableBody = document.querySelector('#alumni-contacts-table tbody');
     const notifBell = document.getElementById('alumni-notif-bell');
 
-    function renderMessages(messages) {
+    function renderMessages(messages, alumniEmail) {
+        const container = document.getElementById('alumni-messages-container');
+        const emptyState = document.getElementById('alumni-messages-empty');
+        const conversationsList = document.getElementById('alumni-conversations-list');
+        
         if (!messages.length) {
-            messagesTableBody.innerHTML = '<tr><td colspan="2">No messages yet.</td></tr>';
+            container.style.display = 'none';
+            emptyState.style.display = 'block';
             return;
         }
-        messagesTableBody.innerHTML = messages.map(m => `
-            <tr>
-                <td>${m.senderName} (${m.senderEmail})</td>
-                <td>${m.content}</td>
-            </tr>
-        `).join('');
+        
+        container.style.display = 'block';
+        emptyState.style.display = 'none';
+        
+        // Group messages by sender
+        const conversations = {};
+        messages.forEach(msg => {
+            const senderEmail = msg.senderEmail;
+            if (!conversations[senderEmail]) {
+                conversations[senderEmail] = {
+                    senderName: msg.senderName,
+                    senderEmail: senderEmail,
+                    messages: []
+                };
+            }
+            conversations[senderEmail].messages.push(msg);
+        });
+        
+        // Render each conversation
+        conversationsList.innerHTML = Object.values(conversations).map(conv => {
+            const latestMessage = conv.messages[conv.messages.length - 1];
+            const date = new Date(latestMessage.createdDate);
+            const timeString = date.toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+            
+            return `
+                <div class="conversation-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.5rem; cursor: pointer; transition: var(--transition);" 
+                     onclick="openConversation('${conv.senderEmail}', '${conv.senderName}', '${alumniEmail}')"
+                     onmouseover="this.style.borderColor='rgba(99, 102, 241, 0.5)'; this.style.transform='translateY(-2px)'"
+                     onmouseout="this.style.borderColor='var(--border)'; this.style.transform='translateY(0)'">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.75rem;">
+                        <div>
+                            <h4 style="margin: 0; font-size: 1.125rem; font-weight: 600; color: var(--text-primary);">${conv.senderName}</h4>
+                            <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.875rem;">${conv.senderEmail}</p>
+                        </div>
+                        <span style="color: var(--text-muted); font-size: 0.75rem;">${timeString}</span>
+                    </div>
+                    <p style="margin: 0; color: var(--text-secondary); font-size: 0.875rem; line-height: 1.5;">
+                        ${latestMessage.content.length > 100 ? latestMessage.content.substring(0, 100) + '...' : latestMessage.content}
+                    </p>
+                    <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+                        <span style="color: var(--primary); font-size: 0.75rem; font-weight: 600;">
+                            <i class="fas fa-comments"></i> ${conv.messages.length} message${conv.messages.length !== 1 ? 's' : ''}
+                        </span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    function openConversation(studentEmail, studentName, alumniEmail) {
+        // Open conversation in a modal or redirect to messages page
+        window.location.href = `/messages.html?recipient=${encodeURIComponent(studentEmail)}&sender=${encodeURIComponent(alumniEmail)}`;
     }
 
     messagesForm.addEventListener('submit', async (e) => {
@@ -489,9 +1050,11 @@
             const res = await fetch('/messages/inbox?recipientEmail=' + encodeURIComponent(email));
             const json = await res.json().catch(() => ({}));
             const messages = json.data || [];
-            renderMessages(messages);
+            renderMessages(messages, email);
         } catch (err) {
-            messagesTableBody.innerHTML = '<tr><td colspan="2">Error loading messages.</td></tr>';
+            console.error('Error loading messages:', err);
+            document.getElementById('alumni-messages-container').innerHTML = 
+                '<div style="text-align: center; padding: 2rem; color: var(--error);">Error loading messages. Please try again.</div>';
         }
     });
 
@@ -519,12 +1082,15 @@
                 return;
             }
             contactsTableBody.innerHTML = contacts.map(c => {
-                const last = lastBySender[c.studentEmail];
+                // Ensure we're using student fields, not alumni fields
+                const studentName = c.studentName || (c.student && (c.student.firstName + ' ' + c.student.lastName)) || 'Unknown Student';
+                const studentEmail = c.studentEmail || (c.student && c.student.email) || '';
+                const last = lastBySender[studentEmail];
                 const text = last ? last.content : 'No messages yet.';
                 return `
                     <tr>
-                        <td>${c.studentName}</td>
-                        <td>${c.studentEmail}</td>
+                        <td>${studentName}</td>
+                        <td>${studentEmail}</td>
                         <td>${text}</td>
                     </tr>
                 `;

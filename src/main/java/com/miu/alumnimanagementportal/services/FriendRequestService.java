@@ -18,6 +18,8 @@ public interface FriendRequestService {
     void accept(Long id);
 
     void decline(Long id);
+
+    void block(Long id);
 }
 
 

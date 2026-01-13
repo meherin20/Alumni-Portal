@@ -68,9 +68,25 @@ public class UserController {
     }
 
     @PostMapping("/{id}/profile")
-    public ResponseEntity<?> createProfile(@Valid @RequestBody ProfileDto profileDto) {
-        profileService.create(profileDto);
-        return converter.buildResponseEntity(Map.of("message", "Profile created successfully"), HttpStatus.ACCEPTED);
+    public ResponseEntity<?> createProfile(@PathVariable Long id, @Valid @RequestBody ProfileDto profileDto) {
+        UserDto user = userService.getUserById(id);
+        if (user == null) {
+            return converter.buildResponseEntity(Map.of("message", "User not found"), HttpStatus.NOT_FOUND);
+        }
+        // Check if user already has a profile
+        if (user.getProfile() != null && user.getProfile().getId() != null) {
+            // Update existing profile instead
+            return converter.buildResponseEntity(
+                    Map.of("data", profileService.update(profileDto, id), "message", "Profile updated successfully"), 
+                    HttpStatus.OK);
+        }
+        ProfileDto createdProfile = profileService.create(profileDto);
+        // Link profile to user
+        UserDto userUpdate = new UserDto();
+        userUpdate.setId(id);
+        userUpdate.setProfile(createdProfile);
+        userService.update(userUpdate, id);
+        return converter.buildResponseEntity(Map.of("data", createdProfile, "message", "Profile created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/profile")

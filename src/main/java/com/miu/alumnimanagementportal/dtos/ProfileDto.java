@@ -19,9 +19,6 @@ public class ProfileDto implements Serializable {
     Long version;
     Date createdDate;
     Date lastModifiedDate;
-    @NotNull
-    @NotEmpty
-    @NotBlank
     String phone;
 
     String profileImage;

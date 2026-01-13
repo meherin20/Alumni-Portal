@@ -62,6 +62,12 @@ public class FriendRequestController {
         friendRequestService.decline(id);
         return converter.buildResponseEntity(Map.of("message", "Request declined"), HttpStatus.OK);
     }
+
+    @PostMapping("/{id}/block")
+    public ResponseEntity<?> block(@PathVariable Long id) {
+        friendRequestService.block(id);
+        return converter.buildResponseEntity(Map.of("message", "User blocked"), HttpStatus.OK);
+    }
 }
 
 

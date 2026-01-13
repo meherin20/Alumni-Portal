@@ -36,13 +36,24 @@ public class MessageServiceImpl implements MessageService {
             throw new ResourceNotFoundException("User with email " + dto.getRecipientEmail() + " not found");
         }
 
+        // Check if connection is accepted (bidirectional - student to alumni OR alumni to student)
         boolean hasAccepted = friendRequestRepository.existsByStudentEmailAndAlumniEmailAndStatus(
                 sender.getEmail(),
                 recipient.getEmail(),
                 FriendRequestStatus.ACCEPTED
         );
+        
+        // Also check reverse direction (alumni replying to student)
         if (!hasAccepted) {
-            throw new BadRequestException("You can only message alumni after your add request has been accepted.");
+            hasAccepted = friendRequestRepository.existsByStudentEmailAndAlumniEmailAndStatus(
+                    recipient.getEmail(),
+                    sender.getEmail(),
+                    FriendRequestStatus.ACCEPTED
+            );
+        }
+        
+        if (!hasAccepted) {
+            throw new BadRequestException("You can only message users after your connection request has been accepted.");
         }
 
         Message msg = new Message();
@@ -56,6 +67,14 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<MessageDto> getInbox(String recipientEmail) {
         return messageRepository.findByRecipientEmailOrderByCreatedDateAsc(recipientEmail)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MessageDto> getConversation(String email1, String email2) {
+        return messageRepository.findConversation(email1, email2)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());

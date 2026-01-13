@@ -34,6 +34,14 @@ public class MessageController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/conversation")
+    public ResponseEntity<?> conversation(@RequestParam String email1, @RequestParam String email2) {
+        return converter.buildResponseEntity(
+                Map.of("data", messageService.getConversation(email1, email2)),
+                HttpStatus.OK
+        );
+    }
 }
 
 

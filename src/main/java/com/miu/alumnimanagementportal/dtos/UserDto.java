@@ -6,7 +6,6 @@ import lombok.Value;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
 /**
  * DTO for {@link com.miu.alumnimanagementportal.entities.User}
@@ -24,12 +23,13 @@ public class UserDto implements Serializable {
     /**
      * Password is optional here so that profile-only updates (e.g. from the
      * alumni portal) can succeed without forcing the client to send it.
-     * Length validation is only applied when a non-null value is provided.
+     * Basic validation: minimum 3 characters, accepts letters and numbers.
      */
-    @Size(message = "Password length should be between 5 and 10", min = 5, max = 10)
+    @Size(message = "Password must be at least 3 characters", min = 3)
     String password;
 
-    Set<RoleDto> roles;
+    // ONE user = ONE role only (ADMIN, ALUMNI, or STUDENT)
+    RoleDto role;
 
     ProfileDto profile;
 }

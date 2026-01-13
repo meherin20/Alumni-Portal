@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alumni Profile · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 75%, #1a1a2e 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .main-content {
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            background: var(--bg-glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            border: 4px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-title {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .profile-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .meta-item i {
+            color: var(--primary);
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .content-section {
+            background: var(--bg-glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .info-item {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .work-item, .achievement-item, .education-item {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .work-item:last-child, .achievement-item:last-child, .education-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .work-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .work-company {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .work-period {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .link-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            margin-right: 1rem;
+            transition: var(--transition);
+        }
+
+        .link-item:hover {
+            color: var(--secondary);
+        }
+
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/alumni-directory.html" class="nav-logo">Alumni Portal</a>
+            <div class="nav-links">
+                <a href="/alumni-directory.html" class="nav-link">← Back to Directory</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div id="profile-container">
+            <div class="profile-header" id="profile-header">
+                <div class="profile-avatar" id="profile-avatar">👤</div>
+                <div class="profile-info">
+                    <h1 class="profile-name" id="profile-name">Loading...</h1>
+                    <div class="profile-title" id="profile-title">-</div>
+                    <div class="profile-meta" id="profile-meta"></div>
+                </div>
+                <div class="profile-actions" id="profile-actions"></div>
+            </div>
+
+            <div class="content-grid">
+                <div>
+                    <div class="content-section">
+                        <h2 class="section-title"><i class="fas fa-briefcase"></i> Work Experience</h2>
+                        <div id="work-experience"></div>
+                    </div>
+
+                    <div class="content-section" style="margin-top: 2rem;">
+                        <h2 class="section-title"><i class="fas fa-trophy"></i> Professional Achievements</h2>
+                        <div id="achievements"></div>
+                    </div>
+
+                    <div class="content-section" style="margin-top: 2rem;">
+                        <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Education</h2>
+                        <div id="education"></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="content-section">
+                        <h2 class="section-title"><i class="fas fa-info-circle"></i> Contact Information</h2>
+                        <div id="contact-info"></div>
+                    </div>
+
+                    <div class="content-section" style="margin-top: 2rem;">
+                        <h2 class="section-title"><i class="fas fa-link"></i> Links</h2>
+                        <div id="links"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentUserEmail = null;
+        let currentAlumniId = null;
+
+        try {
+            currentUserEmail = localStorage.getItem('amp-user-email');
+        } catch (e) {
+            console.error('Error getting user email:', e);
+        }
+
+        async function loadProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const alumniId = urlParams.get('id');
+
+            if (!alumniId) {
+                document.getElementById('profile-container').innerHTML = '<div class="content-section"><h2>Error</h2><p>Alumni ID not provided.</p></div>';
+                return;
+            }
+
+            currentAlumniId = alumniId;
+
+            try {
+                const response = await fetch(`/api/alumni-directory/${alumniId}`);
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    const errorMsg = data.message || data.error || 'Failed to load alumni profile.';
+                    console.error('API Error:', errorMsg, data);
+                    document.getElementById('profile-container').innerHTML = `<div class="content-section"><h2>Error</h2><p>${errorMsg}</p></div>`;
+                    return;
+                }
+
+                if (data.data) {
+                    renderProfile(data.data);
+                } else {
+                    document.getElementById('profile-container').innerHTML = '<div class="content-section"><h2>Error</h2><p>Alumni not found.</p></div>';
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                document.getElementById('profile-container').innerHTML = `<div class="content-section"><h2>Error</h2><p>Failed to load profile: ${error.message || 'Unknown error'}</p></div>`;
+            }
+        }
+
+        async function renderProfile(alumni) {
+            const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim();
+            const initials = `${alumni.firstName?.[0] || ''}${alumni.lastName?.[0] || ''}`.toUpperCase();
+
+            // Avatar
+            const avatarEl = document.getElementById('profile-avatar');
+            if (alumni.profileImage) {
+                avatarEl.innerHTML = `<img src="${alumni.profileImage}" alt="${fullName}" />`;
+            } else {
+                avatarEl.textContent = initials || '👤';
+            }
+
+            // Name and title
+            document.getElementById('profile-name').textContent = fullName || 'Alumni';
+            document.getElementById('profile-title').textContent = alumni.jobTitle || 'Alumni';
+
+            // Meta info
+            const metaEl = document.getElementById('profile-meta');
+            metaEl.innerHTML = `
+                ${alumni.department ? `<div class="meta-item"><i class="fas fa-graduation-cap"></i><span>${alumni.department}</span></div>` : ''}
+                ${alumni.passingYear ? `<div class="meta-item"><i class="fas fa-calendar"></i><span>Graduated ${alumni.passingYear}</span></div>` : ''}
+                ${alumni.company ? `<div class="meta-item"><i class="fas fa-building"></i><span>${alumni.company}</span></div>` : ''}
+            `;
+
+            // Actions
+            const actionsEl = document.getElementById('profile-actions');
+            if (currentUserEmail) {
+                const connectionStatus = await checkConnectionStatus(currentUserEmail, alumni.email);
+                
+                if (connectionStatus.status === 'ACCEPTED') {
+                    actionsEl.innerHTML = `
+                        <button class="btn btn-success" onclick="openMessage('${alumni.email}')">
+                            <i class="fas fa-envelope"></i> Message
+                        </button>
+                    `;
+                } else if (connectionStatus.status === 'PENDING') {
+                    actionsEl.innerHTML = `
+                        <button class="btn btn-secondary" disabled>
+                            <i class="fas fa-clock"></i> Request Pending
+                        </button>
+                    `;
+                } else if (connectionStatus.status === 'BLOCKED') {
+                    actionsEl.innerHTML = `
+                        <button class="btn btn-secondary" disabled>
+                            <i class="fas fa-ban"></i> Blocked
+                        </button>
+                    `;
+                } else {
+                    actionsEl.innerHTML = `
+                        <button class="btn btn-primary" onclick="sendConnectionRequest('${alumni.email}')">
+                            <i class="fas fa-user-plus"></i> Add Connection
+                        </button>
+                    `;
+                }
+            }
+
+            // Work Experience
+            const workEl = document.getElementById('work-experience');
+            if (alumni.workExperiences && alumni.workExperiences.length > 0) {
+                workEl.innerHTML = alumni.workExperiences.map(we => `
+                    <div class="work-item">
+                        <div class="work-title">${we.designation || 'Position'}</div>
+                        <div class="work-company">${we.companyName || ''}</div>
+                        <div class="work-period">${we.startYear || ''} - ${we.endYear || 'Present'}</div>
+                    </div>
+                `).join('');
+            } else {
+                workEl.innerHTML = '<p style="color: var(--text-secondary);">No work experience listed.</p>';
+            }
+
+            // Achievements
+            const achievementsEl = document.getElementById('achievements');
+            if (alumni.professionalAchievements && alumni.professionalAchievements.length > 0) {
+                achievementsEl.innerHTML = alumni.professionalAchievements.map(pa => `
+                    <div class="achievement-item">
+                        <div class="work-title">${pa.title || ''}</div>
+                        <div class="work-company">${pa.description || ''}</div>
+                        <div class="work-period">${pa.year ? new Date(pa.year).getFullYear() : ''}</div>
+                    </div>
+                `).join('');
+            } else {
+                achievementsEl.innerHTML = '<p style="color: var(--text-secondary);">No achievements listed.</p>';
+            }
+
+            // Education
+            const educationEl = document.getElementById('education');
+            if (alumni.educationDetails && alumni.educationDetails.length > 0) {
+                educationEl.innerHTML = alumni.educationDetails.map(ed => `
+                    <div class="education-item">
+                        <div class="work-title">${ed.degree || ''} - ${ed.course || ''}</div>
+                        <div class="work-company">${ed.institutionName || ''}</div>
+                        <div class="work-period">${ed.passingYear || ''} | CGPA: ${ed.cgpa || 'N/A'}</div>
+                    </div>
+                `).join('');
+            } else {
+                educationEl.innerHTML = '<p style="color: var(--text-secondary);">No education details listed.</p>';
+            }
+
+            // Contact Info
+            const contactEl = document.getElementById('contact-info');
+            contactEl.innerHTML = `
+                ${alumni.email ? `<div class="info-item"><div class="info-label">Email</div><div class="info-value">${alumni.email}</div></div>` : ''}
+                ${alumni.phone ? `<div class="info-item"><div class="info-label">Phone</div><div class="info-value">${alumni.phone}</div></div>` : ''}
+                ${alumni.address ? `
+                    <div class="info-item">
+                        <div class="info-label">Address</div>
+                        <div class="info-value">
+                            ${alumni.address.street || ''}<br>
+                            ${alumni.address.city || ''}, ${alumni.address.state || ''}<br>
+                            ${alumni.address.zipCode || ''}, ${alumni.address.country || ''}
+                        </div>
+                    </div>
+                ` : ''}
+            `;
+
+            // Links
+            const linksEl = document.getElementById('links');
+            const links = [];
+            if (alumni.cvLink) links.push(`<a href="${alumni.cvLink}" target="_blank" class="link-item"><i class="fas fa-file-pdf"></i> CV/Resume</a>`);
+            if (alumni.portfolioLink) links.push(`<a href="${alumni.portfolioLink}" target="_blank" class="link-item"><i class="fas fa-globe"></i> Portfolio</a>`);
+            
+            if (links.length > 0) {
+                linksEl.innerHTML = links.join('');
+            } else {
+                linksEl.innerHTML = '<p style="color: var(--text-secondary);">No links provided.</p>';
+            }
+        }
+
+        async function checkConnectionStatus(studentEmail, alumniEmail) {
+            try {
+                const response = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(studentEmail)}&alumniEmail=${encodeURIComponent(alumniEmail)}`);
+                const data = await response.json();
+                return data.data || { connected: false, canMessage: false, status: null };
+            } catch (error) {
+                console.error('Error checking connection status:', error);
+                return { connected: false, canMessage: false, status: null };
+            }
+        }
+
+        async function sendConnectionRequest(alumniEmail) {
+            if (!currentUserEmail) {
+                alert('Please login to send connection requests.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/friend-requests', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        studentEmail: currentUserEmail,
+                        alumniEmail: alumniEmail
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Connection request sent successfully!');
+                    loadProfile(); // Refresh profile
+                } else {
+                    alert(data.message || 'Failed to send connection request.');
+                }
+            } catch (error) {
+                console.error('Error sending connection request:', error);
+                alert('Failed to send connection request. Please try again.');
+            }
+        }
+
+        function openMessage(alumniEmail) {
+            // Navigate to messaging page or open modal
+            window.location.href = `/messages.html?recipient=${encodeURIComponent(alumniEmail)}`;
+        }
+
+        loadProfile();
+    </script>
+</body>
+</html>
+

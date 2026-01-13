@@ -9,11 +9,410 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
     <style>
-        body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-success: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        body { 
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
+            background-attachment: fixed;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Modern Scene Card */
+        .scene-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .scene-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border-bottom: 1px solid var(--border);
+            padding: 2rem;
+        }
+
+        .scene-title {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .scene-subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .scene-badge {
+            background: var(--gradient-success);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Modern Form Cards */
+        .form-card, .list-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before, .list-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .form-card:hover::before, .list-card:hover::before {
+            left: 100%;
+        }
+
+        .form-card:hover, .list-card:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-label::before {
+            content: '';
+            width: 4px;
+            height: 16px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        /* Modern Form Inputs */
+        .form-row {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-row input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-row input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+            background: rgba(15, 23, 42, 0.6);
+        }
+
+        .form-row input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-row-inline {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row-inline .form-row {
+            margin-bottom: 0;
+        }
+
+        /* Modern Buttons */
+        .btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(99, 102, 241, 0.5);
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .btn-ghost.btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Modern Tables */
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 1.5rem;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .table th {
+            padding: 1rem;
+            text-align: left;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.05);
+            transform: scale(1.01);
+        }
+
+        .table td {
+            padding: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table td a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .table td a:hover {
+            color: var(--secondary);
+            text-decoration: underline;
+        }
+
+        /* Button States */
+        .btn-ghost:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-ghost.btn-sm[disabled] {
+            opacity: 0.4;
+        }
+
+        /* Hints */
+        .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-row-inline {
+                grid-template-columns: 1fr;
+            }
+
+            .scene-header {
+                padding: 1.5rem;
+            }
+
+            .scene-title {
+                font-size: 1.5rem;
+            }
+
+            .form-card, .list-card {
+                padding: 1.5rem;
+            }
+
+            .table {
+                font-size: 0.8rem;
+            }
+
+            .table th,
+            .table td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        /* Loading State */
+        .table tbody tr td {
+            text-align: center;
+        }
+
+        .table tbody tr td[colspan] {
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Smooth animations */
+        .form-card, .list-card {
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .list-card {
+            animation-delay: 0.1s;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
-body>
+<body>
     <div class="page-shell">
         <header class="app-nav">
             <div class="app-nav-left">
@@ -44,9 +443,9 @@ body>
             <section class="scene-card">
                 <header class="scene-header">
                     <div>
-                        <div class="scene-title">Alumni directory</div>
+                        <div class="scene-title">Alumni Directory 🔍</div>
                         <p class="scene-subtitle">
-                            Browse alumni profiles by passing year, department, and company. This view is read-only for students.
+                            Search and connect with alumni from your university. Browse profiles by passing year, department, and company. This view is read-only for students.
                         </p>
                     </div>
                     <span class="scene-badge">Read-only</span>
@@ -133,27 +532,91 @@ body>
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
+            
+            // Build query parameters matching the API
+            const params = new URLSearchParams();
+            const gradYear = formData.get('gradYear');
+            const department = formData.get('department');
+            const company = formData.get('company');
+            
+            if (gradYear) params.append('graduationYear', gradYear);
+            if (department) params.append('department', department);
+            if (company) params.append('company', company);
+
+            tbody.innerHTML = '<tr><td colspan="5">Searching...</td></tr>';
 
             try {
-                const response = await fetch(`/alumni/search?${params}`);
-                const data = await response.json();
+                const response = await fetch(`/api/alumni-directory/search?${params.toString()}`);
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    const errorMsg = result.message || result.error || 'Failed to load alumni data.';
+                    console.error('API Error:', errorMsg, result);
+                    tbody.innerHTML = `<tr><td colspan="5">${errorMsg}</td></tr>`;
+                    return;
+                }
 
                 tbody.innerHTML = '';
-                data.forEach(alumni => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${alumni.name}</td>
-                        <td>${alumni.department}</td>
-                        <td>${alumni.passingYear}</td>
-                        <td><button class="btn-ghost btn-sm" onclick="addAlumni(${alumni.id})">Add</button></td>
-                        <td><button class="btn-ghost btn-sm" onclick="messageAlumni(${alumni.id})">Message</button></td>
-                    `;
-                    tbody.appendChild(row);
-                });
+                
+                    if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+                    // Check connection status for each alumni
+                    const studentEmail = formData.get('studentEmail');
+                    const alumniWithStatus = await Promise.all(result.data.map(async (alumni) => {
+                        let connectionStatus = { status: null, canMessage: false };
+                        if (studentEmail && alumni.email) {
+                            try {
+                                const statusResponse = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(studentEmail)}&alumniEmail=${encodeURIComponent(alumni.email)}`);
+                                const statusData = await statusResponse.json();
+                                if (statusData.data) {
+                                    connectionStatus = statusData.data;
+                                }
+                            } catch (err) {
+                                console.error('Error checking connection status:', err);
+                            }
+                        }
+                        return { ...alumni, connectionStatus };
+                    }));
+
+                    alumniWithStatus.forEach(alumni => {
+                        const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim() || 'Alumni';
+                        const row = document.createElement('tr');
+                        row.style.cursor = 'pointer';
+                        row.onclick = () => {
+                            window.location.href = `/alumni-profile.html?id=${alumni.id}`;
+                        };
+                        
+                        let addButton = '';
+                        let messageButton = '';
+                        
+                        if (alumni.connectionStatus.status === 'ACCEPTED') {
+                            addButton = '<button class="btn-ghost btn-sm" disabled style="opacity: 0.5;">Connected</button>';
+                            messageButton = `<button class="btn-ghost btn-sm" onclick="event.stopPropagation(); messageAlumni('${alumni.email || ''}', ${alumni.id})">Message</button>`;
+                        } else if (alumni.connectionStatus.status === 'PENDING') {
+                            addButton = '<button class="btn-ghost btn-sm" disabled>Pending</button>';
+                            messageButton = '<button class="btn-ghost btn-sm" disabled>Message</button>';
+                        } else if (alumni.connectionStatus.status === 'BLOCKED') {
+                            addButton = '<button class="btn-ghost btn-sm" disabled>Blocked</button>';
+                            messageButton = '<button class="btn-ghost btn-sm" disabled>Message</button>';
+                        } else {
+                            addButton = `<button class="btn-ghost btn-sm" onclick="event.stopPropagation(); addAlumni('${alumni.email || ''}', ${alumni.id})">Add</button>`;
+                            messageButton = '<button class="btn-ghost btn-sm" disabled>Message</button>';
+                        }
+                        
+                        row.innerHTML = `
+                            <td><a href="/alumni-profile.html?id=${alumni.id}" style="color: inherit; text-decoration: underline; font-weight: 500;" onclick="event.stopPropagation();">${fullName}</a></td>
+                            <td>${alumni.department || '-'}</td>
+                            <td>${alumni.passingYear || '-'}</td>
+                            <td>${addButton}</td>
+                            <td>${messageButton}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No alumni found. Try adjusting your search criteria.</td></tr>';
+                }
             } catch (error) {
                 console.error('Error fetching alumni:', error);
-                tbody.innerHTML = '<tr><td colspan="5">Error loading alumni data</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="5">Error loading alumni data: ${error.message || 'Unknown error'}</td></tr>`;
             }
         });
 
@@ -162,12 +625,88 @@ body>
             tbody.innerHTML = '';
         });
 
-        function addAlumni(id) {
-            alert(`Add alumni ${id} functionality would be implemented here`);
+        async function addAlumni(alumniEmail, alumniId) {
+            const studentEmail = document.getElementById('studentEmail').value.trim();
+            
+            if (!studentEmail) {
+                alert('Please enter your email address first.');
+                return;
+            }
+
+            if (!alumniEmail) {
+                alert('Alumni email not available.');
+                return;
+            }
+
+            console.log('Sending connection request:', { studentEmail, alumniEmail });
+
+            try {
+                const response = await fetch('/friend-requests', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        studentEmail: studentEmail,
+                        alumniEmail: alumniEmail
+                    })
+                });
+
+                let data;
+                try {
+                    data = await response.json();
+                } catch (parseError) {
+                    console.error('Failed to parse response:', parseError);
+                    const text = await response.text();
+                    console.error('Response text:', text);
+                    alert('Server error. Please try again later.');
+                    return;
+                }
+
+                console.log('Response status:', response.status, 'Data:', data);
+
+                if (response.ok) {
+                    alert('Connection request sent successfully!');
+                    // Refresh the search results
+                    form.dispatchEvent(new Event('submit'));
+                } else {
+                    // Show specific error message from backend
+                    const errorMessage = data.message || data.error || 'Failed to send connection request.';
+                    alert(errorMessage);
+                    console.error('Connection request error:', data);
+                }
+            } catch (error) {
+                console.error('Error sending connection request:', error);
+                alert('Failed to send connection request. Please check your connection and try again.');
+            }
         }
 
-        function messageAlumni(id) {
-            alert(`Message alumni ${id} functionality would be implemented here`);
+        async function messageAlumni(alumniEmail, alumniId) {
+            const studentEmail = document.getElementById('studentEmail').value;
+            
+            if (!studentEmail) {
+                alert('Please enter your email address first.');
+                return;
+            }
+
+            if (!alumniEmail) {
+                alert('Alumni email not available.');
+                return;
+            }
+
+            // Check connection status first
+            try {
+                const statusResponse = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(studentEmail)}&alumniEmail=${encodeURIComponent(alumniEmail)}`);
+                const statusData = await statusResponse.json();
+
+                if (statusData.data && statusData.data.status === 'ACCEPTED') {
+                    // Connection accepted, allow messaging
+                    window.location.href = `/messages.html?recipient=${encodeURIComponent(alumniEmail)}`;
+                } else {
+                    alert('You can only message alumni after your connection request has been accepted.');
+                }
+            } catch (error) {
+                console.error('Error checking connection status:', error);
+                alert('Failed to check connection status. Please try again.');
+            }
         }
     </script>
 </body>

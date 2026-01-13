@@ -2,13 +2,8 @@ package com.miu.alumnimanagementportal.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -19,15 +14,15 @@ public class User extends BaseEntity{
     @Column(name = "lastname", nullable = false)
     private String lastName;
 
-    @Column(unique=true)
+    @Column(unique=true, nullable = false)
     private String email;
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    // ONE user = ONE role only (ADMIN, ALUMNI, or STUDENT)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
+    private Role role;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "profile_id", unique = true)

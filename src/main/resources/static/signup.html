@@ -698,22 +698,16 @@
         const strengthText = document.getElementById('strength-text');
 
         function checkPasswordStrength(password) {
-            let score = 0;
-            if (password.length >= 8) score++;
-            if (/[a-z]/.test(password)) score++;
-            if (/[A-Z]/.test(password)) score++;
-            if (/[0-9]/.test(password)) score++;
-            if (/[^A-Za-z0-9]/.test(password)) score++;
-
             if (password) {
                 strengthContainer.style.display = 'flex';
-
-                if (score <= 2) {
+                
+                // Basic strength indicator - just shows if password meets minimum requirement
+                if (password.length < 3) {
                     strengthFill.className = 'strength-fill strength-weak';
-                    strengthText.textContent = 'Weak';
-                } else if (score <= 4) {
+                    strengthText.textContent = 'Too short (min 3 characters)';
+                } else if (password.length < 6) {
                     strengthFill.className = 'strength-fill strength-medium';
-                    strengthText.textContent = 'Medium';
+                    strengthText.textContent = 'Good';
                 } else {
                     strengthFill.className = 'strength-fill strength-strong';
                     strengthText.textContent = 'Strong';
@@ -750,16 +744,10 @@
                 return;
             }
 
-            // Validate password strength
+            // Basic password validation - at least 3 characters
             const password = form.password.value;
-            const hasLower = /[a-z]/.test(password);
-            const hasUpper = /[A-Z]/.test(password);
-            const hasNumber = /[0-9]/.test(password);
-            const hasSpecial = /[^A-Za-z0-9]/.test(password);
-            const isLongEnough = password.length >= 8;
-
-            if (!(hasLower && hasUpper && hasNumber && hasSpecial && isLongEnough)) {
-                showMessage('Password must be at least 8 characters with uppercase, lowercase, number, and special character.', 'error');
+            if (password.length < 3) {
+                showMessage('Password must be at least 3 characters long.', 'error');
                 return;
             }
 

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile · Alumni Management Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --gradient-primary: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f0f23 75%, #1a1a2e 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .main-content {
+            padding: 8rem 2rem 4rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .page-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: var(--bg-glass);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            padding: 0.875rem 1rem;
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #10b981;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .add-item-btn {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px dashed var(--border);
+            color: var(--primary);
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .add-item-btn:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+        }
+
+        .item-card {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .remove-item-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .remove-item-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/dashboard.html" class="nav-logo">Alumni Portal</a>
+            <div class="nav-links">
+                <a href="/dashboard.html" class="nav-link">Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">Edit Your Profile</h1>
+            <p class="page-subtitle">Update your information to help students and other alumni connect with you.</p>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <form id="profile-form">
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-user"></i> Basic Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="+1 (555) 123-4567" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="department">Department</label>
+                        <input type="text" id="department" name="department" class="form-input" placeholder="e.g. Computer Science" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="passingYear">Graduation Year</label>
+                        <input type="text" id="passingYear" name="passingYear" class="form-input" placeholder="e.g. 2020" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="jobTitle">Job Title</label>
+                        <input type="text" id="jobTitle" name="jobTitle" class="form-input" placeholder="e.g. Senior Software Engineer" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="cvLink">CV/Resume Link</label>
+                        <input type="url" id="cvLink" name="cvLink" class="form-input" placeholder="https://..." />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="portfolioLink">Portfolio Link</label>
+                        <input type="url" id="portfolioLink" name="portfolioLink" class="form-input" placeholder="https://..." />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-briefcase"></i> Work Experience</h2>
+                <div id="work-experience-list"></div>
+                <button type="button" class="add-item-btn" onclick="addWorkExperience()">
+                    <i class="fas fa-plus"></i> Add Work Experience
+                </button>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-trophy"></i> Professional Achievements</h2>
+                <div id="achievements-list"></div>
+                <button type="button" class="add-item-btn" onclick="addAchievement()">
+                    <i class="fas fa-plus"></i> Add Achievement
+                </button>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Education</h2>
+                <div id="education-list"></div>
+                <button type="button" class="add-item-btn" onclick="addEducation()">
+                    <i class="fas fa-plus"></i> Add Education
+                </button>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Profile
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/dashboard.html'">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+            </div>
+        </form>
+    </main>
+
+    <script>
+        let currentUserId = null;
+        let currentProfileId = null;
+        let workExperienceCount = 0;
+        let achievementCount = 0;
+        let educationCount = 0;
+
+        // Get current user ID from localStorage or API
+        async function initialize() {
+            try {
+                const email = localStorage.getItem('amp-user-email');
+                if (email) {
+                    const userResponse = await fetch(`/users/by-email?email=${encodeURIComponent(email)}`);
+                    const userData = await userResponse.json();
+                    if (userData.data && userData.data.id) {
+                        currentUserId = userData.data.id;
+                        await loadProfile();
+                    }
+                }
+            } catch (error) {
+                console.error('Error initializing:', error);
+                showAlert('Failed to load user information. Please login again.', 'error');
+            }
+        }
+
+        async function loadProfile() {
+            try {
+                const response = await fetch(`/api/profile/user/${currentUserId}`);
+                const data = await response.json();
+
+                if (data.data) {
+                    populateForm(data.data);
+                    currentProfileId = data.data.id;
+                } else {
+                    // Create new profile
+                    showAlert('Profile not found. Fill in the form to create your profile.', 'error');
+                }
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                // Profile might not exist yet, allow user to create one
+            }
+        }
+
+        function populateForm(profile) {
+            document.getElementById('phone').value = profile.phone || '';
+            document.getElementById('department').value = profile.department || '';
+            document.getElementById('passingYear').value = profile.passingYear || '';
+            document.getElementById('jobTitle').value = profile.jobTitle || '';
+            document.getElementById('cvLink').value = profile.cvLink || '';
+            document.getElementById('portfolioLink').value = profile.portfolioLink || '';
+
+            // Populate work experiences
+            if (profile.workExperiences && profile.workExperiences.length > 0) {
+                profile.workExperiences.forEach(we => {
+                    addWorkExperience(we);
+                });
+            }
+
+            // Populate achievements
+            if (profile.professionalAchievements && profile.professionalAchievements.length > 0) {
+                profile.professionalAchievements.forEach(pa => {
+                    addAchievement(pa);
+                });
+            }
+
+            // Populate education
+            if (profile.educationDetails && profile.educationDetails.length > 0) {
+                profile.educationDetails.forEach(ed => {
+                    addEducation(ed);
+                });
+            }
+        }
+
+        function addWorkExperience(we = null) {
+            const id = workExperienceCount++;
+            const container = document.getElementById('work-experience-list');
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.id = `work-${id}`;
+            card.innerHTML = `
+                <button type="button" class="remove-item-btn" onclick="removeItem('work-${id}')">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Company Name</label>
+                        <input type="text" name="workCompany_${id}" class="form-input" value="${we?.companyName || ''}" placeholder="e.g. Google" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Designation</label>
+                        <input type="text" name="workDesignation_${id}" class="form-input" value="${we?.designation || ''}" placeholder="e.g. Software Engineer" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Start Year</label>
+                        <input type="text" name="workStartYear_${id}" class="form-input" value="${we?.startYear || ''}" placeholder="e.g. 2020" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Year</label>
+                        <input type="text" name="workEndYear_${id}" class="form-input" value="${we?.endYear || ''}" placeholder="e.g. 2023 or Present" />
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        function addAchievement(pa = null) {
+            const id = achievementCount++;
+            const container = document.getElementById('achievements-list');
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.id = `achievement-${id}`;
+            card.innerHTML = `
+                <button type="button" class="remove-item-btn" onclick="removeItem('achievement-${id}')">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" name="achievementTitle_${id}" class="form-input" value="${pa?.title || ''}" placeholder="e.g. Best Employee Award" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <input type="text" name="achievementYear_${id}" class="form-input" value="${pa?.year ? new Date(pa.year).getFullYear() : ''}" placeholder="e.g. 2023" />
+                    </div>
+                    <div class="form-group full-width">
+                        <label class="form-label">Description</label>
+                        <textarea name="achievementDescription_${id}" class="form-textarea" placeholder="Describe the achievement...">${pa?.description || ''}</textarea>
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        function addEducation(ed = null) {
+            const id = educationCount++;
+            const container = document.getElementById('education-list');
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.id = `education-${id}`;
+            card.innerHTML = `
+                <button type="button" class="remove-item-btn" onclick="removeItem('education-${id}')">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Institution Name</label>
+                        <input type="text" name="educationInstitution_${id}" class="form-input" value="${ed?.institutionName || ''}" placeholder="e.g. University Name" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Degree</label>
+                        <input type="text" name="educationDegree_${id}" class="form-input" value="${ed?.degree || ''}" placeholder="e.g. Bachelor's" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Course</label>
+                        <input type="text" name="educationCourse_${id}" class="form-input" value="${ed?.course || ''}" placeholder="e.g. Computer Science" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Passing Year</label>
+                        <input type="text" name="educationPassingYear_${id}" class="form-input" value="${ed?.passingYear || ''}" placeholder="e.g. 2020" maxlength="4" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">CGPA</label>
+                        <input type="text" name="educationCgpa_${id}" class="form-input" value="${ed?.cgpa || ''}" placeholder="e.g. 3.8" />
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+
+        function removeItem(id) {
+            document.getElementById(id).remove();
+        }
+
+        function showAlert(message, type) {
+            const container = document.getElementById('alert-container');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type === 'success') {
+                setTimeout(() => alert.remove(), 5000);
+            }
+        }
+
+        document.getElementById('profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(e.target);
+            
+            // Build profile object
+            const profileData = {
+                phone: formData.get('phone') || '',
+                department: formData.get('department') || '',
+                passingYear: formData.get('passingYear') || '',
+                jobTitle: formData.get('jobTitle') || '',
+                cvLink: formData.get('cvLink') || '',
+                portfolioLink: formData.get('portfolioLink') || '',
+                workExperiences: [],
+                professionalAchievements: [],
+                educationDetails: []
+            };
+
+            // Collect work experiences
+            for (let i = 0; i < workExperienceCount; i++) {
+                const card = document.getElementById(`work-${i}`);
+                if (card) {
+                    const company = formData.get(`workCompany_${i}`);
+                    const designation = formData.get(`workDesignation_${i}`);
+                    if (company || designation) {
+                        profileData.workExperiences.push({
+                            companyName: company || '',
+                            designation: designation || '',
+                            startYear: formData.get(`workStartYear_${i}`) || '',
+                            endYear: formData.get(`workEndYear_${i}`) || ''
+                        });
+                    }
+                }
+            }
+
+            // Collect achievements
+            for (let i = 0; i < achievementCount; i++) {
+                const card = document.getElementById(`achievement-${i}`);
+                if (card) {
+                    const title = formData.get(`achievementTitle_${i}`);
+                    if (title) {
+                        const year = formData.get(`achievementYear_${i}`);
+                        profileData.professionalAchievements.push({
+                            title: title,
+                            year: year ? new Date(year, 0, 1) : null,
+                            description: formData.get(`achievementDescription_${i}`) || ''
+                        });
+                    }
+                }
+            }
+
+            // Collect education
+            for (let i = 0; i < educationCount; i++) {
+                const card = document.getElementById(`education-${i}`);
+                if (card) {
+                    const institution = formData.get(`educationInstitution_${i}`);
+                    if (institution) {
+                        profileData.educationDetails.push({
+                            institutionName: institution,
+                            degree: formData.get(`educationDegree_${i}`) || '',
+                            course: formData.get(`educationCourse_${i}`) || '',
+                            passingYear: formData.get(`educationPassingYear_${i}`) || '',
+                            cgpa: formData.get(`educationCgpa_${i}`) || ''
+                        });
+                    }
+                }
+            }
+
+            try {
+                let response;
+                if (currentProfileId) {
+                    // Update existing profile
+                    profileData.id = currentProfileId;
+                    response = await fetch(`/users/${currentUserId}/profile`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(profileData)
+                    });
+                } else {
+                    // Create new profile (via user profile creation endpoint)
+                    response = await fetch(`/users/${currentUserId}/profile`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(profileData)
+                    });
+                }
+
+                const data = await response.json().catch(() => ({}));
+
+                if (response.ok) {
+                    showAlert('Profile saved successfully!', 'success');
+                    if (data.data && data.data.id) {
+                        currentProfileId = data.data.id;
+                    }
+                    // Reload profile to get updated data
+                    setTimeout(() => {
+                        if (currentUserId) {
+                            loadProfile();
+                        }
+                    }, 1000);
+                } else {
+                    const errorMsg = data.message || data.error || 'Failed to save profile. Please check your input and try again.';
+                    console.error('Profile save error:', data);
+                    showAlert(errorMsg, 'error');
+                }
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showAlert('Network error. Please check your connection and try again.', 'error');
+            }
+        });
+
+        initialize();
+    </script>
+</body>
+</html>
+
