@@ -143,20 +143,29 @@ public class UserServiceImpl implements UserService {
         
         // Update profile if provided
         if (userDto.getProfile() != null) {
-            Profile profileToSet = converter.convert(userDto.getProfile(), Profile.class);
+            ProfileDto profileDto = userDto.getProfile();
             if (existing.getProfile() != null) {
-                // Update existing profile - preserve ID and user relationship
-                profileToSet.setId(existing.getProfile().getId());
-                profileToSet.setUser(existing); // Set user relationship
-                // Preserve address if exists
-                if (existing.getProfile().getAddress() != null) {
-                    profileToSet.setAddress(existing.getProfile().getAddress());
-                }
+                // Update existing profile - update only provided fields, preserve collections
+                Profile existingProfile = existing.getProfile();
+                
+                // Update basic fields if provided (allow empty strings to clear fields)
+                if (profileDto.getPhone() != null) existingProfile.setPhone(profileDto.getPhone());
+                if (profileDto.getProfileImage() != null) existingProfile.setProfileImage(profileDto.getProfileImage());
+                if (profileDto.getDepartment() != null) existingProfile.setDepartment(profileDto.getDepartment());
+                if (profileDto.getPassingYear() != null) existingProfile.setPassingYear(profileDto.getPassingYear());
+                if (profileDto.getJobTitle() != null) existingProfile.setJobTitle(profileDto.getJobTitle());
+                if (profileDto.getCvLink() != null) existingProfile.setCvLink(profileDto.getCvLink());
+                if (profileDto.getPortfolioLink() != null) existingProfile.setPortfolioLink(profileDto.getPortfolioLink());
+                
+                // Preserve collections - only update if explicitly provided in DTO
+                // If collections are null in DTO, they are not being updated, so preserve existing
+                // Collections are managed separately through their own endpoints
             } else {
                 // Create new profile
-                profileToSet.setUser(existing); // Set user relationship
+                Profile newProfile = converter.convert(profileDto, Profile.class);
+                newProfile.setUser(existing); // Set user relationship
+                existing.setProfile(newProfile);
             }
-            existing.setProfile(profileToSet);
         }
         
         // Preserve role - don't update role when updating profile

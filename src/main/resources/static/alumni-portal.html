@@ -1122,8 +1122,8 @@
         }
         alumniUser.profile.phone = basicForm.phone.value || alumniUser.profile.phone || '';
         alumniUser.profile.department = basicForm.department.value || alumniUser.profile.department || '';
-        // Backend field is graduationYear; keep UI label as "Passing year"
-        alumniUser.profile.graduationYear = basicForm.passingYear.value || alumniUser.profile.graduationYear || '';
+        // Backend field is passingYear; keep UI label as "Passing year"
+        alumniUser.profile.passingYear = basicForm.passingYear.value || alumniUser.profile.passingYear || '';
         alumniUser.profile.jobTitle = basicForm.jobTitle.value || alumniUser.profile.jobTitle || '';
         alumniUser.profile.cvLink = basicForm.cvLink.value || alumniUser.profile.cvLink || '';
         alumniUser.profile.portfolioLink = basicForm.portfolioLink.value || alumniUser.profile.portfolioLink || '';
@@ -1138,14 +1138,23 @@
             basicMsg.className = 'alert';
             if (!res.ok) {
                 basicMsg.classList.add('alert-error');
-                basicMsg.textContent = data.message || 'Failed to save profile.';
+                // Check for error message in different possible formats
+                let errorMsg = data.message || data.error || 'Failed to save profile.';
+                // If validation errors, show details
+                if (data.details && typeof data.details === 'object') {
+                    const details = Object.entries(data.details).map(([field, msg]) => `${field}: ${msg}`).join(', ');
+                    errorMsg = details || errorMsg;
+                }
+                basicMsg.textContent = errorMsg;
+                console.error('Profile save error:', data);
             } else {
                 basicMsg.textContent = 'Profile saved.';
             }
             basicMsg.style.display = 'block';
         } catch (err) {
             basicMsg.className = 'alert alert-error';
-            basicMsg.textContent = 'Network error while saving profile.';
+            basicMsg.textContent = 'Network error while saving profile: ' + (err.message || 'Unknown error');
+            console.error('Network error:', err);
             basicMsg.style.display = 'block';
         }
     });
@@ -1178,7 +1187,7 @@
                 const fullName = ((user.firstName || '') + ' ' + (user.lastName || '')).trim();
                 if (basicForm.fullName) basicForm.fullName.value = fullName;
                 const profile = user.profile || {};
-                if (basicForm.passingYear) basicForm.passingYear.value = profile.graduationYear || '';
+                if (basicForm.passingYear) basicForm.passingYear.value = profile.passingYear || '';
                 if (basicForm.department) basicForm.department.value = profile.department || '';
                 if (basicForm.jobTitle) basicForm.jobTitle.value = profile.jobTitle || '';
                 if (basicForm.cvLink) basicForm.cvLink.value = profile.cvLink || '';

@@ -796,6 +796,7 @@
                                 <tr>
                                     <th>User</th>
                                     <th>Email</th>
+                                    <th>Role</th>
                                     <th>Graduation</th>
                                     <th>Department</th>
                                     <th>Company</th>
@@ -1409,9 +1410,28 @@
 
                 if (data.success && data.data) {
                     data.data.forEach(user => {
-                        const nameParts = (user.name || 'Unknown User').split(' ');
-                        const initials = nameParts.map(n => n.charAt(0)).join('').toUpperCase();
+                        // Construct full name from firstName and lastName
+                        const firstName = user.firstName || '';
+                        const lastName = user.lastName || '';
+                        const fullName = (firstName + ' ' + lastName).trim() || 'Unknown User';
+                        const nameParts = fullName.split(' ').filter(n => n.length > 0);
+                        const initials = nameParts.length > 0 
+                            ? nameParts.map(n => n.charAt(0)).join('').toUpperCase().substring(0, 2)
+                            : 'UU';
                         const isActive = user.is_active !== false; // Assume active if not specified as false
+                        
+                        // Get role title
+                        const roleTitle = user.role && user.role.title ? user.role.title : '–';
+                        
+                        // Determine role badge color
+                        let roleBadgeClass = 'status-badge';
+                        if (roleTitle.toUpperCase() === 'ADMIN') {
+                            roleBadgeClass += ' status-active'; // Use active style for admin
+                        } else if (roleTitle.toUpperCase() === 'ALUMNI') {
+                            roleBadgeClass += ' status-active'; // Use active style for alumni
+                        } else if (roleTitle.toUpperCase() === 'STUDENT') {
+                            roleBadgeClass += ' status-active'; // Use active style for student
+                        }
 
                         const row = document.createElement('tr');
                         row.innerHTML = `
@@ -1419,15 +1439,29 @@
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <div class="user-avatar">${initials}</div>
                                     <div>
-                                        <div style="font-weight: 600; color: var(--admin-text-primary);">${user.name || 'Unknown'}</div>
+                                        <div style="font-weight: 600; color: var(--admin-text-primary);">${fullName}</div>
                                         <div style="font-size: 12px; color: var(--admin-text-muted);">ID: ${user.id}</div>
                                     </div>
                                 </div>
                             </td>
                             <td style="color: var(--admin-text-secondary);">${user.email || '–'}</td>
-                            <td>${user.graduationYear || '–'}</td>
-                            <td>${user.course || '–'}</td>
-                            <td>${user.industry || '–'}</td>
+                            <td>
+                                <span class="${roleBadgeClass}" style="text-transform: capitalize;">
+                                    ${roleTitle}
+                                </span>
+                            </td>
+                            <td>${user.profile && user.profile.passingYear ? user.profile.passingYear : '–'}</td>
+                            <td>${user.profile && user.profile.department ? user.profile.department : '–'}</td>
+                            <td>${
+                                (() => {
+                                    if (!user.profile || !user.profile.workExperiences) return '–';
+                                    const workExps = Array.isArray(user.profile.workExperiences) 
+                                        ? user.profile.workExperiences 
+                                        : Array.from(user.profile.workExperiences || []);
+                                    const workExp = workExps.find(we => we && we.companyName) || workExps[0];
+                                    return workExp && workExp.companyName ? workExp.companyName : '–';
+                                })()
+                            }</td>
                             <td>
                                 <span class="status-badge ${isActive ? 'status-active' : 'status-inactive'}">
                                     ${isActive ? 'Active' : 'Inactive'}
@@ -1454,7 +1488,7 @@
                 } else {
                     tbody.innerHTML = `
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
+                            <td colspan="8" style="text-align: center; padding: 40px; color: var(--admin-text-muted);">
                                 <i class="fas fa-users" style="font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.5;"></i>
                                 No users found matching your criteria.
                             </td>
