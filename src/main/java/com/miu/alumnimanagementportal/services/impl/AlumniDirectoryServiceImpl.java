@@ -29,7 +29,7 @@ public class AlumniDirectoryServiceImpl implements AlumniDirectoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AlumniDirectoryDto> searchAlumni(String name, String department, String graduationYear, String jobTitle, String company) {
+    public List<AlumniDirectoryDto> searchAlumni(String name, String email, String department, String graduationYear, String jobTitle, String company) {
         // Get all users with ALUMNI role
         List<User> allUsers = userRepository.findAll();
         
@@ -44,6 +44,13 @@ public class AlumniDirectoryServiceImpl implements AlumniDirectoryService {
                     if (name != null && !name.trim().isEmpty()) {
                         String fullName = (user.getFirstName() + " " + user.getLastName()).toLowerCase();
                         if (!fullName.contains(name.toLowerCase().trim())) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by email
+                    if (email != null && !email.trim().isEmpty()) {
+                        if (user.getEmail() == null || !user.getEmail().toLowerCase().contains(email.toLowerCase().trim())) {
                             return false;
                         }
                     }

@@ -99,19 +99,488 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* Option Cards Grid */
-        .option-cards {
+        /* Modern Profile Layout */
+        .profile-container {
             display: grid;
-            grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
-            gap: 2rem;
+            grid-template-columns: 400px 1fr;
+            gap: 2.5rem;
+            padding: 2.5rem;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 1200px) {
+            .profile-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1.5rem;
+            }
+        }
+
+        /* Profile Identity Card - Premium LinkedIn Style */
+        .profile-identity-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 0;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .profile-identity-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 24px 72px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(99, 102, 241, 0.2) inset;
+        }
+
+        .profile-identity-header {
+            background: linear-gradient(180deg, 
+                rgba(99, 102, 241, 0.25) 0%, 
+                rgba(139, 92, 246, 0.15) 50%,
+                transparent 100%);
+            padding: 3rem 2rem 5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-identity-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .profile-avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            z-index: 1;
+        }
+
+        .profile-avatar-large {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.15);
+            object-fit: cover;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            box-shadow: 
+                0 12px 40px rgba(99, 102, 241, 0.4),
+                0 0 0 8px rgba(15, 23, 42, 0.5),
+                0 0 0 12px rgba(99, 102, 241, 0.1);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-avatar-large:hover {
+            transform: scale(1.05);
+            box-shadow: 
+                0 16px 50px rgba(99, 102, 241, 0.5),
+                0 0 0 8px rgba(15, 23, 42, 0.5),
+                0 0 0 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .profile-avatar-edit {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            border: 4px solid rgba(15, 23, 42, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            z-index: 2;
+            font-size: 1.2rem;
+        }
+
+        .profile-avatar-edit:hover {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            transform: scale(1.15) rotate(15deg);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .profile-name {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.5px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .profile-department {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            z-index: 1;
+            position: relative;
+        }
+
+        .profile-graduation {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            z-index: 1;
+            position: relative;
+        }
+
+        .profile-role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-top: 1.25rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            z-index: 1;
+            position: relative;
+        }
+
+        .profile-identity-body {
             padding: 2rem;
+            background: rgba(15, 23, 42, 0.3);
+        }
+
+        .profile-identity-section {
+            padding: 1.25rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: var(--transition);
+        }
+
+        .profile-identity-section:hover {
+            padding-left: 0.5rem;
+        }
+
+        .profile-identity-section:last-child {
+            border-bottom: none;
+        }
+
+        .profile-identity-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .profile-identity-value {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        /* Profile Form Card - Premium Design */
+        .profile-form-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+            margin-bottom: 2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .profile-form-card:hover::before {
+            opacity: 1;
+        }
+
+        .profile-form-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 24px 72px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(99, 102, 241, 0.2) inset;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            font-size: 1.125rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid transparent;
+            border-image: linear-gradient(90deg, #6366f1, transparent) 1;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.3px;
+            position: relative;
+        }
+
+        .form-section-title::before {
+            content: '';
+            width: 5px;
+            height: 24px;
+            background: linear-gradient(180deg, #6366f1, #8b5cf6);
+            border-radius: 3px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Stats Card - Premium Design */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 
+                0 12px 40px rgba(99, 102, 241, 0.3),
+                0 0 0 1px rgba(99, 102, 241, 0.2) inset;
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.75rem;
+            letter-spacing: -1px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Profile Completion Progress */
+        .profile-completion {
+            margin-top: 1.5rem;
+        }
+
+        .completion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .completion-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .completion-percentage {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .completion-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .completion-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
+            border-radius: 12px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 0 15px rgba(99, 102, 241, 0.6),
+                0 0 30px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .completion-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Live Preview Card - Premium Design */
+        .live-preview-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+            border: 2px solid transparent;
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(99, 102, 241, 0.3) inset,
+                0 0 40px rgba(99, 102, 241, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .live-preview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899, #6366f1);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .preview-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.3px;
+        }
+
+        .preview-badge {
+            padding: 0.375rem 1rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(52, 211, 153, 0.2));
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         @media (max-width: 900px) {
-            .option-cards {
-                grid-template-columns: minmax(0, 1fr);
-                gap: 1.5rem;
-                padding: 1.5rem;
+            .profile-container {
+                padding: 1rem;
+            }
+            
+            .profile-identity-card {
+                position: static;
             }
         }
 
@@ -216,31 +685,68 @@
 
         .form-row input {
             width: 100%;
-            padding: 0.875rem 1rem;
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             transition: var(--transition);
             font-family: inherit;
+            font-weight: 500;
         }
 
         .form-row input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-            background: rgba(15, 23, 42, 0.6);
+            border-color: #6366f1;
+            box-shadow: 
+                0 0 0 4px rgba(99, 102, 241, 0.15),
+                0 4px 12px rgba(99, 102, 241, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+            transform: translateY(-1px);
         }
 
         .form-row input:read-only {
-            background: rgba(15, 23, 42, 0.2);
+            background: rgba(15, 23, 42, 0.3);
             color: var(--text-muted);
             cursor: not-allowed;
+            border-color: rgba(255, 255, 255, 0.05);
         }
 
         .form-row input::placeholder {
             color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .form-row textarea {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .form-row textarea:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 
+                0 0 0 4px rgba(99, 102, 241, 0.15),
+                0 4px 12px rgba(99, 102, 241, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+            transform: translateY(-1px);
+        }
+
+        .form-row textarea::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
         }
 
         .form-row-inline {
@@ -254,18 +760,20 @@
             margin-bottom: 0;
         }
 
-        /* Modern Buttons */
+        /* Modern Buttons - Premium Design */
         .btn {
-            background: var(--gradient-primary);
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
             color: white;
             border: none;
-            padding: 0.875rem 2rem;
-            border-radius: var(--radius-md);
-            font-size: 0.9rem;
-            font-weight: 600;
+            padding: 1rem 2.5rem;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 
+                0 4px 15px rgba(99, 102, 241, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             position: relative;
             overflow: hidden;
             text-decoration: none;
@@ -273,6 +781,7 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            letter-spacing: 0.3px;
         }
 
         .btn::before {
@@ -446,63 +955,186 @@
             <span class="scene-badge">Student</span>
         </header>
 
-        <div class="option-cards">
-            <section class="list-card">
-                <div class="section-label">My profile</div>
-                <div class="profile-avatar" id="student-avatar">
-                    <span id="student-avatar-initials">ST</span>
+        <div class="profile-container">
+            <!-- LEFT COLUMN: Profile Identity Card -->
+            <div class="profile-identity-card">
+                <div class="profile-identity-header">
+                    <div class="profile-avatar-wrapper">
+                        <div class="profile-avatar-large" id="student-avatar-large">
+                            <span id="student-avatar-initials">ST</span>
+                        </div>
+                        <div class="profile-avatar-edit" id="avatar-edit-btn" title="Change profile picture">
+                            ✏️
+                        </div>
+                    </div>
+                    <div class="profile-name" id="profile-display-name">Your Name</div>
+                    <div class="profile-department" id="profile-display-dept">Department</div>
+                    <div class="profile-graduation" id="profile-display-grad">Graduation Year</div>
+                    <span class="profile-role-badge">Student</span>
                 </div>
+                <div class="profile-identity-body">
+                    <div class="profile-identity-section">
+                        <div class="profile-identity-label">Email</div>
+                        <div class="profile-identity-value" id="profile-display-email">email@example.com</div>
+                    </div>
+                    <div class="profile-identity-section">
+                        <div class="profile-identity-label">Department</div>
+                        <div class="profile-identity-value" id="profile-display-dept-value">Not set</div>
+                    </div>
+                    <div class="profile-identity-section">
+                        <div class="profile-identity-label">Graduation Year</div>
+                        <div class="profile-identity-value" id="profile-display-grad-value">Not set</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Editable Profile Form -->
+            <div>
                 <form id="student-profile-form">
-                    <div class="form-row-inline">
-                        <div class="form-row">
-                            <label for="studentId">ID</label>
-                            <input id="studentId" name="studentId" readonly />
+                    <!-- Personal Information Section -->
+                    <div class="profile-form-card">
+                        <div class="form-section-title">1️⃣ Personal Information</div>
+                        <div class="form-section">
+                            <div class="form-row-inline">
+                                <div class="form-row">
+                                    <label for="studentFirstName">First Name</label>
+                                    <input id="studentFirstName" name="studentFirstName" placeholder="John" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="studentLastName">Last Name</label>
+                                    <input id="studentLastName" name="studentLastName" placeholder="Doe" />
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <label for="studentEmail">Email Address</label>
+                                <input id="studentEmail" name="studentEmail" type="email" readonly placeholder="john.doe@example.com" />
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Email cannot be changed</p>
+                            </div>
                         </div>
-                        <div class="form-row">
-                            <label for="studentEmail">Email</label>
-                            <input id="studentEmail" name="studentEmail" type="email" readonly />
-                        </div>
-                    </div>
-                    <div class="form-row-inline">
-                        <div class="form-row">
-                            <label for="studentFirstName">First name</label>
-                            <input id="studentFirstName" name="studentFirstName" />
-                        </div>
-                        <div class="form-row">
-                            <label for="studentLastName">Last name</label>
-                            <input id="studentLastName" name="studentLastName" />
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <label for="studentDept">Department</label>
-                        <input id="studentDept" name="studentDept" placeholder="e.g. CSE" readonly />
-                    </div>
-                    <div class="form-row">
-                        <label for="studentImageUrl">Profile image URL</label>
-                        <input id="studentImageUrl" name="studentImageUrl" placeholder="https://..." />
                     </div>
 
-                    <div class="btn-row">
-                        <button type="submit" class="btn">Save changes</button>
-                        <button type="button" id="student-delete-btn" class="btn-ghost">Delete my account</button>
+                    <!-- Academic Information Section -->
+                    <div class="profile-form-card">
+                        <div class="form-section-title">2️⃣ Academic Information</div>
+                        <div class="form-section">
+                            <div class="form-row">
+                                <label for="studentDept">Department</label>
+                                <input id="studentDept" name="studentDept" placeholder="e.g. Computer Science" />
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Enter your department or field of study</p>
+                            </div>
+                            <div class="form-row">
+                                <label for="studentGraduationYear">Graduation Year</label>
+                                <input id="studentGraduationYear" name="studentGraduationYear" type="number" placeholder="e.g. 2024" min="2000" max="2100" />
+                            </div>
+                        </div>
                     </div>
-                    <p class="hint">Your department is shown from your academic record. Contact admin to change it.</p>
-                    <div id="student-profile-message" class="alert" style="display:none;"></div>
+
+                    <!-- Profile & Social Links Section -->
+                    <div class="profile-form-card">
+                        <div class="form-section-title">3️⃣ Profile & Social Links</div>
+                        <div class="form-section">
+                            <div class="form-row">
+                                <label for="studentBio">Short Bio / About Me</label>
+                                <textarea id="studentBio" name="studentBio" rows="4" placeholder="Tell us about yourself, your interests, and career goals..."></textarea>
+                            </div>
+                            <div class="form-row">
+                                <label for="studentImageUrl">Profile Image URL</label>
+                                <input id="studentImageUrl" name="studentImageUrl" placeholder="https://example.com/photo.jpg" />
+                            </div>
+                            <div class="form-row-inline">
+                                <div class="form-row">
+                                    <label for="studentLinkedIn">LinkedIn Profile</label>
+                                    <input id="studentLinkedIn" name="studentLinkedIn" placeholder="linkedin.com/in/username" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="studentGitHub">GitHub Profile</label>
+                                    <input id="studentGitHub" name="studentGitHub" placeholder="github.com/username" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="profile-form-card">
+                        <div class="btn-row">
+                            <button type="submit" class="btn" style="flex: 1;">
+                                💾 Save Changes
+                            </button>
+                            <button type="button" id="student-delete-btn" class="btn-ghost">
+                                🗑️ Delete Account
+                            </button>
+                        </div>
+                        <div id="student-profile-message" class="alert" style="display:none; margin-top: 1rem;"></div>
+                    </div>
                 </form>
-            </section>
 
-            <section class="list-card">
-                <div class="section-label">Alumni Directory</div>
-                <p class="hint" style="margin-bottom: 2rem;">
-                    Browse and connect with registered alumni using the dedicated directory. Search by name, department, graduation year, or company.
-                </p>
-                <div class="btn-row" style="justify-content: center;">
-                    <a href="/student-directory.html" class="btn" style="min-width: 200px;">
-                        <span>Open Alumni Directory</span>
-                        <span>→</span>
-                    </a>
+                <!-- Quick Stats Card -->
+                <div class="profile-form-card">
+                    <div class="form-section-title">📊 Quick Stats</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="stat-alumni-connected">0</div>
+                            <div class="stat-label">Alumni Connected</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="stat-events-attended">0</div>
+                            <div class="stat-label">Events Attended</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="stat-jobs-applied">0</div>
+                            <div class="stat-label">Jobs Applied</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="stat-profile-completion">0%</div>
+                            <div class="stat-label">Profile Complete</div>
+                        </div>
+                    </div>
+                    <div class="profile-completion">
+                        <div class="completion-header">
+                            <span class="completion-label">Profile Completion</span>
+                            <span class="completion-percentage" id="completion-percentage">0%</span>
+                        </div>
+                        <div class="completion-bar">
+                            <div class="completion-fill" id="completion-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
                 </div>
-            </section>
+
+                <!-- Search for Jobs Card -->
+                <div class="profile-form-card" style="background: linear-gradient(145deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15)); border: 2px solid rgba(99, 102, 241, 0.3);">
+                    <div class="form-section-title" style="border-image: linear-gradient(90deg, #6366f1, #8b5cf6) 1;">
+                        💼 Career Opportunities
+                    </div>
+                    <div style="text-align: center; padding: 1rem 0;">
+                        <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6;">
+                            Explore job opportunities posted by alumni and companies. Find your next career move!
+                        </p>
+                        <a href="/jobs.html" class="btn" style="min-width: 250px; font-size: 1rem; padding: 1.125rem 2.5rem; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);">
+                            <span>🔍</span>
+                            Search for Jobs
+                            <span>→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Live Profile Preview -->
+                <div class="live-preview-card">
+                    <div class="preview-header">
+                        <div class="preview-title">
+                            <span>👁️</span>
+                            Live Profile Preview
+                        </div>
+                        <span class="preview-badge">LIVE</span>
+                    </div>
+                    <div id="student-preview-content" style="min-height: 300px;">
+                        <div style="text-align: center; padding: 3rem 2rem; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">👤</div>
+                            <p style="font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Start filling out your profile</p>
+                            <p style="font-size: 0.875rem;">Your profile preview will appear here as you type</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 </div>
@@ -561,7 +1193,6 @@
             const fullName = (user.firstName || '') + ' ' + (user.lastName || '');
             document.getElementById('student-name-label').textContent = fullName.trim() || 'Student';
 
-            document.getElementById('studentId').value = user.id != null ? String(user.id) : '';
             document.getElementById('studentEmail').value = user.email || email;
             document.getElementById('studentFirstName').value = user.firstName || '';
             document.getElementById('studentLastName').value = user.lastName || '';
@@ -573,23 +1204,34 @@
                     dept = firstEdu.course;
                 }
             }
+            if (!dept && user.profile && user.profile.department) {
+                dept = user.profile.department;
+            }
             document.getElementById('studentDept').value = dept;
 
-            const avatar = document.getElementById('student-avatar');
+            // New fields
+            document.getElementById('studentGraduationYear').value = user.profile?.passingYear || '';
+            document.getElementById('studentBio').value = localStorage.getItem('student-bio') || '';
+            document.getElementById('studentLinkedIn').value = localStorage.getItem('student-linkedin') || '';
+            document.getElementById('studentGitHub').value = localStorage.getItem('student-github') || '';
+
+            const avatar = document.getElementById('student-avatar-large');
             const initialsEl = document.getElementById('student-avatar-initials');
             const imageUrlInput = document.getElementById('studentImageUrl');
             const imageUrl = user.profile && user.profile.profileImage ? user.profile.profileImage : '';
             imageUrlInput.value = imageUrl;
-            if (imageUrl) {
-                const img = document.createElement('img');
-                img.src = imageUrl;
-                avatar.innerHTML = '';
-                avatar.appendChild(img);
-            } else {
-                const initials = (user.firstName ? user.firstName.charAt(0) : 'S') +
-                    (user.lastName ? user.lastName.charAt(0) : '');
-                initialsEl.textContent = initials.toUpperCase() || 'ST';
-            }
+            
+            // Update profile identity card
+            updateProfileIdentityCard(user);
+            
+            // Render profile preview with loaded data
+            renderStudentProfilePreview(user);
+            
+            // Calculate and update profile completion
+            updateProfileCompletion();
+            
+            // Update stats (mock data for now)
+            updateStats();
 
             const bell = document.getElementById('student-notif-bell');
             if (bell && acceptedRequests.length > 0) {
@@ -604,6 +1246,193 @@
         }
     }
 
+    // Function to update profile identity card (left column)
+    function updateProfileIdentityCard(user) {
+        const firstName = document.getElementById('studentFirstName')?.value || user?.firstName || '';
+        const lastName = document.getElementById('studentLastName')?.value || user?.lastName || '';
+        const fullName = (firstName + ' ' + lastName).trim() || 'Your Name';
+        const email = document.getElementById('studentEmail')?.value || user?.email || 'email@example.com';
+        const dept = document.getElementById('studentDept')?.value || user?.profile?.department || 'Not set';
+        const gradYear = document.getElementById('studentGraduationYear')?.value || user?.profile?.passingYear || 'Not set';
+        const imageUrl = document.getElementById('studentImageUrl')?.value || user?.profile?.profileImage || '';
+
+        // Update name
+        document.getElementById('profile-display-name').textContent = fullName;
+        document.getElementById('profile-display-email').textContent = email;
+        document.getElementById('profile-display-dept').textContent = dept !== 'Not set' ? dept : 'Department';
+        document.getElementById('profile-display-dept-value').textContent = dept;
+        document.getElementById('profile-display-grad').textContent = gradYear !== 'Not set' ? `Class of ${gradYear}` : 'Graduation Year';
+        document.getElementById('profile-display-grad-value').textContent = gradYear;
+
+        // Update avatar
+        const avatar = document.getElementById('student-avatar-large');
+        const initialsEl = document.getElementById('student-avatar-initials');
+        if (imageUrl) {
+            avatar.innerHTML = `<img src="${imageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />`;
+        } else {
+            const initials = (firstName ? firstName.charAt(0) : 'S') + (lastName ? lastName.charAt(0) : 'T');
+            initialsEl.textContent = initials.toUpperCase() || 'ST';
+            avatar.innerHTML = `<span id="student-avatar-initials">${initials.toUpperCase() || 'ST'}</span>`;
+        }
+    }
+
+    // Function to calculate profile completion percentage
+    function calculateProfileCompletion() {
+        const fields = [
+            document.getElementById('studentFirstName')?.value,
+            document.getElementById('studentLastName')?.value,
+            document.getElementById('studentEmail')?.value,
+            document.getElementById('studentDept')?.value,
+            document.getElementById('studentGraduationYear')?.value,
+            document.getElementById('studentBio')?.value,
+            document.getElementById('studentImageUrl')?.value,
+            document.getElementById('studentLinkedIn')?.value,
+            document.getElementById('studentGitHub')?.value
+        ];
+        const filledFields = fields.filter(f => f && f.trim() !== '').length;
+        return Math.round((filledFields / fields.length) * 100);
+    }
+
+    // Function to update profile completion UI
+    function updateProfileCompletion() {
+        const percentage = calculateProfileCompletion();
+        document.getElementById('completion-percentage').textContent = percentage + '%';
+        document.getElementById('stat-profile-completion').textContent = percentage + '%';
+        const fillBar = document.getElementById('completion-fill');
+        fillBar.style.width = percentage + '%';
+        
+        // Color based on completion
+        if (percentage >= 80) {
+            fillBar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+        } else if (percentage >= 50) {
+            fillBar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+        } else {
+            fillBar.style.background = 'var(--gradient-primary)';
+        }
+    }
+
+    // Function to update stats (mock data for now)
+    function updateStats() {
+        // These would come from API in production
+        document.getElementById('stat-alumni-connected').textContent = '0';
+        document.getElementById('stat-events-attended').textContent = '0';
+        document.getElementById('stat-jobs-applied').textContent = '0';
+    }
+
+    // Function to render profile preview
+    function renderStudentProfilePreview(user) {
+        const previewContent = document.getElementById('student-preview-content');
+        
+        // Get current form values first (to show what's being saved)
+        const formFirstName = document.getElementById('studentFirstName')?.value || '';
+        const formLastName = document.getElementById('studentLastName')?.value || '';
+        const formEmail = document.getElementById('studentEmail')?.value || '';
+        const formDepartment = document.getElementById('studentDept')?.value || '';
+        const formGradYear = document.getElementById('studentGraduationYear')?.value || '';
+        const formBio = document.getElementById('studentBio')?.value || '';
+        const formLinkedIn = document.getElementById('studentLinkedIn')?.value || '';
+        const formGitHub = document.getElementById('studentGitHub')?.value || '';
+        const formProfileImage = document.getElementById('studentImageUrl')?.value || '';
+        
+        // Use form values if available, otherwise fall back to saved user data
+        const firstName = formFirstName || user?.firstName || '';
+        const lastName = formLastName || user?.lastName || '';
+        const fullName = (firstName + ' ' + lastName).trim() || 'Not provided';
+        const email = formEmail || user?.email || 'Not provided';
+        const department = formDepartment || user?.profile?.department || 'Not provided';
+        const gradYear = formGradYear || user?.profile?.passingYear || '';
+        const bio = formBio || localStorage.getItem('student-bio') || '';
+        const linkedIn = formLinkedIn || localStorage.getItem('student-linkedin') || '';
+        const github = formGitHub || localStorage.getItem('student-github') || '';
+        const profileImage = formProfileImage || user?.profile?.profileImage || null;
+        
+        // Check if we have any data to show
+        const hasData = fullName !== 'Not provided' || email !== 'Not provided' || department !== 'Not provided' || profileImage;
+        
+        if (!hasData) {
+            previewContent.innerHTML = `
+                <div style="text-align: center; padding: 2rem; opacity: 0.9;">
+                    <div style="font-size: 2rem; margin-bottom: 1rem;">📋</div>
+                    <p style="font-size: 1rem; margin-bottom: 0.5rem;">Fill out the form and click "Save changes" to see your profile here</p>
+                </div>
+            `;
+            return;
+        }
+
+        previewContent.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Profile Header with Unique Design -->
+                <div style="text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.05) 100%); border-radius: var(--radius-lg); border: 1px solid rgba(245, 158, 11, 0.3); position: relative; overflow: hidden;">
+                    <!-- Decorative corner accents -->
+                    <div style="position: absolute; top: 0; left: 0; width: 40px; height: 40px; border-top: 3px solid #f59e0b; border-left: 3px solid #f59e0b; border-radius: 8px 0 0 0;"></div>
+                    <div style="position: absolute; top: 0; right: 0; width: 40px; height: 40px; border-top: 3px solid #f59e0b; border-right: 3px solid #f59e0b; border-radius: 0 8px 0 0;"></div>
+                    <div style="position: absolute; bottom: 0; left: 0; width: 40px; height: 40px; border-bottom: 3px solid #f59e0b; border-left: 3px solid #f59e0b; border-radius: 0 0 0 8px;"></div>
+                    <div style="position: absolute; bottom: 0; right: 0; width: 40px; height: 40px; border-bottom: 3px solid #f59e0b; border-right: 3px solid #f59e0b; border-radius: 0 0 8px 0;"></div>
+                    
+                    ${profileImage ? `
+                        <img src="${profileImage}" alt="Profile" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 1.5rem; border: 4px solid #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);" />
+                    ` : `
+                        <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; border: 4px solid #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); font-weight: 700;">
+                            ${fullName !== 'Not provided' ? fullName.charAt(0).toUpperCase() : 'S'}
+                        </div>
+                    `}
+                    <h2 style="font-size: 1.75rem; font-weight: 800; color: #f59e0b; margin-bottom: 0.75rem; text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);">
+                        ${fullName !== 'Not provided' ? fullName : 'Your Name'}
+                    </h2>
+                    ${department !== 'Not provided' ? `
+                        <div style="display: inline-block; padding: 0.5rem 1.25rem; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 20px; color: #fbbf24; font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem;">
+                            🎓 ${department}
+                        </div>
+                    ` : ''}
+                    ${gradYear ? `
+                        <div style="display: inline-block; padding: 0.5rem 1.25rem; background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 20px; color: #fbbf24; font-weight: 600; font-size: 0.9rem;">
+                            🎓 Class of ${gradYear}
+                        </div>
+                    ` : ''}
+                </div>
+
+                ${bio ? `
+                <!-- Bio Section -->
+                <div style="background: rgba(245, 158, 11, 0.08); border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid rgba(245, 158, 11, 0.2);">
+                    <h3 style="font-size: 0.875rem; font-weight: 700; color: #f59e0b; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">📝</span>
+                        About Me
+                    </h3>
+                    <p style="color: rgba(255, 255, 255, 0.9); line-height: 1.6; font-size: 0.95rem;">${bio}</p>
+                </div>
+                ` : ''}
+
+                <!-- Contact & Social Links -->
+                <div style="background: rgba(245, 158, 11, 0.08); border-radius: var(--radius-md); padding: 1.5rem; border: 1px solid rgba(245, 158, 11, 0.2);">
+                    <h3 style="font-size: 0.875rem; font-weight: 700; color: #f59e0b; margin-bottom: 1.25rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">🔗</span>
+                        Contact & Links
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        ${email !== 'Not provided' ? `
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-sm); border-left: 3px solid #f59e0b;">
+                            <span style="color: #fbbf24; min-width: 80px; font-weight: 600; font-size: 0.9rem;">📧 Email:</span>
+                            <span style="color: white; word-break: break-word; font-weight: 500;">${email}</span>
+                        </div>
+                        ` : ''}
+                        ${linkedIn ? `
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-sm); border-left: 3px solid #f59e0b;">
+                            <span style="color: #fbbf24; min-width: 80px; font-weight: 600; font-size: 0.9rem;">💼 LinkedIn:</span>
+                            <a href="${linkedIn.startsWith('http') ? linkedIn : 'https://' + linkedIn}" target="_blank" style="color: #60a5fa; text-decoration: none; font-weight: 500;">${linkedIn}</a>
+                        </div>
+                        ` : ''}
+                        ${github ? `
+                        <div style="display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-sm); border-left: 3px solid #f59e0b;">
+                            <span style="color: #fbbf24; min-width: 80px; font-weight: 600; font-size: 0.9rem;">💻 GitHub:</span>
+                            <a href="${github.startsWith('http') ? github : 'https://' + github}" target="_blank" style="color: #60a5fa; text-decoration: none; font-weight: 500;">${github}</a>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     document.getElementById('student-profile-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const msg = document.getElementById('student-profile-message');
@@ -614,27 +1443,85 @@
             msg.style.display = 'block';
             return;
         }
-        currentUser.firstName = document.getElementById('studentFirstName').value;
-        currentUser.lastName = document.getElementById('studentLastName').value;
+        
+        // Get form values
+        const firstName = document.getElementById('studentFirstName').value;
+        const lastName = document.getElementById('studentLastName').value;
         const imgUrl = document.getElementById('studentImageUrl').value;
+        const department = document.getElementById('studentDept').value;
+        const gradYear = document.getElementById('studentGraduationYear').value;
+        const bio = document.getElementById('studentBio').value;
+        const linkedIn = document.getElementById('studentLinkedIn').value;
+        const github = document.getElementById('studentGitHub').value;
+        
+        // Store bio and social links in localStorage (not yet in backend)
+        localStorage.setItem('student-bio', bio);
+        localStorage.setItem('student-linkedin', linkedIn);
+        localStorage.setItem('student-github', github);
+        
+        // Update currentUser object
+        currentUser.firstName = firstName;
+        currentUser.lastName = lastName;
         if (!currentUser.profile) {
             currentUser.profile = {};
         }
         currentUser.profile.profileImage = imgUrl;
+        if (department) {
+            currentUser.profile.department = department;
+        }
+        if (gradYear) {
+            currentUser.profile.passingYear = gradYear;
+        }
+
+        // Create update payload without password
+        const updatePayload = {
+            id: currentUser.id,
+            firstName: currentUser.firstName,
+            lastName: currentUser.lastName,
+            email: currentUser.email,
+            profile: {
+                ...currentUser.profile,
+                department: department || currentUser.profile?.department,
+                passingYear: gradYear || currentUser.profile?.passingYear
+            },
+            role: currentUser.role
+        };
 
         try {
             const res = await fetch('/users/' + currentUser.id, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(currentUser)
+                body: JSON.stringify(updatePayload)
             });
             const data = await res.json().catch(() => ({}));
             msg.className = 'alert';
             if (!res.ok) {
                 msg.classList.add('alert-error');
-                msg.textContent = data.message || 'Failed to update profile.';
+                msg.textContent = data.message || data.error || 'Failed to update profile.';
             } else {
-                msg.textContent = 'Profile updated.';
+                msg.classList.add('alert-success');
+                msg.textContent = '✅ Profile updated successfully!';
+                
+                // Update currentUser with saved data
+                if (data.data) {
+                    currentUser = data.data;
+                }
+                
+                // Update local object with form values
+                currentUser.firstName = firstName;
+                currentUser.lastName = lastName;
+                if (!currentUser.profile) {
+                    currentUser.profile = {};
+                }
+                currentUser.profile.profileImage = imgUrl;
+                if (gradYear) {
+                    currentUser.profile.passingYear = gradYear;
+                }
+                
+                // Update profile identity card and preview
+                updateProfileIdentityCard(currentUser);
+                renderStudentProfilePreview(currentUser);
+                updateProfileCompletion();
             }
             msg.style.display = 'block';
         } catch (err) {
@@ -662,6 +1549,30 @@
         } catch (err) {
             alert('Network error while deleting account.');
         }
+    });
+
+    // Add event listeners for live preview updates
+    const formInputs = ['studentFirstName', 'studentLastName', 'studentEmail', 'studentDept', 
+                        'studentGraduationYear', 'studentBio', 'studentImageUrl', 
+                        'studentLinkedIn', 'studentGitHub'];
+    
+    formInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', () => {
+                if (currentUser) {
+                    updateProfileIdentityCard(currentUser);
+                    renderStudentProfilePreview(currentUser);
+                    updateProfileCompletion();
+                }
+            });
+        }
+    });
+
+    // Avatar edit button handler
+    document.getElementById('avatar-edit-btn')?.addEventListener('click', () => {
+        document.getElementById('studentImageUrl')?.focus();
+        document.getElementById('studentImageUrl')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     loadStudentProfile();

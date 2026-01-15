@@ -43,6 +43,14 @@ public class FriendRequestController {
         );
     }
 
+    @GetMapping("/student/pending")
+    public ResponseEntity<?> getPendingForStudent(@RequestParam String email) {
+        return converter.buildResponseEntity(
+                Map.of("data", friendRequestService.getPendingForStudent(email)),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/alumni/accepted")
     public ResponseEntity<?> getAcceptedForAlumni(@RequestParam String email) {
         return converter.buildResponseEntity(

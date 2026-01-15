@@ -114,6 +114,23 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
+    public List<FriendRequestDto> getPendingForStudent(String studentEmail) {
+        // Validate user exists and has STUDENT role
+        User student = userRepository.findByEmail(studentEmail);
+        if (student == null) {
+            throw new ResourceNotFoundException("Student user with email " + studentEmail + " not found");
+        }
+        if (student.getRole() == null || !"STUDENT".equalsIgnoreCase(student.getRole().getTitle())) {
+            throw new BadRequestException("User with email " + studentEmail + " is not a STUDENT. Only students can send connection requests.");
+        }
+        
+        return friendRequestRepository.findByStudentEmailAndStatus(studentEmail, FriendRequestStatus.PENDING)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<FriendRequestDto> getAcceptedForAlumni(String alumniEmail) {
         // Validate user exists and has ALUMNI role
         User alumni = userRepository.findByEmail(alumniEmail);

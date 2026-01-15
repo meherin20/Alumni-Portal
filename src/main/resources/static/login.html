@@ -398,6 +398,50 @@
             transform: scale(1.1);
         }
 
+        .back-to-landing {
+            position: fixed;
+            top: 2rem;
+            left: 2rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .back-to-landing:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            color: #ffffff;
+        }
+
+        .back-to-landing::before {
+            content: '←';
+            font-size: 1.25rem;
+        }
+
+        [data-theme="light"] .back-to-landing {
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(30, 41, 59, 0.8);
+        }
+
+        [data-theme="light"] .back-to-landing:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.2);
+            color: #1e293b;
+        }
+
         /* Light Mode Styles */
         [data-theme="light"] {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 25%, #f1f5f9 50%, #ffffff 75%, #f8fafc 100%);
@@ -527,6 +571,7 @@
     </style>
 </head>
 <body>
+    <a href="/index.html" class="back-to-landing">Back to Landing Page</a>
     <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
         <span id="theme-toggle-icon">🌙</span>
     </button>

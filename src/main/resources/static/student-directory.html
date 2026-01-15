@@ -409,6 +409,395 @@
                 transform: translateY(0);
             }
         }
+
+        /* Directory Layout */
+        .directory-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .search-sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .alumni-results {
+            min-height: 500px;
+        }
+
+        .alumni-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .alumni-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alumni-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .alumni-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .alumni-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .alumni-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 auto 1rem;
+            border: 3px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .alumni-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .alumni-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+        }
+
+        .alumni-name:hover {
+            color: var(--primary);
+        }
+
+        .alumni-info {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .alumni-info-item {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        .alumni-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .alumni-actions button {
+            flex: 1;
+            padding: 0.625rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .connection-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .status-connected {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-blocked {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .results-count {
+            margin-left: auto;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Profile Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .profile-modal-content {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow-xl);
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show .profile-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-body {
+            margin: 2rem 0;
+        }
+
+        .profile-section {
+            margin-bottom: 2rem;
+        }
+
+        .profile-section-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .profile-section-content {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .profile-bio {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .profile-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            margin-right: 1rem;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .profile-link:hover {
+            color: var(--secondary);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+        }
+
+        /* Connections Section */
+        .connections-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .connection-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .connection-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .connection-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .connection-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .connection-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0 auto 0.75rem;
+            border: 2px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .connection-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .connection-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+            margin-bottom: 0.25rem;
+        }
+
+        .connection-info {
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .connection-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .connection-actions button {
+            flex: 1;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 1200px) {
+            .directory-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .search-sidebar {
+                position: static;
+            }
+        }
     </style>
 </head>
 
@@ -452,50 +841,93 @@
                 </header>
 
                 <div class="scene-body">
-                    <div class="form-card">
-                        <div class="section-label">Search filters</div>
-                        <form id="student-directory-form">
-                            <div class="form-row-inline">
-                                <div class="form-row">
-                                    <label for="gradYear">Passing year</label>
-                                    <input id="gradYear" name="gradYear" placeholder="e.g. 2020" />
-                                </div>
-                                <div class="form-row">
-                                    <label for="department">Department</label>
-                                    <input id="department" name="department" placeholder="e.g. CSE" />
-                                </div>
-                                <div class="form-row">
-                                    <label for="company">Company</label>
-                                    <input id="company" name="company" placeholder="e.g. UIU" />
-                                </div>
+                    <div class="directory-layout">
+                        <!-- LEFT SIDE: Search Form -->
+                        <aside class="search-sidebar">
+                            <div class="form-card">
+                                <div class="section-label">🔍 Search Alumni</div>
+                                <form id="student-directory-form">
+                                    <div class="form-row">
+                                        <label for="studentEmail">Your Email (UIU Student)</label>
+                                        <input id="studentEmail" name="studentEmail" type="email" placeholder="you@student.uiu.ac.bd" required />
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="name">Name</label>
+                                        <input id="name" name="name" placeholder="Search by name..." />
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="email">Email</label>
+                                        <input id="email" name="email" type="email" placeholder="Search by email..." />
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="department">Department</label>
+                                        <input id="department" name="department" placeholder="e.g. CSE" />
+                                    </div>
+                                    <div class="form-row">
+                                        <label for="gradYear">Passing Year</label>
+                                        <input id="gradYear" name="gradYear" placeholder="e.g. 2020" />
+                                    </div>
+                                    <div class="btn-row">
+                                        <button type="submit" class="btn">🔍 Search</button>
+                                        <button type="button" id="clear-filters" class="btn-ghost">Clear</button>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="form-row">
-                                <label for="studentEmail">Your email (UIU student)</label>
-                                <input id="studentEmail" name="studentEmail" type="email" placeholder="you@student.uiu.ac.bd" />
-                            </div>
-                            <div class="btn-row">
-                                <button type="submit" class="btn">Search</button>
-                                <button type="button" id="clear-filters" class="btn-ghost">Clear</button>
-                            </div>
-                        </form>
-                    </div>
+                        </aside>
 
-                    <div class="list-card">
-                        <div class="section-label">Alumni</div>
-                        <table class="table" id="student-directory-table">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Department</th>
-                                    <th>Passing year</th>
-                                    <th>Add</th>
-                                    <th>Message</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                        <p class="hint">Contact details or sensitive fields can remain hidden from student view as needed.</p>
+                        <!-- RIGHT SIDE: Alumni Cards Grid -->
+                        <main class="alumni-results">
+                            <!-- My Connections Section -->
+                            <div class="list-card" id="my-connections-section" style="display: none;">
+                                <div class="section-label">
+                                    <span>🔗 My Connections</span>
+                                </div>
+                                <div class="connections-tabs">
+                                    <button class="tab-btn active" onclick="showConnectionsTab('pending')">⏳ Pending Requests</button>
+                                    <button class="tab-btn" onclick="showConnectionsTab('accepted')">✓ Connected</button>
+                                </div>
+                                <div id="pending-connections-grid" class="connections-grid">
+                                    <!-- Pending requests will be loaded here -->
+                                </div>
+                                <div id="accepted-connections-grid" class="connections-grid" style="display: none;">
+                                    <!-- Accepted connections will be loaded here -->
+                                </div>
+                            </div>
+
+                            <!-- Search Results Section -->
+                            <div class="list-card">
+                                <div class="section-label">
+                                    <span>👥 Alumni Directory</span>
+                                    <span id="results-count" class="results-count"></span>
+                                </div>
+                                <div id="alumni-grid" class="alumni-grid">
+                                    <div class="empty-state">
+                                        <div class="empty-icon">🔍</div>
+                                        <p>Enter search criteria and click "Search" to find alumni</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+
+                <!-- Alumni Profile Preview Modal -->
+                <div id="profile-modal" class="modal-overlay">
+                    <div class="modal-content profile-modal-content">
+                        <div class="modal-header">
+                            <div>
+                                <h2 class="modal-title" id="modal-alumni-name">Alumni Name</h2>
+                                <p class="modal-subtitle" id="modal-alumni-title">Job Title at Company</p>
+                            </div>
+                            <button class="modal-close" onclick="closeProfileModal()">×</button>
+                        </div>
+                        <div id="modal-alumni-content" class="modal-body">
+                            <!-- Content will be populated dynamically -->
+                        </div>
+                        <div class="modal-footer">
+                            <button id="modal-connect-btn" class="btn">Add Connection</button>
+                            <button id="modal-message-btn" class="btn-ghost" disabled>Message</button>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -525,25 +957,61 @@
 
         // Student directory functionality
         const form = document.getElementById('student-directory-form');
-        const table = document.getElementById('student-directory-table');
-        const tbody = table.querySelector('tbody');
+        const alumniGrid = document.getElementById('alumni-grid');
+        const resultsCount = document.getElementById('results-count');
         const clearFilters = document.getElementById('clear-filters');
+        const myConnectionsSection = document.getElementById('my-connections-section');
+        let currentAlumniData = [];
+
+        // Load connections when email is entered
+        const studentEmailInput = document.getElementById('studentEmail');
+        studentEmailInput.addEventListener('blur', () => {
+            const email = studentEmailInput.value.trim();
+            if (email) {
+                loadMyConnections(email);
+                loadConnectedAlumniInDirectory(email);
+            }
+        });
+
+        // Initialize student email from URL parameters if available
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlStudentEmail = urlParams.get('studentEmail');
+        if (urlStudentEmail && !studentEmailInput.value.trim()) {
+            studentEmailInput.value = decodeURIComponent(urlStudentEmail);
+        }
+
+        // Also load on page load if email is pre-filled
+        setTimeout(() => {
+            const email = studentEmailInput.value.trim();
+            if (email) {
+                loadMyConnections(email);
+                loadConnectedAlumniInDirectory(email);
+            }
+        }, 500);
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(form);
+            const studentEmail = formData.get('studentEmail');
+            
+            if (!studentEmail) {
+                alert('Please enter your email address first.');
+                return;
+            }
             
             // Build query parameters matching the API
             const params = new URLSearchParams();
+            const name = formData.get('name');
+            const email = formData.get('email');
             const gradYear = formData.get('gradYear');
             const department = formData.get('department');
-            const company = formData.get('company');
             
+            if (name) params.append('name', name);
+            if (email) params.append('email', email);
             if (gradYear) params.append('graduationYear', gradYear);
             if (department) params.append('department', department);
-            if (company) params.append('company', company);
 
-            tbody.innerHTML = '<tr><td colspan="5">Searching...</td></tr>';
+            alumniGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Searching...</p></div>';
 
             try {
                 const response = await fetch(`/api/alumni-directory/search?${params.toString()}`);
@@ -552,17 +1020,15 @@
                 if (!response.ok) {
                     const errorMsg = result.message || result.error || 'Failed to load alumni data.';
                     console.error('API Error:', errorMsg, result);
-                    tbody.innerHTML = `<tr><td colspan="5">${errorMsg}</td></tr>`;
+                    alumniGrid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>${errorMsg}</p></div>`;
+                    resultsCount.textContent = '';
                     return;
                 }
 
-                tbody.innerHTML = '';
-                
-                    if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+                if (result.data && Array.isArray(result.data) && result.data.length > 0) {
                     // Check connection status for each alumni
-                    const studentEmail = formData.get('studentEmail');
                     const alumniWithStatus = await Promise.all(result.data.map(async (alumni) => {
-                        let connectionStatus = { status: null, canMessage: false };
+                        let connectionStatus = { status: null, canMessage: false, requestId: null };
                         if (studentEmail && alumni.email) {
                             try {
                                 const statusResponse = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(studentEmail)}&alumniEmail=${encodeURIComponent(alumni.email)}`);
@@ -577,52 +1043,95 @@
                         return { ...alumni, connectionStatus };
                     }));
 
-                    alumniWithStatus.forEach(alumni => {
-                        const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim() || 'Alumni';
-                        const row = document.createElement('tr');
-                        row.style.cursor = 'pointer';
-                        row.onclick = () => {
-                            window.location.href = `/alumni-profile.html?id=${alumni.id}`;
-                        };
-                        
-                        let addButton = '';
-                        let messageButton = '';
-                        
-                        if (alumni.connectionStatus.status === 'ACCEPTED') {
-                            addButton = '<button class="btn-ghost btn-sm" disabled style="opacity: 0.5;">Connected</button>';
-                            messageButton = `<button class="btn-ghost btn-sm" onclick="event.stopPropagation(); messageAlumni('${alumni.email || ''}', ${alumni.id})">Message</button>`;
-                        } else if (alumni.connectionStatus.status === 'PENDING') {
-                            addButton = '<button class="btn-ghost btn-sm" disabled>Pending</button>';
-                            messageButton = '<button class="btn-ghost btn-sm" disabled>Message</button>';
-                        } else if (alumni.connectionStatus.status === 'BLOCKED') {
-                            addButton = '<button class="btn-ghost btn-sm" disabled>Blocked</button>';
-                            messageButton = '<button class="btn-ghost btn-sm" disabled>Message</button>';
-                        } else {
-                            addButton = `<button class="btn-ghost btn-sm" onclick="event.stopPropagation(); addAlumni('${alumni.email || ''}', ${alumni.id})">Add</button>`;
-                            messageButton = '<button class="btn-ghost btn-sm" disabled>Message</button>';
-                        }
-                        
-                        row.innerHTML = `
-                            <td><a href="/alumni-profile.html?id=${alumni.id}" style="color: inherit; text-decoration: underline; font-weight: 500;" onclick="event.stopPropagation();">${fullName}</a></td>
-                            <td>${alumni.department || '-'}</td>
-                            <td>${alumni.passingYear || '-'}</td>
-                            <td>${addButton}</td>
-                            <td>${messageButton}</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
+                    currentAlumniData = alumniWithStatus;
+                    renderAlumniCards(alumniWithStatus);
+                    resultsCount.textContent = `(${alumniWithStatus.length} found)`;
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No alumni found. Try adjusting your search criteria.</td></tr>';
+                    alumniGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No alumni found. Try adjusting your search criteria.</p></div>';
+                    resultsCount.textContent = '';
+                }
+                
+                // Always load connections after search (regardless of results)
+                if (studentEmail) {
+                    console.log('Search completed, loading connections for:', studentEmail);
+                    loadMyConnections(studentEmail);
+                    // Don't reload connected alumni here as search results are already displayed
                 }
             } catch (error) {
                 console.error('Error fetching alumni:', error);
-                tbody.innerHTML = `<tr><td colspan="5">Error loading alumni data: ${error.message || 'Unknown error'}</td></tr>`;
+                alumniGrid.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error loading alumni data: ${error.message || 'Unknown error'}</p></div>`;
+                resultsCount.textContent = '';
             }
         });
 
+        function renderAlumniCards(alumniList) {
+            alumniGrid.innerHTML = '';
+            
+            alumniList.forEach(alumni => {
+                const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim() || 'Alumni';
+                const initials = (alumni.firstName ? alumni.firstName.charAt(0) : '') + (alumni.lastName ? alumni.lastName.charAt(0) : '') || 'A';
+                const profileImage = alumni.profileImage || '';
+                
+                const card = document.createElement('div');
+                card.className = 'alumni-card';
+                
+                let statusBadge = '';
+                let connectButton = '';
+                let messageButton = '';
+                
+                const status = alumni.connectionStatus?.status;
+                
+                if (status === 'ACCEPTED') {
+                    statusBadge = '<span class="connection-status status-connected">✓ Connected</span>';
+                    connectButton = '<button class="btn-ghost btn-sm" disabled>Connected</button>';
+                    messageButton = `<button class="btn" onclick="event.stopPropagation(); messageAlumni('${alumni.email || ''}', ${alumni.id})">💬 Message</button>`;
+                } else if (status === 'PENDING') {
+                    statusBadge = '<span class="connection-status status-pending">⏳ Pending</span>';
+                    connectButton = `<button class="btn-ghost btn-sm" onclick="event.stopPropagation(); cancelRequest('${alumni.email || ''}', ${alumni.connectionStatus?.requestId})">Cancel Request</button>`;
+                    messageButton = '<button class="btn-ghost" disabled title="Connect to message">💬 Message</button>';
+                } else if (status === 'BLOCKED') {
+                    statusBadge = '<span class="connection-status status-blocked">🚫 Blocked</span>';
+                    connectButton = '<button class="btn-ghost btn-sm" disabled>Blocked</button>';
+                    messageButton = '<button class="btn-ghost" disabled>💬 Message</button>';
+                } else {
+                    connectButton = `<button class="btn" onclick="event.stopPropagation(); addAlumni('${alumni.email || ''}', ${alumni.id})">➕ Connect</button>`;
+                    messageButton = '<button class="btn-ghost" disabled title="Connect to message">💬 Message</button>';
+                }
+                
+                card.innerHTML = `
+                    ${profileImage ? 
+                        `<div class="alumni-avatar"><img src="${profileImage}" alt="${fullName}" /></div>` :
+                        `<div class="alumni-avatar">${initials.toUpperCase()}</div>`
+                    }
+                    <div class="alumni-name" onclick="event.stopPropagation(); showProfileModal(${alumni.id})">${fullName}</div>
+                    <div class="alumni-info">
+                        ${alumni.department ? `<div class="alumni-info-item">🎓 ${alumni.department}</div>` : ''}
+                        ${alumni.passingYear ? `<div class="alumni-info-item">📅 ${alumni.passingYear}</div>` : ''}
+                        ${alumni.jobTitle ? `<div class="alumni-info-item">💼 ${alumni.jobTitle}</div>` : ''}
+                        ${statusBadge}
+                    </div>
+                    <div class="alumni-actions">
+                        ${connectButton}
+                        ${messageButton}
+                    </div>
+                `;
+                
+                card.onclick = () => showProfileModal(alumni.id);
+                alumniGrid.appendChild(card);
+            });
+        }
+
         clearFilters.addEventListener('click', () => {
             form.reset();
-            tbody.innerHTML = '';
+            const studentEmail = studentEmailInput.value.trim();
+            currentAlumniData = []; // Clear current data
+            if (studentEmail) {
+                // Reload connected alumni when clearing filters
+                loadConnectedAlumniInDirectory(studentEmail, true);
+            } else {
+                alumniGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>Enter search criteria and click "Search" to find alumni</p></div>';
+                resultsCount.textContent = '';
+            }
         });
 
         async function addAlumni(alumniEmail, alumniId) {
@@ -667,6 +1176,11 @@
                     alert('Connection request sent successfully!');
                     // Refresh the search results
                     form.dispatchEvent(new Event('submit'));
+                    // Refresh connections after a short delay to ensure backend has processed
+                    setTimeout(() => {
+                        console.log('Refreshing connections after sending request');
+                        loadMyConnections(studentEmail);
+                    }, 1000);
                 } else {
                     // Show specific error message from backend
                     const errorMessage = data.message || data.error || 'Failed to send connection request.';
@@ -680,7 +1194,7 @@
         }
 
         async function messageAlumni(alumniEmail, alumniId) {
-            const studentEmail = document.getElementById('studentEmail').value;
+            const studentEmail = document.getElementById('studentEmail').value.trim();
             
             if (!studentEmail) {
                 alert('Please enter your email address first.');
@@ -692,21 +1206,605 @@
                 return;
             }
 
+            console.log('Checking connection status before messaging:', { studentEmail, alumniEmail });
+
             // Check connection status first
             try {
                 const statusResponse = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(studentEmail)}&alumniEmail=${encodeURIComponent(alumniEmail)}`);
                 const statusData = await statusResponse.json();
+                
+                console.log('Connection status check response:', statusData);
 
-                if (statusData.data && statusData.data.status === 'ACCEPTED') {
+                // Check if connection is accepted
+                const isAccepted = statusData.data && (
+                    statusData.data.status === 'ACCEPTED' || 
+                    statusData.data.canMessage === true ||
+                    statusData.data.connected === true
+                );
+
+                console.log('Is connection accepted?', isAccepted, statusData.data);
+
+                if (isAccepted) {
                     // Connection accepted, allow messaging
+                    console.log('Redirecting to messages page');
                     window.location.href = `/messages.html?recipient=${encodeURIComponent(alumniEmail)}`;
                 } else {
-                    alert('You can only message alumni after your connection request has been accepted.');
+                    const status = statusData.data?.status || 'NOT_CONNECTED';
+                    console.error('Connection not accepted. Status:', status);
+                    
+                    if (status === 'PENDING') {
+                        alert('Your connection request is still pending. Please wait for the alumni to accept it.');
+                    } else if (status === 'BLOCKED') {
+                        alert('You cannot message this alumni.');
+                    } else {
+                        alert('You can only message alumni after your connection request has been accepted. Please send a connection request first.');
+                    }
                 }
             } catch (error) {
                 console.error('Error checking connection status:', error);
-                alert('Failed to check connection status. Please try again.');
+                // If check fails, still try to navigate (backend will validate)
+                console.log('Connection check failed, attempting to navigate anyway (backend will validate)');
+                window.location.href = `/messages.html?recipient=${encodeURIComponent(alumniEmail)}`;
             }
+        }
+
+        async function cancelRequest(alumniEmail, requestId) {
+            if (!requestId) {
+                alert('Request ID not found.');
+                return;
+            }
+
+            if (!confirm('Are you sure you want to cancel this connection request?')) {
+                return;
+            }
+
+            const studentEmail = document.getElementById('studentEmail').value.trim();
+
+            try {
+                // Use decline endpoint to cancel pending request
+                const response = await fetch(`/friend-requests/${requestId}/decline`, {
+                    method: 'POST'
+                });
+
+                if (response.ok) {
+                    alert('Connection request cancelled.');
+                    form.dispatchEvent(new Event('submit'));
+                    // Refresh connections after a short delay
+                    const studentEmail = document.getElementById('studentEmail').value.trim();
+                    if (studentEmail) {
+                        setTimeout(() => {
+                            console.log('Refreshing connections after cancelling request');
+                            loadMyConnections(studentEmail);
+                        }, 1000);
+                    }
+                } else {
+                    const data = await response.json().catch(() => ({}));
+                    alert(data.message || 'Failed to cancel request.');
+                }
+            } catch (error) {
+                console.error('Error cancelling request:', error);
+                alert('Failed to cancel request. Please try again.');
+            }
+        }
+
+        async function showProfileModal(alumniId) {
+            const alumni = currentAlumniData.find(a => a.id === alumniId);
+            if (!alumni) {
+                // Fetch alumni details if not in current data
+                try {
+                    const response = await fetch(`/api/alumni-directory/${alumniId}`);
+                    const result = await response.json();
+                    if (result.data) {
+                        displayProfileModal(result.data);
+                    }
+                } catch (error) {
+                    console.error('Error fetching alumni profile:', error);
+                    alert('Failed to load alumni profile.');
+                }
+                return;
+            }
+            displayProfileModal(alumni);
+        }
+
+        function displayProfileModal(alumni) {
+            const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim() || 'Alumni';
+            const initials = (alumni.firstName ? alumni.firstName.charAt(0) : '') + (alumni.lastName ? alumni.lastName.charAt(0) : '') || 'A';
+            const studentEmail = document.getElementById('studentEmail').value;
+            
+            document.getElementById('modal-alumni-name').textContent = fullName;
+            document.getElementById('modal-alumni-title').textContent = 
+                `${alumni.jobTitle || 'Alumni'}${alumni.company ? ` at ${alumni.company}` : ''}`;
+            
+            let modalContent = `
+                <div class="profile-section">
+                    <div style="text-align: center; margin-bottom: 2rem;">
+                        ${alumni.profileImage ? 
+                            `<img src="${alumni.profileImage}" alt="${fullName}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);" />` :
+                            `<div style="width: 120px; height: 120px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; font-size: 3rem; font-weight: 700; margin: 0 auto; border: 3px solid var(--primary);">${initials.toUpperCase()}</div>`
+                        }
+                    </div>
+                </div>
+            `;
+            
+            if (alumni.department || alumni.passingYear) {
+                modalContent += `
+                    <div class="profile-section">
+                        <div class="profile-section-title">Academic Information</div>
+                        <div class="profile-section-content">
+                            ${alumni.department ? `<div><strong>Department:</strong> ${alumni.department}</div>` : ''}
+                            ${alumni.passingYear ? `<div><strong>Passing Year:</strong> ${alumni.passingYear}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (alumni.bio) {
+                modalContent += `
+                    <div class="profile-section">
+                        <div class="profile-section-title">About</div>
+                        <div class="profile-bio">${alumni.bio}</div>
+                    </div>
+                `;
+            }
+            
+            if (alumni.cvLink || alumni.portfolioLink || alumni.linkedin) {
+                modalContent += `
+                    <div class="profile-section">
+                        <div class="profile-section-title">Links</div>
+                        <div class="profile-section-content">
+                            ${alumni.linkedin ? `<a href="${alumni.linkedin.startsWith('http') ? alumni.linkedin : 'https://' + alumni.linkedin}" target="_blank" class="profile-link">🔗 LinkedIn</a>` : ''}
+                            ${alumni.cvLink ? `<a href="${alumni.cvLink}" target="_blank" class="profile-link">📄 CV</a>` : ''}
+                            ${alumni.portfolioLink ? `<a href="${alumni.portfolioLink}" target="_blank" class="profile-link">💼 Portfolio</a>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('modal-alumni-content').innerHTML = modalContent;
+            
+            // Update buttons based on connection status
+            const status = alumni.connectionStatus?.status;
+            const connectBtn = document.getElementById('modal-connect-btn');
+            const messageBtn = document.getElementById('modal-message-btn');
+            
+            connectBtn.onclick = () => handleModalConnection(alumni);
+            messageBtn.onclick = () => handleModalMessage(alumni);
+            
+            if (status === 'ACCEPTED') {
+                connectBtn.textContent = '✓ Connected';
+                connectBtn.disabled = true;
+                connectBtn.className = 'btn-ghost';
+                messageBtn.disabled = false;
+                messageBtn.className = 'btn';
+            } else if (status === 'PENDING') {
+                connectBtn.textContent = 'Cancel Request';
+                connectBtn.disabled = false;
+                connectBtn.className = 'btn-ghost';
+                messageBtn.disabled = true;
+                messageBtn.title = 'Connect to message';
+            } else if (status === 'BLOCKED') {
+                connectBtn.textContent = 'Blocked';
+                connectBtn.disabled = true;
+                connectBtn.className = 'btn-ghost';
+                messageBtn.disabled = true;
+            } else {
+                connectBtn.textContent = 'Add Connection';
+                connectBtn.disabled = false;
+                connectBtn.className = 'btn';
+                messageBtn.disabled = true;
+                messageBtn.title = 'Connect to message';
+            }
+            
+            document.getElementById('profile-modal').classList.add('show');
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.remove('show');
+        }
+
+        function handleModalConnection(alumni) {
+            const status = alumni.connectionStatus?.status;
+            if (status === 'PENDING') {
+                cancelRequest(alumni.email, alumni.connectionStatus?.requestId);
+                closeProfileModal();
+            } else {
+                addAlumni(alumni.email, alumni.id);
+                closeProfileModal();
+            }
+        }
+
+        function handleModalMessage(alumni) {
+            messageAlumni(alumni.email, alumni.id);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('profile-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'profile-modal') {
+                closeProfileModal();
+            }
+        });
+
+        // Load connected alumni in main directory
+        async function loadConnectedAlumniInDirectory(studentEmail, forceReload = false) {
+            if (!studentEmail) {
+                return;
+            }
+
+            // Don't overwrite search results unless explicitly requested
+            if (!forceReload && currentAlumniData.length > 0) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/friend-requests/student?email=${encodeURIComponent(studentEmail)}`);
+                if (!response.ok) {
+                    console.error('Failed to load connected alumni');
+                    return;
+                }
+
+                const result = await response.json();
+                const acceptedConnections = result.data || [];
+
+                if (acceptedConnections.length === 0) {
+                    // If no connections and no search results, show default empty state
+                    if (currentAlumniData.length === 0) {
+                        alumniGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>Enter search criteria and click "Search" to find alumni</p></div>';
+                        resultsCount.textContent = '';
+                    }
+                    return;
+                }
+
+                // Fetch full alumni details for each connection
+                const alumniWithDetails = await Promise.all(acceptedConnections.map(async (conn) => {
+                    try {
+                        let alumni = {};
+                        
+                        if (conn.alumniEmail) {
+                            const searchResponse = await fetch(`/api/alumni-directory/search?email=${encodeURIComponent(conn.alumniEmail)}`);
+                            const searchResult = await searchResponse.json();
+                            
+                            if (searchResult.data && searchResult.data.length > 0) {
+                                alumni = searchResult.data[0];
+                            }
+                        }
+                        
+                        // If not found, use fallback
+                        if (!alumni.firstName && conn.alumniName) {
+                            const nameParts = (conn.alumniName || 'Unknown').split(' ');
+                            alumni = {
+                                firstName: nameParts[0] || '',
+                                lastName: nameParts.slice(1).join(' ') || '',
+                                email: conn.alumniEmail || '',
+                                department: '',
+                                passingYear: '',
+                                jobTitle: '',
+                                profileImage: '',
+                                id: 0
+                            };
+                        }
+                        
+                        // Add connection status
+                        alumni.connectionStatus = {
+                            status: 'ACCEPTED',
+                            canMessage: true,
+                            connected: true,
+                            requestId: conn.id
+                        };
+                        
+                        return alumni;
+                    } catch (error) {
+                        console.error('Error fetching alumni details:', error);
+                        return null;
+                    }
+                }));
+
+                // Filter out null values and render
+                const validAlumni = alumniWithDetails.filter(a => a !== null && a.id !== undefined);
+                
+                if (validAlumni.length > 0) {
+                    currentAlumniData = validAlumni;
+                    renderAlumniCards(validAlumni);
+                    resultsCount.textContent = `(${validAlumni.length} connected)`;
+                }
+            } catch (error) {
+                console.error('Error loading connected alumni:', error);
+            }
+        }
+
+        // Function to switch between pending and accepted connections tabs
+        function showConnectionsTab(tab) {
+            const pendingTab = document.querySelector('.connections-tabs .tab-btn:first-child');
+            const acceptedTab = document.querySelector('.connections-tabs .tab-btn:last-child');
+            const pendingGrid = document.getElementById('pending-connections-grid');
+            const acceptedGrid = document.getElementById('accepted-connections-grid');
+            
+            if (tab === 'pending') {
+                pendingTab.classList.add('active');
+                acceptedTab.classList.remove('active');
+                pendingGrid.style.display = 'grid';
+                acceptedGrid.style.display = 'none';
+            } else {
+                acceptedTab.classList.add('active');
+                pendingTab.classList.remove('active');
+                acceptedGrid.style.display = 'grid';
+                pendingGrid.style.display = 'none';
+            }
+        }
+
+        // Load My Connections - Get elements (already declared above)
+        const pendingGrid = document.getElementById('pending-connections-grid');
+        const acceptedGrid = document.getElementById('accepted-connections-grid');
+        const pendingCount = document.getElementById('pending-count');
+        const acceptedCount = document.getElementById('accepted-count');
+
+        async function loadMyConnections(studentEmail) {
+            if (!studentEmail) {
+                myConnectionsSection.style.display = 'none';
+                return;
+            }
+
+            console.log('Loading connections for student:', studentEmail);
+            
+            // Show loading state
+            pendingGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div>';
+            acceptedGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Loading...</p></div>';
+            myConnectionsSection.style.display = 'block';
+
+            try {
+                const [pendingRes, acceptedRes] = await Promise.all([
+                    fetch(`/friend-requests/student/pending?email=${encodeURIComponent(studentEmail)}`),
+                    fetch(`/friend-requests/student?email=${encodeURIComponent(studentEmail)}`)
+                ]);
+
+                console.log('Pending response status:', pendingRes.status, pendingRes.ok);
+                console.log('Accepted response status:', acceptedRes.status, acceptedRes.ok);
+
+                if (!pendingRes.ok) {
+                    const errorText = await pendingRes.text().catch(() => 'Unknown error');
+                    console.error('Pending requests API error:', errorText);
+                }
+                
+                if (!acceptedRes.ok) {
+                    const errorText = await acceptedRes.text().catch(() => 'Unknown error');
+                    console.error('Accepted connections API error:', errorText);
+                }
+
+                const pendingData = await pendingRes.json().catch((e) => {
+                    console.error('Failed to parse pending response:', e);
+                    return {};
+                });
+                const acceptedData = await acceptedRes.json().catch((e) => {
+                    console.error('Failed to parse accepted response:', e);
+                    return {};
+                });
+
+                console.log('Pending connections API response:', pendingData);
+                console.log('Accepted connections API response:', acceptedData);
+
+                const pendingRequests = pendingData.data || [];
+                const acceptedConnections = acceptedData.data || [];
+                
+                console.log('Extracted pending requests:', pendingRequests);
+                console.log('Extracted accepted connections:', acceptedConnections);
+
+                console.log('Pending requests:', pendingRequests);
+                console.log('Accepted connections:', acceptedConnections);
+
+                // Update counts (if elements exist)
+                if (pendingCount) {
+                    pendingCount.textContent = pendingRequests.length > 0 ? `(${pendingRequests.length})` : '';
+                }
+                if (acceptedCount) {
+                    acceptedCount.textContent = acceptedConnections.length > 0 ? `(${acceptedConnections.length})` : '';
+                }
+
+                // Fetch alumni details and render
+                await Promise.all([
+                    renderPendingConnections(pendingRequests),
+                    renderAcceptedConnections(acceptedConnections)
+                ]);
+
+                // Always show section (even if empty) so user knows it's working
+                myConnectionsSection.style.display = 'block';
+            } catch (error) {
+                console.error('Error loading connections:', error);
+                pendingGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error loading connections</p></div>';
+                acceptedGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Error loading connections</p></div>';
+                myConnectionsSection.style.display = 'block';
+            }
+        }
+
+        async function renderPendingConnections(requests) {
+            console.log('Rendering pending connections:', requests);
+            
+            if (!requests || requests.length === 0) {
+                pendingGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><p>No pending requests</p></div>';
+                return;
+            }
+
+            // Fetch alumni details for each request
+            const connectionsWithDetails = await Promise.all(requests.map(async (req) => {
+                console.log('Processing request:', req);
+                try {
+                    // Try to get alumni profile by ID first, then by email
+                    let alumni = {};
+                    
+                    // First try: search by email
+                    if (req.alumniEmail) {
+                        const searchResponse = await fetch(`/api/alumni-directory/search?email=${encodeURIComponent(req.alumniEmail)}`);
+                        const searchResult = await searchResponse.json();
+                        console.log('Search result for email:', req.alumniEmail, searchResult);
+                        
+                        if (searchResult.data && searchResult.data.length > 0) {
+                            alumni = searchResult.data[0];
+                            console.log('Found alumni:', alumni);
+                        }
+                    }
+                    
+                    // If not found, use fallback from request data
+                    if (!alumni.firstName && req.alumniName) {
+                        const nameParts = (req.alumniName || 'Unknown').split(' ');
+                        alumni = {
+                            firstName: nameParts[0] || '',
+                            lastName: nameParts.slice(1).join(' ') || '',
+                            email: req.alumniEmail || '',
+                            department: '',
+                            passingYear: '',
+                            jobTitle: '',
+                            profileImage: '',
+                            id: 0
+                        };
+                        console.log('Using fallback alumni data:', alumni);
+                    }
+                    
+                    return { ...req, alumni };
+                } catch (error) {
+                    console.error('Error fetching alumni details:', error);
+                    const nameParts = (req.alumniName || 'Unknown').split(' ');
+                    return {
+                        ...req,
+                        alumni: {
+                            firstName: nameParts[0] || '',
+                            lastName: nameParts.slice(1).join(' ') || '',
+                            email: req.alumniEmail || '',
+                            department: '',
+                            passingYear: '',
+                            jobTitle: '',
+                            profileImage: '',
+                            id: 0
+                        }
+                    };
+                }
+            }));
+            
+            console.log('Connections with details:', connectionsWithDetails);
+
+            pendingGrid.innerHTML = '';
+            connectionsWithDetails.forEach(conn => {
+                const alumni = conn.alumni || {};
+                const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim() || 'Alumni';
+                const initials = (alumni.firstName ? alumni.firstName.charAt(0) : '') + (alumni.lastName ? alumni.lastName.charAt(0) : '') || 'A';
+                const profileImage = alumni.profileImage || '';
+                
+                const card = document.createElement('div');
+                card.className = 'connection-card';
+                card.innerHTML = `
+                    ${profileImage ? 
+                        `<div class="connection-avatar"><img src="${profileImage}" alt="${fullName}" /></div>` :
+                        `<div class="connection-avatar">${initials.toUpperCase()}</div>`
+                    }
+                    <div class="connection-name" onclick="event.stopPropagation(); showProfileModal(${alumni.id || 0})">${fullName}</div>
+                    <div class="connection-info">
+                        ${alumni.department ? `<div>🎓 ${alumni.department}</div>` : ''}
+                        ${alumni.passingYear ? `<div>📅 ${alumni.passingYear}</div>` : ''}
+                        <span class="connection-status status-pending" style="margin-top: 0.5rem; display: block;">⏳ Pending</span>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="btn-ghost btn-sm" onclick="event.stopPropagation(); cancelRequest('${alumni.email || ''}', ${conn.id})">Cancel</button>
+                        <button class="btn-ghost" disabled title="Connect to message">💬 Message</button>
+                    </div>
+                `;
+                pendingGrid.appendChild(card);
+            });
+        }
+
+        async function renderAcceptedConnections(connections) {
+            console.log('Rendering accepted connections:', connections);
+            
+            if (!connections || connections.length === 0) {
+                acceptedGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">👥</div><p>No accepted connections yet</p></div>';
+                return;
+            }
+
+            // Fetch alumni details for each connection
+            const connectionsWithDetails = await Promise.all(connections.map(async (conn) => {
+                console.log('Processing connection:', conn);
+                try {
+                    let alumni = {};
+                    
+                    // Try to get alumni profile by email
+                    if (conn.alumniEmail) {
+                        const searchResponse = await fetch(`/api/alumni-directory/search?email=${encodeURIComponent(conn.alumniEmail)}`);
+                        const searchResult = await searchResponse.json();
+                        console.log('Search result for email:', conn.alumniEmail, searchResult);
+                        
+                        if (searchResult.data && searchResult.data.length > 0) {
+                            alumni = searchResult.data[0];
+                            console.log('Found alumni:', alumni);
+                        }
+                    }
+                    
+                    // If not found, use fallback from connection data
+                    if (!alumni.firstName && conn.alumniName) {
+                        const nameParts = (conn.alumniName || 'Unknown').split(' ');
+                        alumni = {
+                            firstName: nameParts[0] || '',
+                            lastName: nameParts.slice(1).join(' ') || '',
+                            email: conn.alumniEmail || '',
+                            department: '',
+                            passingYear: '',
+                            jobTitle: '',
+                            profileImage: '',
+                            id: 0
+                        };
+                        console.log('Using fallback alumni data:', alumni);
+                    }
+                    
+                    return { ...conn, alumni };
+                } catch (error) {
+                    console.error('Error fetching alumni details:', error);
+                    const nameParts = (conn.alumniName || 'Unknown').split(' ');
+                    return {
+                        ...conn,
+                        alumni: {
+                            firstName: nameParts[0] || '',
+                            lastName: nameParts.slice(1).join(' ') || '',
+                            email: conn.alumniEmail || '',
+                            department: '',
+                            passingYear: '',
+                            jobTitle: '',
+                            profileImage: '',
+                            id: 0
+                        }
+                    };
+                }
+            }));
+            
+            console.log('Connections with details:', connectionsWithDetails);
+
+            acceptedGrid.innerHTML = '';
+            connectionsWithDetails.forEach(conn => {
+                const alumni = conn.alumni || {};
+                const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim() || 'Alumni';
+                const initials = (alumni.firstName ? alumni.firstName.charAt(0) : '') + (alumni.lastName ? alumni.lastName.charAt(0) : '') || 'A';
+                const profileImage = alumni.profileImage || '';
+                // Use alumniEmail from connection if alumni.email is not available
+                const alumniEmail = alumni.email || conn.alumniEmail || '';
+                const alumniId = alumni.id || 0;
+                
+                console.log('Rendering accepted connection:', { fullName, alumniEmail, alumniId, conn });
+                
+                const card = document.createElement('div');
+                card.className = 'connection-card';
+                card.innerHTML = `
+                    ${profileImage ? 
+                        `<div class="connection-avatar"><img src="${profileImage}" alt="${fullName}" /></div>` :
+                        `<div class="connection-avatar">${initials.toUpperCase()}</div>`
+                    }
+                    <div class="connection-name" onclick="event.stopPropagation(); showProfileModal(${alumniId})">${fullName}</div>
+                    <div class="connection-info">
+                        ${alumni.department ? `<div>🎓 ${alumni.department}</div>` : ''}
+                        ${alumni.passingYear ? `<div>📅 ${alumni.passingYear}</div>` : ''}
+                        ${alumni.jobTitle ? `<div>💼 ${alumni.jobTitle}</div>` : ''}
+                        <span class="connection-status status-connected" style="margin-top: 0.5rem; display: block;">✓ Connected</span>
+                    </div>
+                    <div class="connection-actions">
+                        <button class="btn-ghost btn-sm" disabled>✓ Connected</button>
+                        <button class="btn" onclick="event.stopPropagation(); messageAlumni('${alumniEmail}', ${alumniId})">💬 Message</button>
+                    </div>
+                `;
+                acceptedGrid.appendChild(card);
+            });
         }
     </script>
 </body>

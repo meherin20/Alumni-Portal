@@ -431,7 +431,66 @@
             50% { opacity: 0.5; }
         }
 
+        /* Profile Preview Styles */
+        #profile-preview {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Enhanced Form Styles */
+        .form-row textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        /* Scrollbar Styling */
+        .form-card::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .form-card::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .form-card::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .form-card::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        /* Profile Preview Card Enhancements */
+        #profile-preview a {
+            transition: var(--transition);
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+        }
+
+        #profile-preview a:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateX(4px);
+        }
+
         /* Responsive */
+        @media (max-width: 1024px) {
+            .scene-body {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .form-card {
+                position: static !important;
+                max-height: none !important;
+            }
+        }
+
         @media (max-width: 768px) {
             .form-row-inline {
                 grid-template-columns: 1fr;
@@ -507,59 +566,135 @@
                 <span class="scene-badge">Alumni</span>
             </header>
 
-            <div class="scene-body">
-                <div class="form-card">
-                    <div class="section-label">Basic info</div>
+            <div class="scene-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                <!-- Left Column: Edit Form -->
+                <div class="form-card" style="position: sticky; top: 2rem; height: fit-content; max-height: calc(100vh - 4rem); overflow-y: auto;">
+                    <div class="section-label">
+                        <span style="font-size: 1.25rem; margin-right: 0.5rem;">✏️</span>
+                        Edit Profile Information
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 2rem; line-height: 1.6;">
+                        Fill in your profile details below. All fields are optional - save what you have!
+                    </p>
                     <form id="alumni-basic-form">
-                        <div class="form-row-inline">
+                        <!-- Personal Information Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Personal Information</h3>
                             <div class="form-row">
-                                <label for="fullName">Full name</label>
-                                <input id="fullName" name="fullName" placeholder="Your full name" />
+                                <label for="fullName">Full Name</label>
+                                <input id="fullName" name="fullName" placeholder="John Doe" />
                             </div>
                             <div class="form-row">
-                                <label for="passingYear">Passing year</label>
-                                <input id="passingYear" name="passingYear" placeholder="e.g. 2022" />
-                            </div>
-                        </div>
-                        <div class="form-row-inline">
-                            <div class="form-row">
-                                <label for="department">Department</label>
-                                <input id="department" name="department" placeholder="e.g. CSE" />
+                                <label for="emailBasic">Email Address</label>
+                                <input id="emailBasic" name="emailBasic" type="email" placeholder="john.doe@example.com" />
                             </div>
                             <div class="form-row">
-                                <label for="jobTitle">Current job</label>
-                                <input id="jobTitle" name="jobTitle" placeholder="e.g. Software Engineer" />
-                            </div>
-                        </div>
-                        <div class="form-row-inline">
-                            <div class="form-row">
-                                <label for="cvLink">CV link</label>
-                                <input id="cvLink" name="cvLink" placeholder="URL to your CV" />
+                                <label for="phone">Phone Number</label>
+                                <input id="phone" name="phone" placeholder="+1 (555) 123-4567" />
                             </div>
                             <div class="form-row">
-                                <label for="portfolioLink">Portfolio link</label>
-                                <input id="portfolioLink" name="portfolioLink" placeholder="GitHub / portfolio URL" />
+                                <label for="profileImage">Profile Image URL</label>
+                                <input id="profileImage" name="profileImage" placeholder="https://example.com/photo.jpg" />
                             </div>
                         </div>
-                        <div class="form-row">
-                            <label for="phone">Phone (required for profile)</label>
-                            <input id="phone" name="phone" placeholder="+8801..." />
+
+                        <!-- Education Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Education</h3>
+                            <div class="form-row-inline">
+                                <div class="form-row">
+                                    <label for="department">Department</label>
+                                    <input id="department" name="department" placeholder="Computer Science" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="passingYear">Passing Year</label>
+                                    <input id="passingYear" name="passingYear" placeholder="2022" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-row">
-                            <label for="emailBasic">Email (used to locate your account)</label>
-                            <input id="emailBasic" name="emailBasic" type="email" placeholder="you@example.edu" />
+
+                        <!-- Professional Information Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Professional</h3>
+                            <div class="form-row">
+                                <label for="jobTitle">Current Job Title</label>
+                                <input id="jobTitle" name="jobTitle" placeholder="Senior Software Engineer" />
+                            </div>
+                            <div class="form-row">
+                                <label for="linkedin">LinkedIn Profile</label>
+                                <input id="linkedin" name="linkedin" placeholder="linkedin.com/in/johndoe" />
+                            </div>
+                            <div class="form-row">
+                                <label for="cvLink">CV/Resume Link</label>
+                                <input id="cvLink" name="cvLink" placeholder="https://example.com/cv.pdf" />
+                            </div>
+                            <div class="form-row">
+                                <label for="portfolioLink">Portfolio/GitHub</label>
+                                <input id="portfolioLink" name="portfolioLink" placeholder="github.com/johndoe" />
+                            </div>
+                        </div>
+
+                        <!-- Location Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Location</h3>
+                            <div class="form-row-inline">
+                                <div class="form-row">
+                                    <label for="city">City</label>
+                                    <input id="city" name="city" placeholder="New York" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="state">State/Province</label>
+                                    <input id="state" name="state" placeholder="NY" />
+                                </div>
+                            </div>
+                            <div class="form-row-inline">
+                                <div class="form-row">
+                                    <label for="country">Country</label>
+                                    <input id="country" name="country" placeholder="United States" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="zip">ZIP/Postal Code</label>
+                                    <input id="zip" name="zip" placeholder="10001" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bio Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">About Me</h3>
+                            <div class="form-row">
+                                <label for="bio">Bio/Summary</label>
+                                <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself, your career journey, and what you're passionate about..."></textarea>
+                            </div>
                         </div>
 
                         <div class="btn-row">
-                            <button type="submit" class="btn">Save profile</button>
+                            <button type="submit" class="btn" style="width: 100%; padding: 1rem; font-size: 1rem; font-weight: 600;">
+                                💾 Save Profile
+                            </button>
                         </div>
-                        <p class="hint">
-                            For now, this demo portal wires strongly-typed fields (like phone) to the backend.
-                            Additional fields can be persisted by extending the backend profile model.
-                        </p>
-                        <div id="alumni-basic-message" class="alert" style="display:none;"></div>
+                        <div id="alumni-basic-message" class="alert" style="display:none; margin-top: 1rem;"></div>
                     </form>
                 </div>
+
+                <!-- Right Column: Profile Preview -->
+                <div class="form-card" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.05));">
+                    <div class="section-label">
+                        <span style="font-size: 1.25rem; margin-right: 0.5rem;">👤</span>
+                        Profile Preview
+                    </div>
+                    <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 2rem;">
+                        Your saved profile information will appear here
+                    </p>
+                    <div id="profile-preview" style="min-height: 400px;">
+                        <div style="text-align: center; padding: 3rem 2rem; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                            <p style="font-size: 1rem; margin-bottom: 0.5rem;">No profile information saved yet</p>
+                            <p style="font-size: 0.875rem;">Fill out the form and click "Save Profile" to see your information here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
                 <div class="form-card">
                     <div class="section-label">Change password</div>
@@ -1100,6 +1235,153 @@
         }
     });
 
+    // Function to render profile preview
+    function renderProfilePreview(user) {
+        const previewDiv = document.getElementById('profile-preview');
+        
+        // Get current form values (to show what's being saved)
+        const formFullName = basicForm.fullName?.value || '';
+        const formEmail = basicForm.emailBasic?.value || '';
+        const formPhone = basicForm.phone?.value || '';
+        const formDepartment = basicForm.department?.value || '';
+        const formPassingYear = basicForm.passingYear?.value || '';
+        const formJobTitle = basicForm.jobTitle?.value || '';
+        const formCvLink = basicForm.cvLink?.value || '';
+        const formPortfolioLink = basicForm.portfolioLink?.value || '';
+        const formProfileImage = basicForm.profileImage?.value || '';
+        const formCity = basicForm.city?.value || '';
+        const formState = basicForm.state?.value || '';
+        const formCountry = basicForm.country?.value || '';
+        const formZip = basicForm.zip?.value || '';
+        const formLinkedin = basicForm.linkedin?.value || '';
+        const formBio = basicForm.bio?.value || '';
+        
+        // Use form values if available, otherwise fall back to saved user data
+        const fullName = formFullName || ((user?.firstName || '') + ' ' + (user?.lastName || '')).trim() || 'Not provided';
+        const email = formEmail || user?.email || 'Not provided';
+        const phone = formPhone || user?.profile?.phone || 'Not provided';
+        const department = formDepartment || user?.profile?.department || 'Not provided';
+        const passingYear = formPassingYear || user?.profile?.passingYear || 'Not provided';
+        const jobTitle = formJobTitle || user?.profile?.jobTitle || 'Not provided';
+        const cvLink = formCvLink || user?.profile?.cvLink || null;
+        const portfolioLink = formPortfolioLink || user?.profile?.portfolioLink || null;
+        const profileImage = formProfileImage || user?.profile?.profileImage || null;
+        // Get location from form first, then from saved data
+        const city = formCity || (user?.profile?.address?.city) || '';
+        const state = formState || (user?.profile?.address?.state) || '';
+        const country = formCountry || (user?.profile?.address?.country) || '';
+        const zip = formZip || (user?.profile?.address?.zip) || '';
+        
+        // Build location string - only show if at least one field has value
+        const locationParts = [city, state, country, zip].filter(part => part && part.trim());
+        const location = locationParts.length > 0 ? locationParts.join(', ') : null;
+        const linkedin = formLinkedin || localStorage.getItem('alumni-linkedin') || null;
+        const bio = formBio || localStorage.getItem('alumni-bio') || null;
+        
+        // Check if we have any data to show
+        const hasData = fullName !== 'Not provided' || email !== 'Not provided' || phone !== 'Not provided' || 
+                       department !== 'Not provided' || jobTitle !== 'Not provided' || bio || linkedin || cvLink || portfolioLink;
+        
+        if (!hasData) {
+            previewDiv.innerHTML = `
+                <div style="text-align: center; padding: 3rem 2rem; color: var(--text-muted);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                    <p style="font-size: 1rem; margin-bottom: 0.5rem;">No profile information saved yet</p>
+                    <p style="font-size: 0.875rem;">Fill out the form and click "Save Profile" to see your information here</p>
+                </div>
+            `;
+            return;
+        }
+
+        previewDiv.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <!-- Profile Header -->
+                <div style="text-align: center; padding-bottom: 2rem; border-bottom: 1px solid var(--border);">
+                    ${profileImage ? `
+                        <img src="${profileImage}" alt="Profile" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 1rem; border: 4px solid var(--primary);" />
+                    ` : `
+                        <div style="width: 120px; height: 120px; border-radius: 50%; background: var(--gradient-primary); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white;">
+                            ${fullName.charAt(0).toUpperCase()}
+                        </div>
+                    `}
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">${fullName !== 'Not provided' ? fullName : 'Your Name'}</h2>
+                    ${jobTitle && jobTitle !== 'Not provided' ? `<p style="color: var(--primary); font-weight: 600; margin-bottom: 0.5rem;">${jobTitle}</p>` : ''}
+                    ${(department && department !== 'Not provided') || (passingYear && passingYear !== 'Not provided') ? `
+                        <p style="color: var(--text-secondary); font-size: 0.875rem;">
+                            ${department && department !== 'Not provided' ? department : ''}
+                            ${department && department !== 'Not provided' && passingYear && passingYear !== 'Not provided' ? ' • ' : ''}
+                            ${passingYear && passingYear !== 'Not provided' ? passingYear : ''}
+                        </p>
+                    ` : ''}
+                </div>
+
+                <!-- Contact Information -->
+                <div>
+                    <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>📧</span> Contact
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        ${email && email !== 'Not provided' ? `
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--text-muted); min-width: 80px;">Email:</span>
+                            <span style="color: var(--text-primary); word-break: break-word;">${email}</span>
+                        </div>
+                        ` : ''}
+                        ${phone && phone !== 'Not provided' ? `
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--text-muted); min-width: 80px;">Phone:</span>
+                            <span style="color: var(--text-primary);">${phone}</span>
+                        </div>
+                        ` : ''}
+                        ${location ? `
+                        <div style="display: flex; align-items: start; gap: 0.75rem;">
+                            <span style="color: var(--text-muted); min-width: 80px;">Location:</span>
+                            <span style="color: var(--text-primary);">${location}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+
+                <!-- Bio -->
+                ${bio && bio.trim() ? `
+                <div>
+                    <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>📝</span> About
+                    </h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6; white-space: pre-wrap;">${bio}</p>
+                </div>
+                ` : ''}
+
+                <!-- Links -->
+                <div>
+                    <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.5rem;">
+                        <span>🔗</span> Links
+                    </h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        ${linkedin && linkedin.trim() ? `
+                            <a href="${linkedin.startsWith('http') ? linkedin : 'https://' + linkedin}" target="_blank" style="color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;">
+                                <span>💼</span> LinkedIn Profile
+                            </a>
+                        ` : ''}
+                        ${cvLink && cvLink.trim() ? `
+                            <a href="${cvLink}" target="_blank" style="color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;">
+                                <span>📄</span> View CV/Resume
+                            </a>
+                        ` : ''}
+                        ${portfolioLink && portfolioLink.trim() ? `
+                            <a href="${portfolioLink}" target="_blank" style="color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;">
+                                <span>💻</span> Portfolio/GitHub
+                            </a>
+                        ` : ''}
+                        ${(!linkedin || !linkedin.trim()) && (!cvLink || !cvLink.trim()) && (!portfolioLink || !portfolioLink.trim()) ? `
+                            <span style="color: var(--text-muted); font-size: 0.875rem;">No links added yet</span>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
     basicForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         basicMsg.style.display = 'none';
@@ -1120,27 +1402,57 @@
         if (!alumniUser.profile) {
             alumniUser.profile = {};
         }
+        
+        // Update profile fields
         alumniUser.profile.phone = basicForm.phone.value || alumniUser.profile.phone || '';
         alumniUser.profile.department = basicForm.department.value || alumniUser.profile.department || '';
-        // Backend field is passingYear; keep UI label as "Passing year"
         alumniUser.profile.passingYear = basicForm.passingYear.value || alumniUser.profile.passingYear || '';
         alumniUser.profile.jobTitle = basicForm.jobTitle.value || alumniUser.profile.jobTitle || '';
         alumniUser.profile.cvLink = basicForm.cvLink.value || alumniUser.profile.cvLink || '';
         alumniUser.profile.portfolioLink = basicForm.portfolioLink.value || alumniUser.profile.portfolioLink || '';
+        alumniUser.profile.profileImage = basicForm.profileImage.value || alumniUser.profile.profileImage || '';
+        
+        // Handle address - always create/update address object if any field has value
+        if (basicForm.city.value || basicForm.state.value || basicForm.country.value || basicForm.zip.value) {
+            if (!alumniUser.profile.address) {
+                alumniUser.profile.address = {};
+            }
+            alumniUser.profile.address.city = basicForm.city.value || '';
+            alumniUser.profile.address.state = basicForm.state.value || '';
+            alumniUser.profile.address.country = basicForm.country.value || '';
+            alumniUser.profile.address.zip = basicForm.zip.value || '';
+        }
+        
+        // Store bio and linkedin in a temporary way (since they're not in backend yet)
+        // We'll store them in localStorage for preview purposes
+        if (basicForm.bio.value) {
+            localStorage.setItem('alumni-bio', basicForm.bio.value);
+        }
+        if (basicForm.linkedin.value) {
+            localStorage.setItem('alumni-linkedin', basicForm.linkedin.value);
+        }
+
+        // Create update payload without password to prevent double-encoding
+        const updatePayload = {
+            id: alumniUser.id,
+            firstName: alumniUser.firstName,
+            lastName: alumniUser.lastName,
+            email: basicForm.emailBasic.value || alumniUser.email,
+            profile: alumniUser.profile,
+            role: alumniUser.role
+        };
 
         try {
             const res = await fetch('/users/' + alumniUser.id, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(alumniUser)
+                body: JSON.stringify(updatePayload)
             });
             const data = await res.json().catch(() => ({}));
             basicMsg.className = 'alert';
             if (!res.ok) {
                 basicMsg.classList.add('alert-error');
-                // Check for error message in different possible formats
                 let errorMsg = data.message || data.error || 'Failed to save profile.';
-                // If validation errors, show details
                 if (data.details && typeof data.details === 'object') {
                     const details = Object.entries(data.details).map(([field, msg]) => `${field}: ${msg}`).join(', ');
                     errorMsg = details || errorMsg;
@@ -1148,7 +1460,55 @@
                 basicMsg.textContent = errorMsg;
                 console.error('Profile save error:', data);
             } else {
-                basicMsg.textContent = 'Profile saved.';
+                basicMsg.classList.add('alert-success');
+                basicMsg.textContent = '✅ Profile saved successfully!';
+                basicMsg.style.display = 'block';
+                
+                // Update the user object with saved data from server
+                if (data.data) {
+                    alumniUser = data.data;
+                }
+                
+                // Also update the local alumniUser object with form values to ensure preview shows everything
+                // This ensures the preview shows what was just saved, even before server refresh
+                if (!alumniUser.profile) {
+                    alumniUser.profile = {};
+                }
+                // Update profile with form values
+                alumniUser.profile.phone = basicForm.phone.value || alumniUser.profile.phone || '';
+                alumniUser.profile.department = basicForm.department.value || alumniUser.profile.department || '';
+                alumniUser.profile.passingYear = basicForm.passingYear.value || alumniUser.profile.passingYear || '';
+                alumniUser.profile.jobTitle = basicForm.jobTitle.value || alumniUser.profile.jobTitle || '';
+                alumniUser.profile.cvLink = basicForm.cvLink.value || alumniUser.profile.cvLink || '';
+                alumniUser.profile.portfolioLink = basicForm.portfolioLink.value || alumniUser.profile.portfolioLink || '';
+                alumniUser.profile.profileImage = basicForm.profileImage.value || alumniUser.profile.profileImage || '';
+                
+                // Update address - ensure it's properly structured
+                if (basicForm.city.value || basicForm.state.value || basicForm.country.value || basicForm.zip.value) {
+                    if (!alumniUser.profile.address) {
+                        alumniUser.profile.address = {};
+                    }
+                    alumniUser.profile.address.city = basicForm.city.value || '';
+                    alumniUser.profile.address.state = basicForm.state.value || '';
+                    alumniUser.profile.address.country = basicForm.country.value || '';
+                    alumniUser.profile.address.zip = basicForm.zip.value || '';
+                }
+                
+                // Update name and email
+                const fullNameParts = basicForm.fullName.value.trim().split(' ');
+                if (fullNameParts.length === 1) {
+                    alumniUser.firstName = fullNameParts[0];
+                    alumniUser.lastName = '';
+                } else if (fullNameParts.length > 1) {
+                    alumniUser.firstName = fullNameParts[0];
+                    alumniUser.lastName = fullNameParts.slice(1).join(' ');
+                }
+                if (basicForm.emailBasic.value) {
+                    alumniUser.email = basicForm.emailBasic.value;
+                }
+                
+                // Render preview with updated data (will read from form fields first, then fallback to user object)
+                renderProfilePreview(alumniUser);
             }
             basicMsg.style.display = 'block';
         } catch (err) {
@@ -1193,6 +1553,23 @@
                 if (basicForm.cvLink) basicForm.cvLink.value = profile.cvLink || '';
                 if (basicForm.portfolioLink) basicForm.portfolioLink.value = profile.portfolioLink || '';
                 if (basicForm.phone) basicForm.phone.value = profile.phone || '';
+                if (basicForm.profileImage) basicForm.profileImage.value = profile.profileImage || '';
+                if (basicForm.emailBasic) basicForm.emailBasic.value = user.email || '';
+                
+                // Address fields
+                if (profile.address) {
+                    if (basicForm.city) basicForm.city.value = profile.address.city || '';
+                    if (basicForm.state) basicForm.state.value = profile.address.state || '';
+                    if (basicForm.country) basicForm.country.value = profile.address.country || '';
+                    if (basicForm.zip) basicForm.zip.value = profile.address.zip || '';
+                }
+                
+                // Load bio and linkedin from localStorage (since they're not in backend yet)
+                if (basicForm.bio) basicForm.bio.value = localStorage.getItem('alumni-bio') || '';
+                if (basicForm.linkedin) basicForm.linkedin.value = localStorage.getItem('alumni-linkedin') || '';
+                
+                // Render profile preview
+                renderProfilePreview(user);
             }
 
             const pending = (reqJson.data || []).length;

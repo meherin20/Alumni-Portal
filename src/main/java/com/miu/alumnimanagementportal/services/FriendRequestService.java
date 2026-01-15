@@ -13,6 +13,8 @@ public interface FriendRequestService {
 
     List<FriendRequestDto> getAcceptedForStudent(String studentEmail);
 
+    List<FriendRequestDto> getPendingForStudent(String studentEmail);
+
     List<FriendRequestDto> getAcceptedForAlumni(String alumniEmail);
 
     void accept(Long id);

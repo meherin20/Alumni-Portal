@@ -136,9 +136,15 @@ public class UserServiceImpl implements UserService {
             existing.setEmail(userDto.getEmail());
         }
         
-        // only encode if password provided (otherwise keep existing)
+        // only encode if password provided and not already hashed (otherwise keep existing)
         if (userDto.getPassword() != null && !userDto.getPassword().isBlank()) {
-            existing.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            String password = userDto.getPassword();
+            // Check if password is already hashed (BCrypt hashes start with $2a$, $2b$, or $2y$)
+            // This prevents double-encoding if the hashed password is accidentally sent back
+            if (!password.startsWith("$2a$") && !password.startsWith("$2b$") && !password.startsWith("$2y$")) {
+                existing.setPassword(passwordEncoder.encode(password));
+            }
+            // If password is already hashed, ignore it (don't update)
         }
         
         // Update profile if provided

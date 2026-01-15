@@ -21,12 +21,13 @@ public class AlumniDirectoryController {
     @GetMapping("/search")
     public ResponseEntity<?> searchAlumni(
             @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
             @RequestParam(required = false) String department,
             @RequestParam(required = false) String graduationYear,
             @RequestParam(required = false) String jobTitle,
             @RequestParam(required = false) String company) {
         return converter.buildResponseEntity(
-                Map.of("data", alumniDirectoryService.searchAlumni(name, department, graduationYear, jobTitle, company)),
+                Map.of("data", alumniDirectoryService.searchAlumni(name, email, department, graduationYear, jobTitle, company)),
                 HttpStatus.OK
         );
     }
