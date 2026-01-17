@@ -411,6 +411,7 @@
     </div>
 
     <script>
+        (async function initMessages() {
         // Get recipient email and sender email from URL
         const urlParams = new URLSearchParams(window.location.search);
         const recipientEmail = urlParams.get('recipient');
@@ -722,6 +723,8 @@
 
         // Refresh conversation every 5 seconds (optional - comment out if not needed)
         // setInterval(loadConversation, 5000);
+        })();
+
     </script>
 </body>
 </html>
