@@ -2,13 +2,8 @@ package com.miu.alumnimanagementportal.aspects;
 
 import com.miu.alumnimanagementportal.services.ActivityLogService;
 import com.miu.alumnimanagementportal.dtos.ActivityLogDto;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.logging.Log;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
@@ -22,12 +17,15 @@ import java.time.LocalDateTime;
 @Aspect
 @Component
 public class LoggerAspect {
-    private final HttpServletRequest request;
     private final ActivityLogService activityLogService;
 
     @Before("execution(* com.miu.alumnimanagementportal.controllers.*.*(..))")
     public void logExecutionTime(JoinPoint joinPoint) throws Throwable {
-        String ipAddress = request.getRemoteAddr();
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (attrs == null) {
+            return;
+        }
+        String ipAddress = attrs.getRequest().getRemoteAddr();
         activityLogService.createActivityLog(ActivityLogDto.builder().accessTime(LocalDateTime.now())
                 .operation(joinPoint.getSignature().getName()).ipAddress(ipAddress).build());
     }

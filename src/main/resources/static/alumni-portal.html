@@ -897,6 +897,8 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
     (function() {
         const stored = window.localStorage.getItem('amp-theme');
@@ -1128,6 +1130,66 @@
     const contactsForm = document.getElementById('alumni-contacts-form');
     const contactsTableBody = document.querySelector('#alumni-contacts-table tbody');
     const notifBell = document.getElementById('alumni-notif-bell');
+    let messagesCache = [];
+    let stompClient = null;
+    let socketSubscription = null;
+    let socketConnected = false;
+    let activeMessagesEmail = '';
+
+    function buildMessagesTopic(email) {
+        return `/topic/messages.${email}`;
+    }
+
+    function connectMessagesSocket(email) {
+        activeMessagesEmail = email;
+        if (!email) return;
+
+        const subscribe = () => {
+            if (socketSubscription) {
+                socketSubscription.unsubscribe();
+            }
+            socketSubscription = stompClient.subscribe(buildMessagesTopic(email), (message) => {
+                try {
+                    const payload = JSON.parse(message.body);
+                    handleInboxMessage(payload);
+                } catch (err) {
+                    console.error('Failed to parse socket message:', err);
+                }
+            });
+        };
+
+        if (socketConnected && stompClient) {
+            subscribe();
+            return;
+        }
+
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null;
+        stompClient.connect({}, () => {
+            socketConnected = true;
+            subscribe();
+        }, (err) => {
+            socketConnected = false;
+            console.warn('Messages socket connection failed:', err);
+        });
+    }
+
+    function handleInboxMessage(message) {
+        if (!message || !message.id) return;
+        const exists = messagesCache.some((m) => m.id === message.id);
+        if (!exists) {
+            messagesCache.push(message);
+            messagesCache.sort((a, b) => new Date(a.createdDate) - new Date(b.createdDate));
+            if (activeMessagesEmail) {
+                renderMessages(messagesCache, activeMessagesEmail);
+            }
+            if (notifBell) {
+                notifBell.classList.add('has-notification');
+                notifBell.title = 'You have new messages';
+            }
+        }
+    }
 
     function renderMessages(messages, alumniEmail) {
         const container = document.getElementById('alumni-messages-container');
@@ -1206,7 +1268,9 @@
             const res = await fetch('/messages/inbox?recipientEmail=' + encodeURIComponent(email));
             const json = await res.json().catch(() => ({}));
             const messages = json.data || [];
-            renderMessages(messages, email);
+            messagesCache = messages;
+            renderMessages(messagesCache, email);
+            connectMessagesSocket(email);
         } catch (err) {
             console.error('Error loading messages:', err);
             document.getElementById('alumni-messages-container').innerHTML = 
