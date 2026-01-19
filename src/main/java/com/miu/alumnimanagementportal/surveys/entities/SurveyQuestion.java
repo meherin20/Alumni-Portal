@@ -15,13 +15,10 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "survey_question")
 public class SurveyQuestion extends BaseEntity {
-
-    @EqualsAndHashCode.Include
-    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)

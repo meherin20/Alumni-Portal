@@ -1013,6 +1013,54 @@
             margin-top: 20px;
         }
 
+        .surveys-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .survey-card-landing {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .survey-card-landing:hover {
+            transform: translateY(-4px);
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .survey-card-landing h4 {
+            margin: 0 0 0.75rem 0;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .survey-card-landing p {
+            margin: 0 0 1rem 0;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .survey-card-landing .start-survey-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
         .view-all-events-btn {
             display: inline-flex;
             align-items: center;
@@ -1277,6 +1325,30 @@
             </div>
         </section>
 
+        <!-- Alumni Surveys Section -->
+        <section class="alumni-events-section" id="alumni-surveys-section">
+            <div class="events-container">
+                <div class="events-header">
+                    <h2 class="events-main-title">Surveys for Alumni</h2>
+                    <p class="events-subtitle">Share your feedback to help improve the alumni community</p>
+                </div>
+
+                <div class="surveys-grid" id="landing-surveys-grid">
+                    <div class="loading-placeholder">
+                        <div class="loading-spinner"></div>
+                        <p>Loading surveys...</p>
+                    </div>
+                </div>
+
+                <div class="events-footer">
+                    <a href="/surveys.html" class="view-all-events-btn">
+                        <span>View All Surveys</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <footer class="footer">
             <p>🚀 Built with Spring Boot & MySQL · Modern Alumni Management Portal</p>
             <p>Connect • Network • Grow</p>
@@ -1344,10 +1416,12 @@
 
                 // Load events for display
                 loadEvents(events.data || []);
+                loadLandingSurveys();
             } catch (error) {
                 console.log('Stats loading failed, using defaults');
                 // Still try to load events even if stats fail
                 loadEvents([]);
+                loadLandingSurveys();
             }
         }
 
@@ -1378,6 +1452,59 @@
                 .slice(0, 6);
 
             eventsGrid.innerHTML = sortedEvents.map(event => createLandingEventCard(event)).join('');
+        }
+
+        // Load and display surveys on the landing page
+        async function loadLandingSurveys() {
+            const surveysGrid = document.getElementById('landing-surveys-grid');
+            if (!surveysGrid) return;
+
+            try {
+                const res = await fetch('/api/surveys-module');
+                const json = await res.json().catch(() => ({}));
+                const surveys = json.data || [];
+
+                if (!surveys.length) {
+                    surveysGrid.innerHTML = `
+                        <div class="events-empty">
+                            <div class="empty-icon">
+                                <i class="fas fa-poll"></i>
+                            </div>
+                            <h3 class="empty-title">No Active Surveys</h3>
+                            <p class="empty-description">Check back soon for new surveys.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                surveysGrid.innerHTML = surveys.slice(0, 6).map(survey => createLandingSurveyCard(survey)).join('');
+            } catch (error) {
+                console.error('Error loading surveys:', error);
+                surveysGrid.innerHTML = `
+                    <div class="events-empty">
+                        <div class="empty-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3 class="empty-title">Unable to load surveys</h3>
+                        <p class="empty-description">Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function createLandingSurveyCard(survey) {
+            const desc = (survey.description || '').substring(0, 140);
+            const trimmed = survey.description && survey.description.length > 140 ? desc + '...' : desc;
+            return `
+                <div class="survey-card-landing">
+                    <h4>${survey.title || 'Untitled Survey'}</h4>
+                    <p>${trimmed || 'Share your feedback with us.'}</p>
+                    <a class="start-survey-btn" href="/surveys.html?surveyId=${encodeURIComponent(survey.id)}">
+                        Start Survey
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            `;
         }
 
         // Create modern event card for landing page

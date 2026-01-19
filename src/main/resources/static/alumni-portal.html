@@ -870,12 +870,33 @@
                     </div>
 
                     <div id="survey-response-message" class="alert" style="display:none; margin-top: 1rem;"></div>
+
+                    <div id="responded-surveys-section" style="margin-top: 2.5rem;">
+                        <div class="section-label">Responded Surveys</div>
+                        <div id="responded-surveys-list" style="display: grid; gap: 1rem;">
+                            <div style="text-align: center; color: var(--text-secondary); padding: 1.5rem;">
+                                Loading responded surveys...
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
         </section>
     </main>
 </div>
 
+<div id="survey-results-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card" style="max-width: 900px;">
+        <div class="modal-header">
+            <h2 class="modal-title">Survey Results</h2>
+            <button id="survey-results-close" class="modal-close">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="survey-results-content" style="display: grid; gap: 1.5rem;"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     (function() {
         const stored = window.localStorage.getItem('amp-theme');
@@ -1744,6 +1765,12 @@
     const surveyResponseForm = document.getElementById('survey-response-form');
     const surveyQuestions = document.getElementById('survey-questions');
     const surveyResponseMessage = document.getElementById('survey-response-message');
+    const respondedSurveysList = document.getElementById('responded-surveys-list');
+    const surveyResultsModal = document.getElementById('survey-results-modal');
+    const surveyResultsContent = document.getElementById('survey-results-content');
+    const surveyResultsClose = document.getElementById('survey-results-close');
+
+    let surveyResultCharts = [];
 
     let currentSurveyId = null;
     let currentSurveyData = null;
@@ -1767,7 +1794,20 @@
 
         // Load available surveys
         loadAvailableSurveys();
+        loadRespondedSurveys();
     });
+
+    if (surveyResultsClose) {
+        surveyResultsClose.addEventListener('click', () => {
+            closeSurveyResultsModal();
+        });
+    }
+
+    function closeSurveyResultsModal() {
+        surveyResultCharts.forEach(chart => chart.destroy());
+        surveyResultCharts = [];
+        if (surveyResultsModal) surveyResultsModal.style.display = 'none';
+    }
 
     // Load available surveys
     async function loadAvailableSurveys() {
@@ -1819,6 +1859,117 @@
         } catch (error) {
             console.error('Error loading surveys:', error);
             surveysList.innerHTML = '<p style="color: #ff6b6b;">Error loading surveys. Please try again later.</p>';
+        }
+    }
+
+    async function loadRespondedSurveys() {
+        if (!respondedSurveysList) return;
+        const email = window.localStorage.getItem('amp-user-email');
+        if (!email) {
+            respondedSurveysList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 1rem;">Login to view responded surveys.</div>';
+            return;
+        }
+        try {
+            const response = await fetch('/api/surveys-module/responded?respondentKey=' + encodeURIComponent(email));
+            const data = await response.json().catch(() => ({}));
+            const surveys = data.data || [];
+
+            if (!surveys.length) {
+                respondedSurveysList.innerHTML = '<div style="text-align: center; color: var(--text-secondary); padding: 1rem;">No responded surveys yet.</div>';
+                return;
+            }
+
+            respondedSurveysList.innerHTML = surveys.map(survey => `
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 12px; padding: 1rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">${survey.title}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">${survey.description || 'No description provided'}</div>
+                        </div>
+                        <button type="button" class="btn-ghost" onclick="showSurveyResults(${survey.surveyId})">Show Result</button>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading responded surveys:', error);
+            respondedSurveysList.innerHTML = '<div style="text-align: center; color: var(--error); padding: 1rem;">Failed to load responded surveys.</div>';
+        }
+    }
+
+    async function showSurveyResults(surveyId) {
+        if (!surveyResultsModal || !surveyResultsContent) return;
+        surveyResultsContent.innerHTML = '<div style="text-align:center; color: var(--text-secondary);">Loading results...</div>';
+        surveyResultsModal.style.display = 'block';
+
+        try {
+            const response = await fetch(`/api/surveys-module/${surveyId}/results`);
+            const data = await response.json().catch(() => ({}));
+            const results = data.data;
+            if (!results || !results.questions) {
+                surveyResultsContent.innerHTML = '<div style="text-align:center; color: var(--error);">No results available.</div>';
+                return;
+            }
+
+            surveyResultsContent.innerHTML = results.questions.map((q, idx) => `
+                <div style="background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 12px; padding: 1rem;">
+                    <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem;">${idx + 1}. ${q.text}</div>
+                    <canvas id="survey-chart-${idx}" height="180"></canvas>
+                </div>
+            `).join('');
+
+            surveyResultCharts.forEach(chart => chart.destroy());
+            surveyResultCharts = [];
+
+            results.questions.forEach((q, idx) => {
+                const ctx = document.getElementById(`survey-chart-${idx}`);
+                if (!ctx) return;
+
+                let labels = [];
+                let values = [];
+
+                if (q.percentages && Object.keys(q.percentages).length) {
+                    labels = Object.keys(q.percentages);
+                    values = Object.values(q.percentages);
+                } else if (q.ratingDistribution && Object.keys(q.ratingDistribution).length) {
+                    const distEntries = Object.entries(q.ratingDistribution).sort((a, b) => Number(a[0]) - Number(b[0]));
+                    const total = distEntries.reduce((sum, [, count]) => sum + count, 0);
+                    labels = distEntries.map(([rating]) => `${rating} ⭐`);
+                    values = distEntries.map(([, count]) => total ? (count * 100) / total : 0);
+                } else {
+                    labels = ['No data'];
+                    values = [100];
+                }
+
+                const colors = [
+                    '#6366f1', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b',
+                    '#ef4444', '#3b82f6', '#14b8a6', '#f97316', '#a855f7'
+                ];
+
+                surveyResultCharts.push(new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: labels.map((_, i) => colors[i % colors.length])
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { color: '#e2e8f0' } },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => `${context.label}: ${context.parsed.toFixed(1)}%`
+                                }
+                            }
+                        }
+                    }
+                }));
+            });
+        } catch (error) {
+            console.error('Error loading survey results:', error);
+            surveyResultsContent.innerHTML = '<div style="text-align:center; color: var(--error);">Failed to load results.</div>';
         }
     }
 

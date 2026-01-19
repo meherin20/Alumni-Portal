@@ -2,7 +2,9 @@ package com.miu.alumnimanagementportal.controllers;
 
 import com.miu.alumnimanagementportal.common.Converter;
 import com.miu.alumnimanagementportal.dtos.SurveyDetailDto;
+import com.miu.alumnimanagementportal.dtos.SurveyRespondedDto;
 import com.miu.alumnimanagementportal.dtos.SurveyResponseCreateDto;
+import com.miu.alumnimanagementportal.dtos.SurveyResultsDto;
 import com.miu.alumnimanagementportal.dtos.SurveySummaryDto;
 import com.miu.alumnimanagementportal.services.SurveyResponseService;
 import jakarta.validation.Valid;
@@ -46,6 +48,18 @@ public class SurveyPublicController {
     ) {
         responseService.submitResponse(id, dto, anonymous);
         return converter.buildResponseEntity(Map.of("message", "Response submitted"), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/responded")
+    public ResponseEntity<?> listResponded(@RequestParam String respondentKey) {
+        List<SurveyRespondedDto> responded = responseService.listResponded(respondentKey);
+        return converter.buildResponseEntity(Map.of("data", responded), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/results")
+    public ResponseEntity<?> results(@PathVariable Long id) {
+        SurveyResultsDto results = responseService.getResults(id);
+        return converter.buildResponseEntity(Map.of("data", results), HttpStatus.OK);
     }
 }
 

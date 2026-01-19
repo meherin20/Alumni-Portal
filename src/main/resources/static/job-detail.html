@@ -664,13 +664,13 @@
             </ul>
         </aside>
 
-        <section class="scene-card">
+        <section class="scene-card" style="display: none;">
             <header class="scene-header">
                 <div>
-                    <div class="scene-title" id="job-title">Job Title</div>
-                    <p class="scene-subtitle" id="job-company">Company Name</p>
+                    <div class="scene-title" id="job-title-scene">Job Title</div>
+                    <p class="scene-subtitle" id="job-company-scene">Company Name</p>
                 </div>
-                <span class="scene-badge" id="job-status">Status</span>
+                <span class="scene-badge" id="job-status-scene">Status</span>
             </header>
 
             <div class="scene-body">
@@ -679,42 +679,42 @@
                     <div class="job-details-grid">
                         <div class="detail-row">
                             <span class="detail-label">Location:</span>
-                            <span class="detail-value" id="job-location">Location</span>
+                            <span class="detail-value" id="job-location-scene">Location</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Job Type:</span>
-                            <span class="detail-value" id="job-type">Type</span>
+                            <span class="detail-value" id="job-type-scene">Type</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Experience:</span>
-                            <span class="detail-value" id="job-experience">Experience</span>
+                            <span class="detail-value" id="job-experience-scene">Experience</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Deadline:</span>
-                            <span class="detail-value" id="job-deadline">Deadline</span>
+                            <span class="detail-value" id="job-deadline-scene">Deadline</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Posted:</span>
-                            <span class="detail-value" id="job-posted">Posted Date</span>
+                            <span class="detail-value" id="job-posted-scene">Posted Date</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="content-card">
                     <div class="section-label">Description</div>
-                    <p id="job-description">Job description will be loaded here...</p>
+                    <p id="job-description-scene">Job description will be loaded here...</p>
                 </div>
 
                 <div class="content-card">
                     <div class="section-label">Requirements</div>
-                    <ul id="job-requirements">
+                    <ul id="job-requirements-scene">
                         <li>Requirements will be loaded here...</li>
                     </ul>
                 </div>
 
                 <div class="btn-row">
-                    <button class="btn" id="applyBtn">Apply Now</button>
-                    <button class="btn-ghost" id="saveBtn">Save Job</button>
+                    <button class="btn" id="applyBtn-scene">Apply Now</button>
+                    <button class="btn-ghost" id="saveBtn-scene">Save Job</button>
                 </div>
             </div>
         </section>
@@ -875,11 +875,11 @@
                         </h3>
                     </div>
                     <div class="card-content">
-                        <button type="button" class="action-btn save-btn" id="saveBtn">
+                        <button type="button" class="action-btn save-btn" id="saveBtn-sidebar">
                             <i class="fas fa-bookmark"></i>
                             Save for Later
                         </button>
-                        <a href="#" class="action-btn apply-btn" id="applyBtn">
+                        <a href="#" class="action-btn apply-btn" id="applyBtn-sidebar">
                             <i class="fas fa-paper-plane"></i>
                             Apply Now
                         </a>
@@ -1071,28 +1071,39 @@
                 document.getElementById('job-salary').textContent = 'Competitive salary and comprehensive benefits package including health insurance, paid time off, and professional development opportunities.';
             }
 
-            // Make apply button functional
-            const applyBtn = document.getElementById('apply-btn');
-            if (applyBtn) {
-                applyBtn.href = `/apply-job.html?jobId=${encodeURIComponent(job.id)}`;
+            // Make apply buttons functional (both hero and sidebar)
+            const applyBtnHero = document.getElementById('apply-btn');
+            const applyBtnSidebar = document.getElementById('applyBtn-sidebar');
+            if (applyBtnHero) {
+                applyBtnHero.href = `/apply-job.html?jobId=${encodeURIComponent(job.id)}`;
+            }
+            if (applyBtnSidebar) {
+                applyBtnSidebar.href = `/apply-job.html?jobId=${encodeURIComponent(job.id)}`;
             }
 
-            // Add save functionality
-            const saveBtn = document.getElementById('save-btn');
-            if (saveBtn) {
-                saveBtn.addEventListener('click', () => {
-                    // Simple save functionality - could be enhanced with actual backend integration
-                    const isSaved = saveBtn.classList.contains('saved');
-                    if (isSaved) {
-                        saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Save Job';
-                        saveBtn.classList.remove('saved');
-                        showNotification('Job removed from saved jobs', 'info');
-                    } else {
-                        saveBtn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
-                        saveBtn.classList.add('saved');
-                        showNotification('Job saved successfully!', 'success');
-                    }
-                });
+            // Add save functionality (both hero and sidebar)
+            const saveBtnHero = document.getElementById('save-btn');
+            const saveBtnSidebar = document.getElementById('saveBtn-sidebar');
+            
+            const handleSaveClick = (btn) => {
+                if (!btn) return;
+                const isSaved = btn.classList.contains('saved');
+                if (isSaved) {
+                    btn.innerHTML = '<i class="fas fa-bookmark"></i> Save Job';
+                    btn.classList.remove('saved');
+                    showNotification('Job removed from saved jobs', 'info');
+                } else {
+                    btn.innerHTML = '<i class="fas fa-bookmark"></i> Saved';
+                    btn.classList.add('saved');
+                    showNotification('Job saved successfully!', 'success');
+                }
+            };
+            
+            if (saveBtnHero) {
+                saveBtnHero.addEventListener('click', () => handleSaveClick(saveBtnHero));
+            }
+            if (saveBtnSidebar) {
+                saveBtnSidebar.addEventListener('click', () => handleSaveClick(saveBtnSidebar));
             }
 
             // Show sections that have content

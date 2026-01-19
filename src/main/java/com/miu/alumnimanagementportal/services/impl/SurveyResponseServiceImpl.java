@@ -135,6 +135,106 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         return responseRepository.countByStatus(ResponseStatus.SUBMITTED);
     }
 
+    @Override
+    @Transactional
+    public List<SurveyRespondedDto> listResponded(String respondentKey) {
+        if (respondentKey == null || respondentKey.isBlank()) {
+            throw new BadRequestException("respondentKey is required");
+        }
+        return responseRepository.findByRespondentKeyAndStatus(respondentKey, ResponseStatus.SUBMITTED)
+                .stream()
+                .map(response -> {
+                    SurveyRespondedDto dto = new SurveyRespondedDto();
+                    dto.setSurveyId(response.getSurvey().getId());
+                    dto.setTitle(response.getSurvey().getTitle());
+                    dto.setDescription(response.getSurvey().getDescription());
+                    dto.setSubmittedAt(response.getSubmittedAt());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public SurveyResultsDto getResults(Long surveyId) {
+        Survey survey = surveyRepository.findWithQuestionsById(surveyId)
+                .orElseThrow(() -> new ResourceNotFoundException("Survey with id " + surveyId + " not found"));
+
+        List<SurveyResponse> responses = responseRepository.findBySurveyId(surveyId);
+        long submitted = responseRepository.countBySurveyIdAndStatus(surveyId, ResponseStatus.SUBMITTED);
+
+        List<SurveyQuestionResultDto> questionResults = new ArrayList<>();
+        for (SurveyQuestion q : survey.getQuestions()) {
+            SurveyQuestionResultDto qr = new SurveyQuestionResultDto();
+            qr.setQuestionId(q.getId());
+            qr.setText(q.getText());
+            qr.setType(q.getType());
+
+            switch (q.getType()) {
+                case SINGLE_CHOICE, YES_NO -> {
+                    Map<String, Long> counts = new HashMap<>();
+                    for (SurveyResponse r : responses) {
+                        r.getAnswers().stream()
+                                .filter(a -> a.getQuestion().getId().equals(q.getId()))
+                                .map(SurveyAnswer::getChoiceValue)
+                                .filter(Objects::nonNull)
+                                .forEach(v -> counts.merge(v, 1L, Long::sum));
+                    }
+                    qr.setCounts(counts);
+                    qr.setPercentages(toPercentages(counts, submitted));
+                }
+                case MULTI_CHOICE -> {
+                    Map<String, Long> counts = new HashMap<>();
+                    for (SurveyResponse r : responses) {
+                        r.getAnswers().stream()
+                                .filter(a -> a.getQuestion().getId().equals(q.getId()))
+                                .map(SurveyAnswer::getMultiChoiceValues)
+                                .filter(v -> v != null && !v.isBlank())
+                                .forEach(v -> {
+                                    for (String token : v.split(",")) {
+                                        String trimmed = token.trim();
+                                        if (!trimmed.isEmpty()) {
+                                            counts.merge(trimmed, 1L, Long::sum);
+                                        }
+                                    }
+                                });
+                    }
+                    qr.setCounts(counts);
+                    qr.setPercentages(toPercentages(counts, submitted));
+                }
+                case RATING_1_5 -> {
+                    Map<Integer, Long> dist = new HashMap<>();
+                    long total = 0;
+                    long sum = 0;
+                    for (SurveyResponse r : responses) {
+                        r.getAnswers().stream()
+                                .filter(a -> a.getQuestion().getId().equals(q.getId()))
+                                .map(SurveyAnswer::getRatingValue)
+                                .filter(Objects::nonNull)
+                                .forEach(v -> dist.merge(v, 1L, Long::sum));
+                    }
+                    for (Map.Entry<Integer, Long> e : dist.entrySet()) {
+                        sum += (long) e.getKey() * e.getValue();
+                        total += e.getValue();
+                    }
+                    qr.setRatingDistribution(dist);
+                    qr.setAverageRating(total == 0 ? null : (double) sum / total);
+                }
+                case TEXT -> {
+                    // Text questions: aggregation not computed here
+                }
+            }
+            questionResults.add(qr);
+        }
+
+        SurveyResultsDto dto = new SurveyResultsDto();
+        dto.setSurveyId(survey.getId());
+        dto.setTitle(survey.getTitle());
+        dto.setSubmittedCount(submitted);
+        dto.setQuestions(questionResults);
+        return dto;
+    }
+
     private void applyAnswer(SurveyQuestion q, SurveyAnswerRequestDto dto, SurveyAnswer a) {
         QuestionType type = q.getType();
         switch (type) {
@@ -177,6 +277,13 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
                 }
             }
         }
+    }
+
+    private Map<String, Double> toPercentages(Map<String, Long> counts, long base) {
+        if (base <= 0) return Collections.emptyMap();
+        Map<String, Double> map = new HashMap<>();
+        counts.forEach((k, v) -> map.put(k, (double) v * 100.0 / base));
+        return map;
     }
 
     private SurveySummaryDto toSummaryDto(Survey s) {

@@ -9,8 +9,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -53,6 +53,6 @@ public class Survey extends BaseEntity {
     @OneToMany(mappedBy = "survey", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("orderIndex ASC")
     @ToString.Exclude
-    private Set<SurveyQuestion> questions = new LinkedHashSet<>();
+    private List<SurveyQuestion> questions = new ArrayList<>();
 }
 

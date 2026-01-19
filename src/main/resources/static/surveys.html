@@ -1323,6 +1323,9 @@
     let selectedSurveyId = null;
     let selectedSurveyDetail = null;
     let surveyCache = [];
+    let currentSurveyQuestions = [];
+    let currentQuestionIndex = 0;
+    const surveyAnswers = new Map();
 
     function getStoredProfileFilters() {
         // In a more advanced version, you could derive dept/year/country from profile.
@@ -1425,97 +1428,242 @@
             metaEl.textContent = (survey.description || '') + (survey.closeAt ? ' · Deadline: ' + survey.closeAt.replace('T',' ') : '');
             metaEl.style.display = 'block';
 
-            qContainer.innerHTML = (survey.questions || []).map((q, idx) => {
-                const requiredMark = q.required ? ' <span style="color: #ef4444;">*</span>' : '';
-                const animationDelay = (idx * 0.1).toFixed(1) + 's';
-                let controls = '';
+            currentSurveyQuestions = survey.questions || [];
+            currentQuestionIndex = 0;
+            surveyAnswers.clear();
 
-                if (q.type === 'SINGLE_CHOICE' || q.type === 'YES_NO') {
-                    controls = `
-                        <div class="options-grid">
-                            ${(q.options || []).map(opt => `
-                                <label class="option-item">
-                                    <input type="radio" name="q_${q.id}" value="${opt.value}" class="option-input" />
-                                    <span class="option-label">${opt.label}</span>
-                                </label>
-                            `).join('')}
-                        </div>
-                    `;
-                } else if (q.type === 'MULTI_CHOICE') {
-                    controls = `
-                        <div class="options-grid">
-                            ${(q.options || []).map(opt => `
-                                <label class="option-item">
-                                    <input type="checkbox" name="q_${q.id}" value="${opt.value}" class="option-input" />
-                                    <span class="option-label">${opt.label}</span>
-                                </label>
-                            `).join('')}
-                        </div>
-                    `;
-                } else if (q.type === 'RATING_1_5') {
-                    controls = `
-                        <div class="options-grid" style="grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
-                            ${[1,2,3,4,5].map(v => `
-                                <label class="option-item" style="padding: 0.75rem; text-align: center; font-weight: 600;">
-                                    <input type="radio" name="q_${q.id}" value="${v}" class="option-input" />
-                                    <span class="option-label">${v} ⭐</span>
-                                </label>
-                            `).join('')}
-                        </div>
-                    `;
-                } else { // TEXT
-                    controls = `
-                        <textarea class="text-input" rows="4" name="q_${q.id}" placeholder="Type your answer here..."></textarea>
-                    `;
-                }
-
-                return `
-                    <div class="question-card" data-question-id="${q.id}" data-type="${q.type}" data-required="${q.required}" style="animation-delay: ${animationDelay};">
-                        <div class="question-header">
-                            <div class="question-number">${idx + 1}</div>
-                            <div class="question-content">
-                                <div class="question-text">${q.text}${requiredMark}</div>
-                                <div class="question-type">${q.type.replace('_', ' ').toLowerCase()}</div>
-                            </div>
-                        </div>
-                        ${controls}
+            if (!currentSurveyQuestions.length) {
+                qContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❓</div>
+                        <h3 class="empty-title">No Questions Available</h3>
+                        <p class="empty-message">This survey doesn't have any questions configured yet.</p>
                     </div>
                 `;
-            }).join('') || `
-                <div class="empty-state">
-                    <div class="empty-icon">❓</div>
-                    <h3 class="empty-title">No Questions Available</h3>
-                    <p class="empty-message">This survey doesn't have any questions configured yet.</p>
-                </div>
-            `;
-            updateProgressBar();
+                updateProgressBar();
+                return;
+            }
+
+            renderCurrentQuestion();
         } catch (e) {
             qContainer.innerHTML = '<div class="alert alert-error">Error loading survey details.</div>';
             document.getElementById('selected-survey-title').textContent = 'Error loading survey';
         }
     }
 
-    function updateProgressBar() {
-        const qNodes = Array.from(document.querySelectorAll('.question-card'));
-        const total = qNodes.length;
-        let answered = 0;
+    function renderCurrentQuestion() {
+        const qContainer = document.getElementById('survey-questions');
+        const msg = document.getElementById('survey-response-message');
+        if (msg) msg.style.display = 'none';
+        const legacySubmitBtn = document.getElementById('submit-btn');
+        if (legacySubmitBtn) {
+            legacySubmitBtn.style.display = 'none';
+        }
 
-        qNodes.forEach(node => {
-            const qId = node.getAttribute('data-question-id');
-            const type = node.getAttribute('data-type');
-            const name = 'q_' + qId;
+        const q = currentSurveyQuestions[currentQuestionIndex];
+        if (!q) return;
 
-            if (type === 'SINGLE_CHOICE' || type === 'YES_NO' || type === 'RATING_1_5') {
-                const checked = document.querySelector('input[name="' + name + '"]:checked');
-                if (checked) answered++;
-            } else if (type === 'MULTI_CHOICE') {
-                const checked = Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'));
-                if (checked.length) answered++;
-            } else { // TEXT
-                const el = document.querySelector('textarea[name="' + name + '"]');
-                if (el && el.value.trim()) answered++;
+        const requiredMark = q.required ? ' <span style="color: #ef4444;">*</span>' : '';
+        let controls = '';
+
+        if (q.type === 'SINGLE_CHOICE' || q.type === 'YES_NO') {
+            controls = `
+                <div class="options-grid">
+                    ${(q.options || []).map(opt => `
+                        <label class="option-item">
+                            <input type="radio" name="q_${q.id}" value="${opt.value}" class="option-input" />
+                            <span class="option-label">${opt.label}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+        } else if (q.type === 'MULTI_CHOICE') {
+            controls = `
+                <div class="options-grid">
+                    ${(q.options || []).map(opt => `
+                        <label class="option-item">
+                            <input type="checkbox" name="q_${q.id}" value="${opt.value}" class="option-input" />
+                            <span class="option-label">${opt.label}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+        } else if (q.type === 'RATING_1_5') {
+            controls = `
+                <div class="options-grid" style="grid-template-columns: repeat(5, 1fr); gap: 0.5rem;">
+                    ${[1,2,3,4,5].map(v => `
+                        <label class="option-item" style="padding: 0.75rem; text-align: center; font-weight: 600;">
+                            <input type="radio" name="q_${q.id}" value="${v}" class="option-input" />
+                            <span class="option-label">${v} ⭐</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            controls = `
+                <textarea class="text-input" rows="4" name="q_${q.id}" placeholder="Type your answer here..."></textarea>
+            `;
+        }
+
+        const isLast = currentQuestionIndex === currentSurveyQuestions.length - 1;
+        qContainer.innerHTML = `
+            <div class="question-card" data-question-id="${q.id}" data-type="${q.type}" data-required="${q.required}">
+                <div class="question-header">
+                    <div class="question-number">${currentQuestionIndex + 1}</div>
+                    <div class="question-content">
+                        <div class="question-text">${q.text}${requiredMark}</div>
+                        <div class="question-type">${q.type.replace('_', ' ').toLowerCase()}</div>
+                    </div>
+                </div>
+                ${controls}
+            </div>
+            <div class="btn-row" style="margin-top: 2rem;">
+                ${isLast ? '' : `<button type="button" id="survey-next-btn" class="btn">Next</button>`}
+                ${isLast ? `<button type="button" id="survey-submit-btn" class="btn">Submit</button>` : ''}
+            </div>
+        `;
+
+        const nextBtn = document.getElementById('survey-next-btn');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (!storeCurrentAnswer(q)) return;
+                currentQuestionIndex += 1;
+                renderCurrentQuestion();
+            });
+        }
+
+        const submitBtn = document.getElementById('survey-submit-btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => {
+                if (!storeCurrentAnswer(q)) return;
+                submitSurveyResponses();
+            });
+        }
+
+        updateProgressBar();
+    }
+
+    function storeCurrentAnswer(question) {
+        const msg = document.getElementById('survey-response-message');
+        const name = `q_${question.id}`;
+
+        let answer = { questionId: question.id };
+        let hasValue = false;
+
+        if (question.type === 'SINGLE_CHOICE' || question.type === 'YES_NO') {
+            const checked = document.querySelector(`input[name="${name}"]:checked`);
+            if (checked) {
+                answer.choiceValue = checked.value;
+                hasValue = true;
             }
-        });
+        } else if (question.type === 'MULTI_CHOICE') {
+            const checked = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`));
+            if (checked.length) {
+                answer.multiChoiceValues = checked.map(c => c.value).join(',');
+                hasValue = true;
+            }
+        } else if (question.type === 'RATING_1_5') {
+            const checked = document.querySelector(`input[name="${name}"]:checked`);
+            if (checked) {
+                answer.ratingValue = Number(checked.value);
+                hasValue = true;
+            }
+        } else {
+            const input = document.querySelector(`textarea[name="${name}"]`);
+            if (input && input.value.trim()) {
+                answer.textValue = input.value.trim();
+                hasValue = true;
+            }
+        }
+
+        if (question.required && !hasValue) {
+            if (msg) {
+                msg.className = 'alert alert-error';
+                msg.textContent = 'Please answer the required question before continuing.';
+                msg.style.display = 'block';
+            }
+            return false;
+        }
+
+        if (hasValue) {
+            surveyAnswers.set(question.id, answer);
+        } else {
+            surveyAnswers.delete(question.id);
+        }
+        updateProgressBar();
+        return true;
+    }
+
+    async function submitSurveyResponses() {
+        const msg = document.getElementById('survey-response-message');
+        msg.style.display = 'none';
+
+        if (!selectedSurveyId || !selectedSurveyDetail) {
+            msg.className = 'alert alert-error';
+            msg.textContent = 'Please select a survey from the list first.';
+            msg.style.display = 'block';
+            return;
+        }
+
+        const respondentKey = document.getElementById('respondentKey').value;
+        if (!respondentKey) {
+            msg.className = 'alert alert-error';
+            msg.textContent = 'Please provide your email address.';
+            msg.style.display = 'block';
+            return;
+        }
+
+        const anonymous = document.getElementById('anonymousFlag').checked === true;
+        const answers = Array.from(surveyAnswers.values());
+
+        if (!answers.length) {
+            msg.className = 'alert alert-error';
+            msg.textContent = 'Please answer at least one question before submitting.';
+            msg.style.display = 'block';
+            return;
+        }
+
+        const payload = { respondentKey, answers };
+
+        try {
+            const res = await fetch('/api/surveys-module/' + encodeURIComponent(selectedSurveyId) +
+                '/responses?anonymous=' + encodeURIComponent(String(anonymous)), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                msg.className = 'alert alert-error';
+                msg.textContent = data.message || data.error || 'Failed to submit response.';
+            } else {
+                msg.className = 'alert alert-success';
+                msg.textContent = data.message || 'Response submitted successfully! Thank you for your feedback.';
+                surveyAnswers.clear();
+                currentSurveyQuestions = [];
+                currentQuestionIndex = 0;
+                document.getElementById('survey-questions').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <h3 class="empty-title">Ready to Participate</h3>
+                        <p class="empty-message">Select a survey from the left to start answering questions.</p>
+                    </div>
+                `;
+                updateProgressBar();
+                loadSurveys();
+            }
+        } catch (err) {
+            msg.className = 'alert alert-error';
+            msg.textContent = 'Network error while submitting response. Please try again.';
+        } finally {
+            msg.style.display = 'block';
+        }
+    }
+
+    function updateProgressBar() {
+        const total = currentSurveyQuestions.length;
+        const answered = surveyAnswers.size;
 
         const pct = total ? Math.round((answered / total) * 100) : 0;
         const progressText = document.getElementById('progress-text');
@@ -1713,105 +1861,7 @@
     // Enhanced form submission with modern feedback
     document.getElementById('survey-response-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const msg = document.getElementById('survey-response-message');
-        const submitBtn = document.getElementById('submit-btn');
-
-        // Reset message display
-        msg.style.display = 'none';
-        msg.className = 'alert';
-
-        if (!selectedSurveyId || !selectedSurveyDetail) {
-            msg.classList.add('alert-error');
-            msg.textContent = 'Please select a survey from the list first.';
-            msg.style.display = 'block';
-            return;
-        }
-
-        const form = e.target;
-        const respondentKey = form.respondentKey.value;
-        if (!respondentKey) {
-            msg.classList.add('alert-error');
-            msg.textContent = 'Please provide your email address.';
-            msg.style.display = 'block';
-            return;
-        }
-
-        const anonymous = form.anonymousFlag.checked === true;
-
-        // Disable submit button and show loading state
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '⏳ Submitting...';
-
-        const answers = [];
-        const qNodes = Array.from(document.querySelectorAll('.question-card'));
-        qNodes.forEach(node => {
-            const qId = node.getAttribute('data-question-id');
-            const type = node.getAttribute('data-type');
-            if (!qId) return;
-            const name = 'q_' + qId;
-            const entry = { questionId: Number(qId) };
-
-            if (type === 'SINGLE_CHOICE' || type === 'YES_NO') {
-                const checked = document.querySelector('input[name="' + name + '"]:checked');
-                if (checked) entry.choiceValue = checked.value;
-            } else if (type === 'MULTI_CHOICE') {
-                const checked = Array.from(document.querySelectorAll('input[name="' + name + '"]:checked'));
-                if (checked.length) {
-                    entry.multiChoiceValues = checked.map(c => c.value).join(',');
-                }
-            } else if (type === 'RATING_1_5') {
-                const checked = document.querySelector('input[name="' + name + '"]:checked');
-                if (checked) entry.ratingValue = Number(checked.value);
-            } else { // TEXT
-                const el = document.querySelector('textarea[name="' + name + '"]');
-                if (el) entry.textValue = el.value;
-            }
-            answers.push(entry);
-        });
-
-        const payload = { respondentKey, answers };
-
-        try {
-            const res = await fetch('/api/surveys-module/' + encodeURIComponent(selectedSurveyId) +
-                '/responses?anonymous=' + encodeURIComponent(String(anonymous)), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json().catch(() => ({}));
-
-            if (!res.ok) {
-                msg.classList.add('alert-error');
-                msg.textContent = data.error || data.message || 'Failed to submit response.';
-            } else {
-                msg.classList.add('alert-success');
-                msg.innerHTML = '✅ ' + (data.message || 'Response submitted successfully! Thank you for your feedback.');
-
-                // Reset form after successful submission
-                setTimeout(() => {
-                    form.reset();
-                    document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
-                    document.getElementById('selected-survey-title').textContent = 'Select a Survey';
-                    document.getElementById('selected-survey-meta').textContent = 'Choose a survey from the list to begin participating';
-                    document.getElementById('selected-survey-meta').style.display = 'block';
-                    document.getElementById('survey-questions').innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-icon">📝</div>
-                            <h3 class="empty-title">Ready to Participate</h3>
-                            <p class="empty-message">Select a survey from the left to start answering questions.</p>
-                        </div>
-                    `;
-                    updateProgressBar();
-                }, 2000);
-            }
-        } catch (err) {
-            msg.classList.add('alert-error');
-            msg.textContent = 'Network error while submitting response. Please try again.';
-        } finally {
-            msg.style.display = 'block';
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '🚀 Submit Response';
-        }
+        await submitSurveyResponses();
     });
 
     // Update stats display (mock data for demo - replace with real API calls)
@@ -1862,6 +1912,12 @@
     // Initial load with animations
     async function initializePage() {
         await loadSurveys();
+        const params = new URLSearchParams(window.location.search);
+        const surveyIdParam = params.get('surveyId');
+        if (surveyIdParam) {
+            await loadSurveyDetailFromApi(surveyIdParam);
+            document.getElementById('survey-questions')?.scrollIntoView({ behavior: 'smooth' });
+        }
         updateStats();
         addCardAnimations();
     }

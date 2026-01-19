@@ -973,7 +973,7 @@
                             <th>Title</th>
                             <th>Questions</th>
                             <th>Responses</th>
-                            <th>Created</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -2173,15 +2173,26 @@
             questionsList.innerHTML = '';
         } else {
             questionsEmpty.style.display = 'none';
-            questionsList.innerHTML = surveyQuestions.map((q, index) => `
-                <div class="question-item" style="padding: 1rem; border: 1px solid #ddd; margin-bottom: 0.5rem; border-radius: 8px;">
-                    <h4>${q.questionText}</h4>
-                    <p><strong>Type:</strong> ${q.questionType}</p>
-                    <p><strong>Required:</strong> ${q.required ? 'Yes' : 'No'}</p>
-                    ${q.options ? `<p><strong>Options:</strong> ${q.options.join(', ')}</p>` : ''}
-                    <button class="btn-ghost" onclick="removeSurveyQuestion(${index})">Remove</button>
-                </div>
-            `).join('');
+            questionsList.innerHTML = surveyQuestions.map((q, index) => {
+                const questionText = q.text || 'Untitled question';
+                const questionType = q.type || 'UNKNOWN';
+                const optionsText = Array.isArray(q.options)
+                    ? q.options.map(option => option.label || option.value).filter(Boolean).join(', ')
+                    : '';
+                const optionsMarkup = optionsText
+                    ? `<p><strong>Options:</strong> ${optionsText}</p>`
+                    : '';
+
+                return `
+                    <div class="question-item" style="padding: 1rem; border: 1px solid #ddd; margin-bottom: 0.5rem; border-radius: 8px;">
+                        <h4>${questionText}</h4>
+                        <p><strong>Type:</strong> ${questionType}</p>
+                        <p><strong>Required:</strong> ${q.required ? 'Yes' : 'No'}</p>
+                        ${optionsMarkup}
+                        <button class="btn-ghost" onclick="removeSurveyQuestion(${index})">Remove</button>
+                    </div>
+                `;
+            }).join('');
         }
     }
 
@@ -2200,13 +2211,16 @@
 
                 if (data.data && data.data.length > 0) {
                     data.data.forEach(survey => {
+                        const status = (survey.status || 'DRAFT').toUpperCase();
+                        const canPublish = status === 'DRAFT';
                         const row = document.createElement('tr');
                         row.innerHTML = `
                             <td>${survey.title}</td>
                             <td>${survey.questions ? survey.questions.length : 0}</td>
                             <td>${survey.responses || 0}</td>
-                            <td>${survey.id ? 'Created' : 'N/A'}</td>
+                            <td>${status}</td>
                             <td>
+                                ${canPublish ? `<button class="btn-ghost" onclick="publishSurvey(${survey.id})">Publish</button>` : ''}
                                 <button class="btn-ghost" onclick="viewSurveyResults(${survey.id})">Results</button>
                                 <button class="btn-ghost" onclick="deleteSurvey(${survey.id})">Delete</button>
                             </td>
@@ -2227,6 +2241,24 @@
     function viewSurveyResults(surveyId) {
         // This would typically load survey results
         alert('Survey results viewing would be implemented here to show responses for survey ID: ' + surveyId);
+    }
+
+    function publishSurvey(surveyId) {
+        if (!confirm('Publish this survey? Once published, it can be answered by alumni.')) return;
+        fetch(`/api/admin/surveys/${surveyId}/publish`, { method: 'POST' })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert('Survey published successfully');
+                    loadAdminSurveys();
+                } else {
+                    alert('Failed to publish survey');
+                }
+            })
+            .catch(error => {
+                console.error('Error publishing survey:', error);
+                alert('Network error publishing survey');
+            });
     }
 
     function deleteSurvey(surveyId) {

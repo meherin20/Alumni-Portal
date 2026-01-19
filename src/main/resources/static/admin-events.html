@@ -16,6 +16,7 @@
             --success-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
             --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
             --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            --accent-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             --glass-bg: rgba(255, 255, 255, 0.25);
             --glass-border: rgba(255, 255, 255, 0.18);
             --shadow-soft: 0 8px 32px rgba(31, 38, 135, 0.37);
@@ -2894,15 +2895,15 @@
             summaryDiv.innerHTML = `
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 16px;">
                     <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 700; color: var(--accent-gradient); background: -webkit-linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.total}</div>
+                        <div style="font-size: 24px; font-weight: 700; background: var(--accent-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.total}</div>
                         <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase;">Total Registered</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 700; color: var(--success-gradient); background: -webkit-linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.confirmed}</div>
+                        <div style="font-size: 24px; font-weight: 700; background: var(--success-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.confirmed}</div>
                         <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase;">Confirmed</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="font-size: 24px; font-weight: 700; color: var(--warning-gradient); background: -webkit-linear-gradient(135deg, #fa709a 0%, #fee140 100%); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.total - summary.confirmed}</div>
+                        <div style="font-size: 24px; font-weight: 700; background: var(--warning-gradient); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent;">${summary.total - summary.confirmed}</div>
                         <div style="font-size: 12px; color: rgba(255, 255, 255, 0.7); text-transform: uppercase;">Pending</div>
                     </div>
                 </div>

@@ -19,6 +19,9 @@ public interface SurveyResponseRepository extends JpaRepository<SurveyResponse, 
     long countBySurveyIdAndStatus(Long surveyId, ResponseStatus status);
 
     long countByStatus(ResponseStatus status);
+
+    @EntityGraph(attributePaths = {"survey"})
+    List<SurveyResponse> findByRespondentKeyAndStatus(String respondentKey, ResponseStatus status);
 }
 
 
