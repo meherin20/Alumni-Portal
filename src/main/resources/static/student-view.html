@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/js/auth.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -934,7 +935,7 @@
             <a href="/" class="app-nav-link">Home</a>
             <a href="/student-view.html" class="app-nav-link">Student view</a>
             <a href="/student-directory.html" class="app-nav-link">Alumni directory</a>
-            <a href="/login.html" class="app-nav-cta">Logout</a>
+            <a href="#" class="app-nav-cta" onclick="Auth.logout(); return false;">Logout</a>
             <button type="button" id="student-notif-bell" class="btn-ghost notif-bell" style="margin-left:8px;" aria-label="Notifications">
                 🔔
             </button>
@@ -1140,6 +1141,11 @@
 </div>
 
 <script>
+    // Require student authentication
+    if (!Auth.requireAuth('student')) {
+        // Redirect will happen in requireAuth, but stop script execution
+        throw new Error('Authentication required');
+    }
     (function() {
         const stored = window.localStorage.getItem('amp-theme');
         if (stored === 'light') {
@@ -1169,12 +1175,12 @@
     let currentUser = null;
 
     async function loadStudentProfile() {
-        const email = window.localStorage.getItem('amp-user-email');
-        if (!email) {
-            alert('Please login as a student first.');
-            window.location.href = '/login.html';
+        const user = Auth.getCurrentUser();
+        if (!user || user.role !== 'student') {
+            // Auth.requireAuth will handle redirect
             return;
         }
+        const email = user.email;
         try {
             const [userRes, notifRes] = await Promise.all([
                 fetch('/users/by-email?email=' + encodeURIComponent(email)),
@@ -1542,10 +1548,10 @@
                 alert('Failed to delete account.');
                 return;
             }
-            window.localStorage.removeItem('amp-user-email');
-            window.localStorage.removeItem('amp-user-role');
+            // Clear auth and redirect to landing page after account deletion
+            Auth.clearAuth();
             alert('Your account has been deleted.');
-            window.location.href = '/';
+            window.location.href = '/index.html';
         } catch (err) {
             alert('Network error while deleting account.');
         }

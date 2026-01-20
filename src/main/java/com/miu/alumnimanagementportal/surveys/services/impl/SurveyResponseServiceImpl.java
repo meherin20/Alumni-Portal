@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -65,6 +66,8 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         SurveyResponse response = new SurveyResponse();
         response.setSurvey(survey);
         response.setUser(user);
+        response.setStartedAt(LocalDateTime.now());
+        response.setSubmittedAt(LocalDateTime.now());
 
         for (SurveyAnswerRequest answerRequest : request.getAnswers()) {
             SurveyQuestion question = questionById.get(answerRequest.getQuestionId());

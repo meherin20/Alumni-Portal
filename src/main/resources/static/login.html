@@ -569,6 +569,7 @@
             }
         }
     </style>
+    <script src="/js/auth.js"></script>
 </head>
 <body>
     <a href="/index.html" class="back-to-landing">Back to Landing Page</a>
@@ -770,11 +771,15 @@
 
                 const selectedType = loginTypeInput.value || 'student';
 
+                // Use Auth utility to set authentication
                 try {
-                    window.localStorage.setItem('amp-user-email', form.email.value);
-                    window.localStorage.setItem('amp-user-role', selectedType);
+                    Auth.setAuth(form.email.value, selectedType);
                 } catch (e) {
-                    // ignore storage errors
+                    console.error('Error setting auth:', e);
+                    messageBox.classList.add('alert-error');
+                    messageBox.textContent = 'Error saving login session. Please try again.';
+                    messageBox.style.display = 'block';
+                    return;
                 }
 
                 // Redirect based on user type

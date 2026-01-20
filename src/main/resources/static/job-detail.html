@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/js/auth.js"></script>
     <style>
         body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     </style>
@@ -15,6 +16,11 @@
 
         /* Navigation */
     <script>
+    // Require authentication (any role)
+    if (!Auth.requireAuth()) {
+        // Redirect will happen in requireAuth
+        throw new Error('Authentication required');
+    }
         // Theme toggle functionality
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-toggle-icon');
@@ -649,7 +655,7 @@
             <a href="/" class="app-nav-link">Home</a>
             <a href="/jobs.html" class="app-nav-link">Jobs</a>
             <a href="/dashboard.html" class="app-nav-link">Dashboard</a>
-            <a href="/login.html" class="app-nav-cta">Logout</a>
+            <a href="#" class="app-nav-cta" onclick="Auth.logout(); return false;">Logout</a>
             <button type="button" id="theme-toggle" class="btn-ghost" style="margin-left:8px;" aria-label="Change theme">
                 <span id="theme-toggle-icon">🌙</span>
             </button>
@@ -914,6 +920,11 @@
     </main>
 
 <script>
+    // Require authentication (any role)
+    if (!Auth.requireAuth()) {
+        // Redirect will happen in requireAuth
+        throw new Error('Authentication required');
+    }
     // Theme toggle functionality
     (function() {
         const stored = window.localStorage.getItem('amp-theme');

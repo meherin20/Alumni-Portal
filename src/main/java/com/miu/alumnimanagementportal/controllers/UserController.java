@@ -112,6 +112,13 @@ public class UserController {
         return converter.buildResponseEntity(Map.of("message", "User logged in successfully"), HttpStatus.ACCEPTED);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout() {
+        // Logout is handled client-side by clearing localStorage
+        // This endpoint exists for consistency and potential future server-side session management
+        return converter.buildResponseEntity(Map.of("message", "Logged out successfully"), HttpStatus.OK);
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupDto signupDto) {
         userService.signup(signupDto);

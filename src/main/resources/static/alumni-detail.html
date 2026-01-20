@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/js/auth.js"></script>
     <style>
         body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
         .alumni-layout {
@@ -128,7 +129,12 @@
     </main>
 </div>
 
-<script>
+    <script>
+    // Require authentication (any role)
+    if (!Auth.requireAuth()) {
+        // Redirect will happen in requireAuth
+        throw new Error('Authentication required');
+    }
     (function() {
         const stored = window.localStorage.getItem('amp-theme');
         if (stored === 'light') {

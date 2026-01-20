@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/js/auth.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -535,7 +536,7 @@
             <a href="/" class="app-nav-link">Home</a>
             <a href="/dashboard.html" class="app-nav-link">Dashboard</a>
             <a href="/alumni-portal.html" class="app-nav-link">My profile</a>
-            <a href="/login.html" class="app-nav-cta">Logout</a>
+            <a href="#" class="app-nav-cta" onclick="Auth.logout(); return false;">Logout</a>
             <button type="button" id="alumni-notif-bell" class="btn-ghost notif-bell" style="margin-left:8px;" aria-label="Notifications">
                 🔔
             </button>
@@ -900,6 +901,12 @@
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
 <script>
+    // Require alumni authentication
+    if (!Auth.requireAuth('alumni')) {
+        // Redirect will happen in requireAuth, but stop script execution
+        throw new Error('Authentication required');
+    }
+    
     (function() {
         const stored = window.localStorage.getItem('amp-theme');
         if (stored === 'light') {

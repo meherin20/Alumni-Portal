@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
+    <script src="/js/auth.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -881,247 +882,6 @@
             }
         }
 
-        /* Comments Section Styles */
-        .comments-section {
-            margin-bottom: 3rem;
-            padding: 3rem;
-            background: var(--bg-glass);
-            backdrop-filter: blur(25px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .comments-header {
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .comments-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            position: relative;
-        }
-
-        .comments-title::after {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: var(--gradient-accent);
-            border-radius: 2px;
-        }
-
-        .comments-title i {
-            color: var(--primary);
-            font-size: 1.3rem;
-            filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
-        }
-
-        .comments-subtitle {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .comment-box {
-            background: rgba(15, 23, 42, 0.3);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 2rem;
-            margin-bottom: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .comment-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg,
-                transparent,
-                rgba(99, 102, 241, 0.08),
-                rgba(139, 92, 246, 0.05),
-                transparent);
-            transition: left 0.8s ease;
-            z-index: 1;
-        }
-
-        .comment-box:hover::before {
-            left: 100%;
-        }
-
-        .comment-box:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .comment-input-wrapper {
-            position: relative;
-            z-index: 2;
-        }
-
-        .comment-textarea {
-            width: 100%;
-            min-height: 140px;
-            padding: 1.25rem 1.5rem;
-            background: rgba(15, 23, 42, 0.4);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            color: var(--text-primary);
-            font-size: 1rem;
-            line-height: 1.6;
-            resize: vertical;
-            outline: none;
-            transition: var(--transition);
-            font-family: inherit;
-        }
-
-        .comment-textarea:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
-            background: rgba(15, 23, 42, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .comment-textarea::placeholder {
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        .comment-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .character-count {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            background: rgba(99, 102, 241, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            border: 1px solid rgba(99, 102, 241, 0.2);
-        }
-
-        .character-count span {
-            color: var(--primary);
-            font-weight: 800;
-        }
-
-        .comment-submit-btn {
-            background: var(--gradient-primary);
-            color: white;
-            border: none;
-            padding: 1rem 2rem;
-            border-radius: var(--radius-lg);
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: var(--shadow-md);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .comment-submit-btn:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .comment-submit-btn:active:not(:disabled) {
-            transform: translateY(-1px);
-        }
-
-        .comment-submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .comment-alert {
-            padding: 1.25rem 1.5rem;
-            border-radius: var(--radius-lg);
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-top: 1.5rem;
-            animation: slideInFromBottom 0.4s ease-out;
-            backdrop-filter: blur(10px);
-        }
-
-        .comment-alert i {
-            font-size: 1.2rem;
-        }
-
-        @keyframes slideInFromBottom {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Comments Section Responsive */
-        @media (max-width: 768px) {
-            .comments-section {
-                margin-bottom: 1.5rem;
-            }
-
-            .comment-box {
-                padding: 1.25rem;
-            }
-
-            .comment-footer {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: stretch;
-            }
-
-            .character-count {
-                text-align: center;
-            }
-
-            .comment-submit-btn {
-                justify-content: center;
-                width: 100%;
-            }
-
-            .comment-textarea {
-                min-height: 100px;
-                padding: 0.875rem 1rem;
-            }
-        }
     </style>
 </head>
 <body>
@@ -1207,42 +967,6 @@
                     </div>
                 </div>
 
-                <!-- Comments Section -->
-                <div class="comments-section">
-                    <div class="comments-header">
-                        <h2 class="comments-title">
-                            <i class="fas fa-comments"></i>
-                            Share Your Thoughts
-                        </h2>
-                        <p class="comments-subtitle">Help us improve by sharing your problems or suggestions. Your feedback matters!</p>
-                    </div>
-
-                    <div class="comment-box">
-                        <div class="comment-input-wrapper">
-                            <textarea
-                                id="user-comment"
-                                class="comment-textarea"
-                                placeholder="Describe any problems you've faced, share suggestions for improvement, or just let us know what's on your mind..."
-                                maxlength="1000"
-                                rows="5"></textarea>
-                            <div class="comment-footer">
-                                <div class="character-count">
-                                    <span id="char-count">0</span>/1000
-                                </div>
-                                <button type="button" class="comment-submit-btn" id="submit-comment">
-                                    <i class="fas fa-paper-plane"></i>
-                                    <span>Send Feedback</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="comment-success-message" class="comment-alert" style="display: none;">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Thank you for your feedback! Your comment has been submitted successfully.</span>
-                    </div>
-                </div>
-
                 <form id="survey-response-form">
                     <div class="form-group">
                         <label class="form-label" for="respondentKey">Your Email Address</label>
@@ -1273,6 +997,11 @@
     </main>
 
 <script>
+    // Require authentication (any role)
+    if (!Auth.requireAuth()) {
+        // Redirect will happen in requireAuth
+        throw new Error('Authentication required');
+    }
     // Navbar scroll effect
     (function() {
         const navbar = document.getElementById('navbar');
@@ -1377,7 +1106,7 @@
         if (year) params.append('year', year);
         if (country) params.append('country', country);
 
-        let url = '/api/surveys-module';
+        let url = '/api/surveys';
         const qs = params.toString();
         if (qs) url += '?' + qs;
 
@@ -1388,9 +1117,10 @@
                 id: s.id,
                 title: s.title,
                 description: s.description,
-                createdAt: (s.publishAt || '').split('T')[0],
-                deadline: (s.closeAt || '').split('T')[0],
-                closeAt: s.closeAt
+                createdAt: s.publishedAt ? (s.publishedAt.split('T')[0] || '') : '',
+                deadline: s.endAt ? (s.endAt.split('T')[0] || '') : '',
+                closeAt: s.endAt,
+                published: s.published
             }));
             surveyCache = surveys;
             renderSurveyList(surveys);
@@ -1408,29 +1138,69 @@
         titleEl.textContent = 'Loading...';
         qContainer.innerHTML = '<div class="hint">Loading survey questions...</div>';
         try {
-            const res = await fetch('/api/surveys-module/' + encodeURIComponent(id));
+            console.log('Loading survey details for ID:', id);
+            const res = await fetch('/api/surveys/' + encodeURIComponent(id));
             const json = await res.json().catch(() => ({}));
+            console.log('Survey API response:', json);
+            
             if (!res.ok) {
                 const errMsg = json.error || json.message || 'Failed to load survey.';
+                console.error('Survey load error:', errMsg);
                 qContainer.innerHTML = `<div class="alert alert-error">${errMsg}</div>`;
                 titleEl.textContent = 'Error loading survey';
                 return;
             }
             const survey = json.data;
             if (!survey) {
+                console.error('Survey data is null or undefined');
                 qContainer.innerHTML = '<div class="alert alert-error">Survey not found.</div>';
                 titleEl.textContent = 'Survey not found';
                 return;
             }
+            
+            console.log('Survey loaded:', survey);
+            console.log('Survey questions:', survey.questions);
             selectedSurveyId = survey.id;
             selectedSurveyDetail = survey;
             titleEl.textContent = survey.title || 'Selected survey';
-            metaEl.textContent = (survey.description || '') + (survey.closeAt ? ' · Deadline: ' + survey.closeAt.replace('T',' ') : '');
+            const endDate = survey.endAt ? (survey.endAt.split('T')[0] || survey.endAt) : '';
+            metaEl.textContent = (survey.description || '') + (endDate ? ' · Deadline: ' + endDate : '');
             metaEl.style.display = 'block';
 
-            currentSurveyQuestions = survey.questions || [];
+            // Map backend question structure to frontend format
+            currentSurveyQuestions = (survey.questions || []).map(q => {
+                // Map question types from backend enum to frontend format
+                let mappedType = 'TEXT';
+                if (q.questionType === 'MCQ') {
+                    mappedType = 'SINGLE_CHOICE';
+                } else if (q.questionType === 'CHECKBOX') {
+                    mappedType = 'MULTI_CHOICE';
+                } else if (q.questionType === 'RATING') {
+                    mappedType = 'RATING_1_5';
+                } else if (q.questionType === 'SHORT_TEXT' || q.questionType === 'LONG_TEXT') {
+                    mappedType = 'TEXT';
+                }
+
+                // Map options from array of strings to array of objects with value and label
+                const mappedOptions = (q.options || []).map((opt, idx) => ({
+                    value: typeof opt === 'string' ? opt : (opt.value || opt.label || opt),
+                    label: typeof opt === 'string' ? opt : (opt.label || opt.value || opt)
+                }));
+
+                return {
+                    id: q.id,
+                    text: q.questionText || q.text,
+                    type: mappedType,
+                    questionType: q.questionType, // Keep original for reference
+                    required: q.required || false,
+                    options: mappedOptions
+                };
+            });
+            
             currentQuestionIndex = 0;
             surveyAnswers.clear();
+            
+            console.log('Mapped questions:', currentSurveyQuestions);
 
             if (!currentSurveyQuestions.length) {
                 qContainer.innerHTML = `
@@ -1444,9 +1214,22 @@
                 return;
             }
 
-            renderCurrentQuestion();
+            if (currentSurveyQuestions.length > 0) {
+                renderCurrentQuestion();
+            } else {
+                console.warn('No questions found after mapping');
+                qContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">❓</div>
+                        <h3 class="empty-title">No Questions Available</h3>
+                        <p class="empty-message">This survey doesn't have any questions configured yet.</p>
+                    </div>
+                `;
+                updateProgressBar();
+            }
         } catch (e) {
-            qContainer.innerHTML = '<div class="alert alert-error">Error loading survey details.</div>';
+            console.error('Error loading survey details:', e);
+            qContainer.innerHTML = `<div class="alert alert-error">Error loading survey details: ${e.message}</div>`;
             document.getElementById('selected-survey-title').textContent = 'Error loading survey';
         }
     }
@@ -1461,7 +1244,13 @@
         }
 
         const q = currentSurveyQuestions[currentQuestionIndex];
-        if (!q) return;
+        if (!q) {
+            console.error('No question found at index:', currentQuestionIndex, 'Total questions:', currentSurveyQuestions.length);
+            qContainer.innerHTML = '<div class="alert alert-error">Question not found.</div>';
+            return;
+        }
+        
+        console.log('Rendering question:', q);
 
         const requiredMark = q.required ? ' <span style="color: #ef4444;">*</span>' : '';
         let controls = '';
@@ -1547,31 +1336,31 @@
         const msg = document.getElementById('survey-response-message');
         const name = `q_${question.id}`;
 
-        let answer = { questionId: question.id };
+        let answerValue = null;
         let hasValue = false;
 
         if (question.type === 'SINGLE_CHOICE' || question.type === 'YES_NO') {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) {
-                answer.choiceValue = checked.value;
+                answerValue = checked.value;
                 hasValue = true;
             }
         } else if (question.type === 'MULTI_CHOICE') {
             const checked = Array.from(document.querySelectorAll(`input[name="${name}"]:checked`));
             if (checked.length) {
-                answer.multiChoiceValues = checked.map(c => c.value).join(',');
+                answerValue = checked.map(c => c.value).join(',');
                 hasValue = true;
             }
         } else if (question.type === 'RATING_1_5') {
             const checked = document.querySelector(`input[name="${name}"]:checked`);
             if (checked) {
-                answer.ratingValue = Number(checked.value);
+                answerValue = checked.value;
                 hasValue = true;
             }
         } else {
             const input = document.querySelector(`textarea[name="${name}"]`);
             if (input && input.value.trim()) {
-                answer.textValue = input.value.trim();
+                answerValue = input.value.trim();
                 hasValue = true;
             }
         }
@@ -1586,7 +1375,7 @@
         }
 
         if (hasValue) {
-            surveyAnswers.set(question.id, answer);
+            surveyAnswers.set(question.id, answerValue);
         } else {
             surveyAnswers.delete(question.id);
         }
@@ -1623,11 +1412,19 @@
             return;
         }
 
-        const payload = { respondentKey, answers };
+        // Format answers according to API structure
+        const formattedAnswers = Array.from(surveyAnswers.entries()).map(([questionId, answerValue]) => ({
+            questionId: questionId,
+            answerValue: answerValue
+        }));
+
+        const payload = {
+            userEmail: respondentKey,
+            answers: formattedAnswers
+        };
 
         try {
-            const res = await fetch('/api/surveys-module/' + encodeURIComponent(selectedSurveyId) +
-                '/responses?anonymous=' + encodeURIComponent(String(anonymous)), {
+            const res = await fetch('/api/surveys/' + encodeURIComponent(selectedSurveyId) + '/responses', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -1637,21 +1434,34 @@
             if (!res.ok) {
                 msg.className = 'alert alert-error';
                 msg.textContent = data.message || data.error || 'Failed to submit response.';
+                console.error('Submit error:', data);
             } else {
                 msg.className = 'alert alert-success';
                 msg.textContent = data.message || 'Response submitted successfully! Thank you for your feedback.';
+                
+                // Clear survey data
                 surveyAnswers.clear();
                 currentSurveyQuestions = [];
                 currentQuestionIndex = 0;
+                selectedSurveyId = null;
+                selectedSurveyDetail = null;
+                
+                // Reset UI
+                document.getElementById('selected-survey-title').textContent = 'Select a Survey';
+                document.getElementById('selected-survey-meta').style.display = 'none';
                 document.getElementById('survey-questions').innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-icon">📝</div>
-                        <h3 class="empty-title">Ready to Participate</h3>
-                        <p class="empty-message">Select a survey from the left to start answering questions.</p>
+                        <div class="empty-icon">✅</div>
+                        <h3 class="empty-title">Thank You!</h3>
+                        <p class="empty-message">Your response has been submitted successfully. Select another survey to continue.</p>
                     </div>
                 `;
                 updateProgressBar();
-                loadSurveys();
+                
+                // Reload surveys list to refresh response counts
+                setTimeout(() => {
+                    loadSurveys();
+                }, 1000);
             }
         } catch (err) {
             msg.className = 'alert alert-error';
@@ -1743,109 +1553,6 @@
         }
     }, true);
 
-    // Comment functionality
-    (function initializeComments() {
-        const commentTextarea = document.getElementById('user-comment');
-        const charCount = document.getElementById('char-count');
-        const submitBtn = document.getElementById('submit-comment');
-        const successMessage = document.getElementById('comment-success-message');
-
-        // Character counter
-        commentTextarea.addEventListener('input', function() {
-            const length = this.value.length;
-            charCount.textContent = length;
-
-            // Change color based on character count
-            if (length > 900) {
-                charCount.style.color = '#ef4444'; // Red for near limit
-            } else if (length > 800) {
-                charCount.style.color = '#f59e0b'; // Orange for warning
-            } else {
-                charCount.style.color = 'var(--primary)'; // Default color
-            }
-        });
-
-        // Submit comment
-        submitBtn.addEventListener('click', async function() {
-            const comment = commentTextarea.value.trim();
-
-            if (!comment) {
-                showCommentAlert('Please enter a comment before submitting.', 'error');
-                return;
-            }
-
-            if (comment.length > 1000) {
-                showCommentAlert('Comment is too long. Please keep it under 1000 characters.', 'error');
-                return;
-            }
-
-            // Disable button and show loading
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
-
-            try {
-                const response = await fetch('/api/comments', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        content: comment,
-                        category: 'survey-feedback',
-                        source: 'survey-page',
-                        timestamp: new Date().toISOString()
-                    })
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    commentTextarea.value = '';
-                    charCount.textContent = '0';
-                    showCommentAlert('Thank you for your feedback! Your comment has been submitted.', 'success');
-
-                    // Hide success message after 5 seconds
-                    setTimeout(() => {
-                        successMessage.style.display = 'none';
-                    }, 5000);
-                } else {
-                    throw new Error('Failed to submit comment');
-                }
-            } catch (error) {
-                console.error('Error submitting comment:', error);
-                showCommentAlert('Failed to submit comment. Please try again later.', 'error');
-            } finally {
-                // Re-enable button
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i><span>Send Feedback</span>';
-            }
-        });
-
-        function showCommentAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `comment-alert alert-${type}`;
-            alertDiv.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
-                <span>${message}</span>
-            `;
-
-            // Remove existing alerts
-            const existingAlerts = document.querySelectorAll('.comment-alert');
-            existingAlerts.forEach(alert => alert.remove());
-
-            // Add new alert
-            const commentBox = document.querySelector('.comment-box');
-            commentBox.parentNode.insertBefore(alertDiv, commentBox.nextSibling);
-
-            // Auto-remove after 3 seconds for non-success messages
-            if (type !== 'success') {
-                setTimeout(() => {
-                    if (alertDiv.parentNode) {
-                        alertDiv.remove();
-                    }
-                }, 3000);
-            }
-        }
-    })();
 
     // Prefill respondent email from login
     (function prefillRespondentKey() {

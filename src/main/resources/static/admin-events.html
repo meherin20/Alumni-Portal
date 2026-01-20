@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="/js/auth.js"></script>
     <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -2220,7 +2221,7 @@
             <a href="/admin-events.html" class="app-nav-link app-nav-link-active">Events</a>
             <a href="/jobs-admin.html" class="app-nav-link">Jobs</a>
             <a href="/surveys-admin.html" class="app-nav-link">Surveys</a>
-            <a href="/logout" class="app-nav-cta">Logout</a>
+            <a href="#" class="app-nav-cta" onclick="Auth.logout(); return false;">Logout</a>
         </nav>
     </header>
 
@@ -2689,6 +2690,12 @@
 </div>
 
 <script>
+    // Require admin authentication
+    if (!Auth.requireAuth('admin')) {
+        // Redirect will happen in requireAuth
+        throw new Error('Authentication required');
+    }
+    
     let allEvents = [];
 
     document.addEventListener('DOMContentLoaded', function() {

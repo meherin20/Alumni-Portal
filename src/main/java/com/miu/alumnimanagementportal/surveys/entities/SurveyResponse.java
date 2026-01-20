@@ -31,7 +31,10 @@ public class SurveyResponse extends BaseEntity {
     @ToString.Exclude
     private User user;
 
-    @Column(nullable = false)
+    @Column(name = "started_at", nullable = false)
+    private LocalDateTime startedAt;
+
+    @Column(name = "submitted_at", nullable = false)
     private LocalDateTime submittedAt;
 
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -40,8 +43,12 @@ public class SurveyResponse extends BaseEntity {
 
     @PrePersist
     void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        if (startedAt == null) {
+            startedAt = now;
+        }
         if (submittedAt == null) {
-            submittedAt = LocalDateTime.now();
+            submittedAt = now;
         }
     }
 }
