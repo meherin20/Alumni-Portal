@@ -3,22 +3,20 @@ package com.miu.alumnimanagementportal.surveys.enums;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum QuestionType {
-    SINGLE_CHOICE,
-    MULTI_CHOICE,
-    RATING_1_5,
-    TEXT,
-    YES_NO;
+public enum SurveyQuestionType {
+    MCQ,
+    CHECKBOX,
+    SHORT_TEXT,
+    LONG_TEXT,
+    RATING;
 
     @JsonValue
     public String getValue() {
-        return this.name();
+        return name();
     }
 
     @JsonCreator
-    public static QuestionType fromValue(String value) {
-        return QuestionType.valueOf(value);
+    public static SurveyQuestionType fromValue(String value) {
+        return SurveyQuestionType.valueOf(value);
     }
 }
-
-

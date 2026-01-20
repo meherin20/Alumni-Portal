@@ -2,34 +2,27 @@ package com.miu.alumnimanagementportal.surveys.entities;
 
 import com.miu.alumnimanagementportal.entities.BaseEntity;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
 @Entity
 @Table(name = "survey_answer")
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class SurveyAnswer extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "response_id", nullable = false)
+    @ToString.Exclude
     private SurveyResponse response;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
+    @ToString.Exclude
     private SurveyQuestion question;
 
-    // SINGLE_CHOICE / YES_NO
-    private String choiceValue;
-
-    // MULTI_CHOICE: comma-separated list of values
-    @Column(length = 2000)
-    private String multiChoiceValues;
-
-    // RATING_1_5
-    private Integer ratingValue;
-
-    // TEXT
-    @Column(length = 4000)
-    private String textValue;
+    @Column(nullable = false, length = 2000)
+    private String answerValue;
 }
-
-

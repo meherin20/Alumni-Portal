@@ -1,60 +1,47 @@
 package com.miu.alumnimanagementportal.surveys.entities;
 
 import com.miu.alumnimanagementportal.entities.BaseEntity;
-import com.miu.alumnimanagementportal.entities.Survey;
-import com.miu.alumnimanagementportal.surveys.enums.ResponseStatus;
+import com.miu.alumnimanagementportal.entities.User;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
 @Table(
         name = "survey_response",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_response_survey_respondent",
-                        columnNames = {"survey_id", "respondentKey"}
-                ),
-                @UniqueConstraint(
-                        name = "uk_response_survey_anon_hash",
-                        columnNames = {"survey_id", "anonymousTokenHash"}
-                )
-        }
+        uniqueConstraints = @UniqueConstraint(columnNames = {"survey_id", "user_id"})
 )
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class SurveyResponse extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "survey_id", nullable = false)
+    @ToString.Exclude
     private Survey survey;
 
-    /**
-     * For non-anonymous surveys: a logical respondent identifier (e.g. email).
-     * Null when survey is anonymous.
-     */
-    @Column(length = 255)
-    private String respondentKey;
-
-    /**
-     * For anonymous surveys: hash token used to enforce 1 submission per user.
-     */
-    @Column(length = 128)
-    private String anonymousTokenHash;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ResponseStatus status = ResponseStatus.IN_PROGRESS;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude
+    private User user;
 
     @Column(nullable = false)
-    private LocalDateTime startedAt = LocalDateTime.now();
-
     private LocalDateTime submittedAt;
 
     @OneToMany(mappedBy = "response", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<SurveyAnswer> answers = new ArrayList<>();
+
+    @PrePersist
+    void onCreate() {
+        if (submittedAt == null) {
+            submittedAt = LocalDateTime.now();
+        }
+    }
 }
-
-

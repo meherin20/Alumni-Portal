@@ -2,20 +2,16 @@ package com.miu.alumnimanagementportal.surveys.entities;
 
 import com.miu.alumnimanagementportal.entities.BaseEntity;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+@Entity
+@Table(name = "survey_question_option")
 @Getter
 @Setter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "survey_question_option")
 public class SurveyQuestionOption extends BaseEntity {
-
-    // ID is handled by BaseEntity equals/hashCode
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id", nullable = false)
@@ -31,5 +27,3 @@ public class SurveyQuestionOption extends BaseEntity {
     @Column(nullable = false)
     private int orderIndex;
 }
-
-

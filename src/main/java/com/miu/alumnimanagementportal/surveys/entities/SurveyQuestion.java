@@ -1,23 +1,20 @@
 package com.miu.alumnimanagementportal.surveys.entities;
 
 import com.miu.alumnimanagementportal.entities.BaseEntity;
-import com.miu.alumnimanagementportal.entities.Survey;
-import com.miu.alumnimanagementportal.surveys.enums.QuestionType;
+import com.miu.alumnimanagementportal.surveys.enums.SurveyQuestionType;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
+@Table(name = "survey_question")
 @Getter
 @Setter
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-@Entity
-@Table(name = "survey_question")
 public class SurveyQuestion extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,23 +22,22 @@ public class SurveyQuestion extends BaseEntity {
     @ToString.Exclude
     private Survey survey;
 
-    @Column(nullable = false, length = 1000)
-    private String text;
+    @Column(name = "question_text", nullable = false, length = 1000)
+    private String questionText;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private QuestionType type;
+    private SurveyQuestionType questionType;
 
     @Column(nullable = false)
-    private boolean required = true;
+    private boolean required = false;
 
     @Column(nullable = false)
     private int orderIndex;
 
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("orderIndex ASC")
+    @org.hibernate.annotations.BatchSize(size = 50)
     @ToString.Exclude
-    private Set<SurveyQuestionOption> options = new LinkedHashSet<>();
+    private List<SurveyQuestionOption> options = new ArrayList<>();
 }
-
-
