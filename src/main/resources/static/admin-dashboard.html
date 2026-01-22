@@ -1291,6 +1291,19 @@
     </div>
 </div>
 
+<!-- Registered Persons Modal -->
+<div id="registered-persons-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 600px;">
+        <div class="modal-header">
+            <h2 id="registered-persons-title" class="modal-title">Registered Persons</h2>
+            <button id="registered-persons-modal-close" class="modal-close">×</button>
+        </div>
+        <div id="registered-persons-content" style="max-height: 70vh; overflow-y: auto;">
+            <!-- Registered persons list will be loaded here -->
+        </div>
+    </div>
+</div>
+
 <script>
     // Require admin authentication
     if (!Auth.requireAuth('admin')) {
@@ -2764,62 +2777,81 @@
     });
 
     // Load admin events
-    function loadAdminEvents() {
+    async function loadAdminEvents() {
         console.log('Loading admin events...');
-        fetch('/events')
-            .then(response => {
-                console.log('Response status:', response.status);
-                return response.json();
-            })
-            .then(data => {
-                console.log('Events data received:', data);
-                adminEventsTableBody.innerHTML = '';
+        try {
+            const response = await fetch('/events');
+            console.log('Response status:', response.status);
+            const data = await response.json();
+            console.log('Events data received:', data);
+            adminEventsTableBody.innerHTML = '';
 
-                if (data.data && Array.isArray(data.data) && data.data.length > 0) {
-                    console.log('Processing events:', data.data);
-                    data.data.forEach(event => {
-                        console.log('Processing event:', event);
-                        const row = document.createElement('tr');
-                        const eventDate = event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A';
-                        const status = event.eventStatus || event.status || 'UPCOMING';
+            if (data.data && Array.isArray(data.data) && data.data.length > 0) {
+                console.log('Processing events:', data.data);
+                
+                // Load registration counts for all events
+                const eventsWithCounts = await Promise.all(
+                    data.data.map(async (event) => {
+                        try {
+                            const regResponse = await fetch(`/events/${event.id}/registrations`);
+                            const regData = await regResponse.json();
+                            const registrationCount = regData.data ? regData.data.length : 0;
+                            return { ...event, registrationCount };
+                        } catch (error) {
+                            console.warn(`Failed to load registrations for event ${event.id}:`, error);
+                            return { ...event, registrationCount: 0 };
+                        }
+                    })
+                );
 
-                        const hyperlinkDisplay = event.hyperlink ?
-                            `<a href="${event.hyperlink}" target="_blank" class="btn-modern btn-secondary" style="font-size: 11px; padding: 4px 8px; background: var(--admin-primary); color: white; text-decoration: none;">
-                                <i class="fas fa-external-link-alt"></i> Link
-                            </a>` : '<span style="color: var(--admin-text-muted); font-size: 12px;">No link</span>';
+                eventsWithCounts.forEach(event => {
+                    console.log('Processing event:', event);
+                    const row = document.createElement('tr');
+                    const eventDate = event.startDate ? new Date(event.startDate).toLocaleDateString() : 'N/A';
+                    const status = event.eventStatus || event.status || 'UPCOMING';
 
-                        row.innerHTML = `
-                            <td>${event.title}</td>
-                            <td>${event.eventType}</td>
-                            <td>${eventDate}</td>
-                            <td>${event.location}</td>
-                            <td>${hyperlinkDisplay}</td>
-                            <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
-                            <td>${event.attendants ? event.attendants.length : 0}/${event.maxParticipants || '∞'}</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="btn-modern btn-secondary" onclick="editEvent(${event.id})">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="btn-modern btn-danger" onclick="deleteEvent(${event.id})">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                    <button class="btn-modern btn-primary" onclick="viewEventRegistrations(${event.id})">
-                                        <i class="fas fa-users"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        `;
-                        adminEventsTableBody.appendChild(row);
-                    });
-                } else {
-                    adminEventsTableBody.innerHTML = '<tr><td colspan="8">No events found</td></tr>';
-                }
-            })
-            .catch(error => {
-                console.error('Error loading events:', error);
-                adminEventsTableBody.innerHTML = '<tr><td colspan="8">Error loading events</td></tr>';
-            });
+                    const hyperlinkDisplay = event.hyperlink ?
+                        `<a href="${event.hyperlink}" target="_blank" class="btn-modern btn-secondary" style="font-size: 11px; padding: 4px 8px; background: var(--admin-primary); color: white; text-decoration: none;">
+                            <i class="fas fa-external-link-alt"></i> Link
+                        </a>` : '<span style="color: var(--admin-text-muted); font-size: 12px;">No link</span>';
+
+                    const registrationCount = event.registrationCount || 0;
+                    const maxParticipants = event.maxParticipants || '∞';
+                    const registrationDisplay = registrationCount > 0 
+                        ? `<span class="registration-count-link" onclick="showRegisteredPersons(${event.id}, '${(event.title || '').replace(/'/g, "\\'")}')" style="cursor: pointer; color: var(--admin-primary); text-decoration: underline; font-weight: 600; transition: color 0.3s ease;" onmouseover="this.style.color='var(--admin-secondary)'" onmouseout="this.style.color='var(--admin-primary)'" title="Click to view registered persons">${registrationCount}</span>/${maxParticipants}`
+                        : `<span style="color: var(--admin-text-muted);">${registrationCount}</span>/${maxParticipants}`;
+
+                    row.innerHTML = `
+                        <td>${event.title}</td>
+                        <td>${event.eventType}</td>
+                        <td>${eventDate}</td>
+                        <td>${event.location}</td>
+                        <td>${hyperlinkDisplay}</td>
+                        <td><span class="status-badge status-${status.toLowerCase()}">${status}</span></td>
+                        <td>${registrationDisplay}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-modern btn-secondary" onclick="editEvent(${event.id})">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-modern btn-danger" onclick="deleteEvent(${event.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn-modern btn-primary" onclick="viewEventRegistrations(${event.id})">
+                                    <i class="fas fa-users"></i>
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    adminEventsTableBody.appendChild(row);
+                });
+            } else {
+                adminEventsTableBody.innerHTML = '<tr><td colspan="8">No events found</td></tr>';
+            }
+        } catch (error) {
+            console.error('Error loading events:', error);
+            adminEventsTableBody.innerHTML = '<tr><td colspan="8">Error loading events</td></tr>';
+        }
     }
 
     // Event management functions
@@ -2847,33 +2879,106 @@
         }
     }
 
+    let currentEventId = null;
+    let currentEventTitle = null;
+
     function viewEventRegistrations(eventId) {
-        fetch(`/events/${eventId}/registrations`)
-            .then(response => response.json())
-            .then(data => {
+        currentEventId = eventId;
+        
+        // First fetch event details to get the event title
+        Promise.all([
+            fetch(`/events/${eventId}`).then(r => r.json()),
+            fetch(`/events/${eventId}/registrations`).then(r => r.json())
+        ])
+            .then(([eventData, registrationData]) => {
+                const event = eventData.data || eventData;
+                currentEventTitle = event.title || 'Event';
+                
+                // Update the section title to show which event's registrations are being displayed
+                const registrationsSection = document.querySelector('.card:has(#event-registrations-list)');
+                if (registrationsSection) {
+                    const sectionTitle = registrationsSection.querySelector('.card-title');
+                    if (sectionTitle) {
+                        sectionTitle.textContent = `Event Registrations - ${currentEventTitle}`;
+                    }
+                }
+                
                 eventRegistrationsList.innerHTML = '';
 
-                if (data.data && data.data.length > 0) {
-                    data.data.forEach(registration => {
+                if (registrationData.data && registrationData.data.length > 0) {
+                    registrationData.data.forEach((registration, index) => {
                         const registrationDiv = document.createElement('div');
                         registrationDiv.style.cssText = `
-                            padding: 12px;
+                            padding: 16px;
                             border: 1px solid var(--admin-border);
-                            border-radius: 8px;
+                            border-radius: 12px;
                             background: var(--admin-surface-hover);
                             display: flex;
                             justify-content: space-between;
                             align-items: center;
+                            transition: all 0.3s ease;
                         `;
+                        registrationDiv.onmouseenter = function() {
+                            this.style.borderColor = 'var(--admin-primary)';
+                            this.style.transform = 'translateY(-2px)';
+                            this.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.2)';
+                        };
+                        registrationDiv.onmouseleave = function() {
+                            this.style.borderColor = 'var(--admin-border)';
+                            this.style.transform = 'translateY(0)';
+                            this.style.boxShadow = 'none';
+                        };
+
+                        // Format registration date safely
+                        let registrationDate = 'N/A';
+                        try {
+                            if (registration.registrationDate) {
+                                const date = new Date(registration.registrationDate);
+                                if (!isNaN(date.getTime())) {
+                                    registrationDate = date.toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric'
+                                    });
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('Error parsing registration date:', e);
+                        }
 
                         registrationDiv.innerHTML = `
-                            <div>
-                                <div style="font-weight: 600;">${registration.userName || 'Unknown User'}</div>
-                                <div style="font-size: 12px; color: var(--admin-text-muted);">Email: ${registration.userEmail || 'N/A'}</div>
-                                <div style="font-size: 12px; color: var(--admin-text-muted);">Registered: ${new Date(registration.registrationDate).toLocaleDateString()}</div>
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--admin-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; flex-shrink: 0;">
+                                        ${(registration.userName || 'U').charAt(0).toUpperCase()}
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; color: var(--admin-text-primary); font-size: 1rem; margin-bottom: 4px;">
+                                            ${registration.userName || 'Unknown User'}
+                                        </div>
+                                        <div style="font-size: 0.85rem; color: var(--admin-text-secondary); display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                            <i class="fas fa-envelope" style="color: var(--admin-primary); font-size: 0.75rem;"></i>
+                                            ${registration.userEmail || 'N/A'}
+                                        </div>
+                                        <div style="font-size: 0.8rem; color: var(--admin-primary); display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 4px;">
+                                            <i class="fas fa-calendar-check" style="color: var(--admin-primary); font-size: 0.75rem;"></i>
+                                            Event: ${currentEventTitle}
+                                        </div>
+                                        <div style="font-size: 0.75rem; color: var(--admin-text-muted); display: flex; align-items: center; gap: 6px;">
+                                            <i class="fas fa-clock" style="color: var(--admin-text-muted); font-size: 0.7rem;"></i>
+                                            Registered: ${registrationDate}
+                                        </div>
+                                        ${registration.registrationNotes ? `
+                                        <div style="font-size: 0.75rem; color: var(--admin-text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px;">
+                                            <i class="fas fa-phone" style="color: var(--admin-text-muted); font-size: 0.7rem;"></i>
+                                            ${registration.registrationNotes}
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="action-buttons">
-                                <button class="btn-modern btn-danger" onclick="removeRegistration(${registration.id})">
+                            <div class="action-buttons" style="margin-left: 16px;">
+                                <button class="btn-modern btn-danger" onclick="removeRegistration(${registration.userId || registration.id}, ${eventId})" title="Remove Registration">
                                     <i class="fas fa-user-minus"></i>
                                 </button>
                             </div>
@@ -2882,25 +2987,37 @@
                         eventRegistrationsList.appendChild(registrationDiv);
                     });
                 } else {
-                    eventRegistrationsList.innerHTML = '<p style="text-align: center; color: var(--admin-text-muted); padding: 20px;">No registrations found for this event.</p>';
+                    eventRegistrationsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px;">
+                            <i class="fas fa-users" style="font-size: 3rem; color: var(--admin-text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <p style="color: var(--admin-text-muted); font-size: 1rem; margin-bottom: 8px;">No registrations found for this event.</p>
+                            <p style="color: var(--admin-text-secondary); font-size: 0.85rem;">Event: ${currentEventTitle}</p>
+                        </div>
+                    `;
                 }
             })
             .catch(error => {
                 console.error('Error loading registrations:', error);
-                eventRegistrationsList.innerHTML = '<p style="text-align: center; color: var(--admin-error); padding: 20px;">Error loading registrations.</p>';
+                eventRegistrationsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--admin-error); margin-bottom: 1rem;"></i>
+                        <p style="color: var(--admin-error);">Error loading registrations. Please try again later.</p>
+                    </div>
+                `;
             });
     }
 
-    function removeRegistration(registrationId) {
+    function removeRegistration(userId, eventId) {
         if (confirm('Are you sure you want to remove this registration?')) {
-            fetch(`/events/registrations/${registrationId}`, { method: 'DELETE' })
+            fetch(`/events/${eventId}/register/${userId}`, { method: 'DELETE' })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.message && data.message.includes('removed')) {
+                    if (data.message && (data.message.includes('removed') || data.message.includes('unregistered') || data.message.includes('deleted'))) {
                         showNotification('Registration removed successfully', 'success');
                         // Refresh the current event's registrations
-                        const currentEventId = getCurrentEventId(); // You'd need to track this
                         if (currentEventId) viewEventRegistrations(currentEventId);
+                        // Reload events to update registration counts
+                        loadAdminEvents();
                     } else {
                         showNotification('Error removing registration', 'error');
                     }
@@ -2925,6 +3042,111 @@
     viewEventRegistrationsBtn.addEventListener('click', () => {
         // This could be enhanced to show registrations for all events or a specific event
         alert('Select an event from the table above to view its registrations.');
+    });
+
+    // Show registered persons modal
+    function showRegisteredPersons(eventId, eventTitle) {
+        const modal = document.getElementById('registered-persons-modal');
+        const modalTitle = document.getElementById('registered-persons-title');
+        const modalContent = document.getElementById('registered-persons-content');
+        
+        modalTitle.textContent = `Registered Persons - ${eventTitle}`;
+        modalContent.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--admin-primary); margin-bottom: 1rem;"></i>
+                <p style="color: var(--admin-text-secondary);">Loading registered persons...</p>
+            </div>
+        `;
+        
+        modal.style.display = 'flex';
+        
+        fetch(`/events/${eventId}/registrations`)
+            .then(response => response.json())
+            .then(data => {
+                modalContent.innerHTML = '';
+                
+                if (data.data && data.data.length > 0) {
+                    const listContainer = document.createElement('div');
+                    listContainer.style.cssText = 'display: flex; flex-direction: column; gap: 12px;';
+                    
+                    data.data.forEach((registration, index) => {
+                        const personDiv = document.createElement('div');
+                        personDiv.style.cssText = `
+                            padding: 16px;
+                            border: 1px solid var(--admin-border);
+                            border-radius: 12px;
+                            background: var(--admin-surface-hover);
+                            transition: all 0.3s ease;
+                        `;
+                        personDiv.onmouseenter = function() {
+                            this.style.borderColor = 'var(--admin-primary)';
+                            this.style.transform = 'translateX(4px)';
+                        };
+                        personDiv.onmouseleave = function() {
+                            this.style.borderColor = 'var(--admin-border)';
+                            this.style.transform = 'translateX(0)';
+                        };
+                        
+                        personDiv.innerHTML = `
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--admin-gradient); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px; flex-shrink: 0;">
+                                    ${(registration.userName || 'U').charAt(0).toUpperCase()}
+                                </div>
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600; color: var(--admin-text-primary); font-size: 1rem; margin-bottom: 4px;">
+                                        ${registration.userName || 'Unknown User'}
+                                    </div>
+                                    <div style="font-size: 0.85rem; color: var(--admin-text-secondary); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-envelope" style="color: var(--admin-primary);"></i>
+                                        ${registration.userEmail || 'N/A'}
+                                    </div>
+                                    ${registration.registrationNotes ? `
+                                    <div style="font-size: 0.8rem; color: var(--admin-text-muted); margin-top: 4px; font-style: italic;">
+                                        <i class="fas fa-phone" style="color: var(--admin-text-muted);"></i>
+                                        ${registration.registrationNotes}
+                                    </div>
+                                    ` : ''}
+                                </div>
+                                <div style="color: var(--admin-text-muted); font-size: 0.75rem; font-weight: 600;">
+                                    #${index + 1}
+                                </div>
+                            </div>
+                        `;
+                        
+                        listContainer.appendChild(personDiv);
+                    });
+                    
+                    modalContent.appendChild(listContainer);
+                } else {
+                    modalContent.innerHTML = `
+                        <div style="text-align: center; padding: 3rem;">
+                            <i class="fas fa-users" style="font-size: 3rem; color: var(--admin-text-muted); margin-bottom: 1rem; opacity: 0.5;"></i>
+                            <p style="color: var(--admin-text-secondary); font-size: 1rem;">No registered persons for this event yet.</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading registered persons:', error);
+                modalContent.innerHTML = `
+                    <div style="text-align: center; padding: 3rem;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--admin-error); margin-bottom: 1rem;"></i>
+                        <p style="color: var(--admin-error);">Failed to load registered persons. Please try again later.</p>
+                    </div>
+                `;
+            });
+    }
+
+    // Close registered persons modal
+    document.getElementById('registered-persons-modal-close').addEventListener('click', () => {
+        document.getElementById('registered-persons-modal').style.display = 'none';
+    });
+
+    // Close modal when clicking outside
+    document.getElementById('registered-persons-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'registered-persons-modal') {
+            document.getElementById('registered-persons-modal').style.display = 'none';
+        }
     });
 
     // Test event creation

@@ -589,8 +589,98 @@
         // Redirect will happen in requireAuth
         throw new Error('Authentication required');
     }
+
+    // Check if user is student or alumni
+    async function checkUserRole() {
+        const currentUser = Auth.getCurrentUser();
+        if (!currentUser) {
+            showError('Please login to submit an application');
+            disableForm();
+            return false;
+        }
+
+        const userRole = currentUser.role ? currentUser.role.toUpperCase() : '';
+        
+        // Allow only STUDENT and ALUMNI
+        if (userRole !== 'STUDENT' && userRole !== 'ALUMNI') {
+            showRoleRestrictionError(userRole);
+            disableForm();
+            return false;
+        }
+
+        // Verify role from backend for additional security
+        try {
+            const response = await fetch(`/users/getByEmail?email=${encodeURIComponent(currentUser.email)}`);
+            if (response.ok) {
+                const result = await response.json();
+                if (result.data && result.data.role) {
+                    const backendRole = result.data.role.title ? result.data.role.title.toUpperCase() : '';
+                    if (backendRole !== 'STUDENT' && backendRole !== 'ALUMNI') {
+                        showRoleRestrictionError(backendRole);
+                        disableForm();
+                        return false;
+                    }
+                }
+            }
+        } catch (error) {
+            console.error('Error verifying user role:', error);
+            // Continue with frontend check if backend check fails
+        }
+
+        return true;
+    }
+
+    function showRoleRestrictionError(role) {
+        const errorDiv = document.getElementById('errorMessage');
+        const formContainer = document.querySelector('.application-container');
+        const restrictionMessage = document.createElement('div');
+        restrictionMessage.className = 'role-restriction-message';
+        restrictionMessage.innerHTML = `
+            <div style="text-align: center; padding: 3rem 2rem; background: rgba(239, 68, 68, 0.1); border: 2px solid rgba(239, 68, 68, 0.3); border-radius: 16px; margin: 2rem 0;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ef4444; margin-bottom: 1rem;"></i>
+                <h2 style="color: #f8fafc; margin-bottom: 1rem; font-size: 1.5rem;">Access Restricted</h2>
+                <p style="color: #cbd5e1; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+                    Only <strong>Students</strong> and <strong>Alumni</strong> can submit job applications.
+                    <br>Your account is registered as <strong>${role || 'Unknown'}</strong>.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/jobs.html" style="padding: 0.75rem 1.5rem; background: #6366f1; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                        <i class="fas fa-arrow-left"></i> Back to Jobs
+                    </a>
+                    <a href="/dashboard.html" style="padding: 0.75rem 1.5rem; background: rgba(255, 255, 255, 0.1); color: #f8fafc; text-decoration: none; border-radius: 8px; font-weight: 600; border: 1px solid rgba(255, 255, 255, 0.2);">
+                        <i class="fas fa-home"></i> Go to Dashboard
+                    </a>
+                </div>
+            </div>
+        `;
+        
+        if (formContainer) {
+            formContainer.innerHTML = '';
+            formContainer.appendChild(restrictionMessage);
+        } else {
+            document.querySelector('.main-content').innerHTML = '';
+            document.querySelector('.main-content').appendChild(restrictionMessage);
+        }
+    }
+
+    function disableForm() {
+        const form = document.getElementById('jobApplicationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        if (form) {
+            form.style.pointerEvents = 'none';
+            form.style.opacity = '0.5';
+        }
+        if (submitBtn) {
+            submitBtn.disabled = true;
+        }
+    }
     
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Check user role first
+    const canSubmit = await checkUserRole();
+    if (!canSubmit) {
+        return; // Stop execution if user cannot submit
+    }
     // Theme toggle functionality
     const themeToggle = document.querySelector('button[aria-label="Change theme"]');
     if (themeToggle) {
@@ -625,14 +715,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const jobId = urlParams.get('jobId');
 
     if (!jobId) {
-        showError('Job ID is required');
+        const jobTitleEl = document.getElementById('jobTitle');
+        if (jobTitleEl) {
+            jobTitleEl.textContent = 'Job ID is required';
+        }
+        showError('Job ID is required. Please select a job from the jobs page.');
         return;
     }
 
-    document.getElementById('jobPostId').value = jobId;
+    const jobPostIdInput = document.getElementById('jobPostId');
+    if (jobPostIdInput) {
+        jobPostIdInput.value = jobId;
+    }
 
     // Load job details
-    loadJobDetails(jobId);
+    await loadJobDetails(jobId);
 
     // File upload handlers
     setupFileUpload('photoUploadArea', 'photoFile', 'photoPreview');
@@ -640,23 +737,117 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Form submission
     document.getElementById('jobApplicationForm').addEventListener('submit', handleSubmit);
+
+    // Add subtle animations to form cards
+    const cards = document.querySelectorAll('.form-card');
+    cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+        card.style.animation = 'fadeInUp 0.6s ease-out forwards';
+    });
 });
 
 async function loadJobDetails(jobId) {
-    try {
-        const response = await fetch('/jobPosts/' + jobId);
-        const result = await response.json();
+    const jobTitleEl = document.getElementById('jobTitle');
+    const jobCompanyEl = document.getElementById('jobCompany');
+    const jobLocationEl = document.getElementById('jobLocation');
 
-        if (result.data) {
-            const job = result.data;
-            document.getElementById('jobTitle').textContent = job.title;
-            document.getElementById('jobCompany').textContent = job.companyName;
-            document.getElementById('jobLocation').textContent = `${job.city}, ${job.state}`;
+    if (!jobId) {
+        if (jobTitleEl) {
+            jobTitleEl.textContent = 'Job ID is required';
+        }
+        return;
+    }
+
+    try {
+        // Try the available-jobs endpoint first (for published jobs)
+        let response = await fetch('/available-jobs/' + encodeURIComponent(jobId));
+        let result = null;
+        let job = null;
+
+        if (response.ok) {
+            try {
+                result = await response.json();
+                job = result.data;
+                console.log('Loaded job from available-jobs:', job);
+            } catch (e) {
+                console.warn('Failed to parse available-jobs response:', e);
+            }
         } else {
-            showError('Job not found');
+            console.log('available-jobs endpoint returned:', response.status, response.statusText);
+        }
+
+        // If not found, try the jobPosts endpoint as fallback
+        if (!job) {
+            console.log('Trying jobPosts endpoint as fallback...');
+            response = await fetch('/jobPosts/' + encodeURIComponent(jobId));
+            if (response.ok) {
+                try {
+                    result = await response.json();
+                    job = result.data;
+                    console.log('Loaded job from jobPosts:', job);
+                } catch (e) {
+                    console.warn('Failed to parse jobPosts response:', e);
+                }
+            } else {
+                console.log('jobPosts endpoint returned:', response.status, response.statusText);
+            }
+        }
+
+        if (job) {
+            // Update job title
+            if (jobTitleEl) {
+                jobTitleEl.textContent = job.title || 'Job Opportunity';
+            }
+
+            // Update job company
+            if (jobCompanyEl) {
+                if (job.companyName) {
+                    jobCompanyEl.textContent = job.companyName;
+                    jobCompanyEl.style.display = 'block';
+                } else if (job.department) {
+                    jobCompanyEl.textContent = job.department;
+                    jobCompanyEl.style.display = 'block';
+                } else {
+                    jobCompanyEl.style.display = 'none';
+                }
+            }
+
+            // Update job location
+            if (jobLocationEl) {
+                if (job.location) {
+                    jobLocationEl.textContent = job.location;
+                    jobLocationEl.style.display = 'block';
+                } else if (job.city && job.state) {
+                    jobLocationEl.textContent = `${job.city}, ${job.state}`;
+                    jobLocationEl.style.display = 'block';
+                } else if (job.city) {
+                    jobLocationEl.textContent = job.city;
+                    jobLocationEl.style.display = 'block';
+                } else {
+                    jobLocationEl.style.display = 'none';
+                }
+            }
+        } else {
+            // Job not found - show message but don't break the form
+            if (jobTitleEl) {
+                jobTitleEl.textContent = 'Job Details Unavailable';
+            }
+            if (jobCompanyEl) {
+                jobCompanyEl.textContent = 'Unable to load job information. You can still submit your application.';
+                jobCompanyEl.style.display = 'block';
+            }
+            console.warn('Job details not found for ID:', jobId);
         }
     } catch (error) {
-        showError('Failed to load job details');
+        console.error('Error loading job details:', error);
+        // Show error but allow form to still be used
+        if (jobTitleEl) {
+            jobTitleEl.textContent = 'Job Details Unavailable';
+        }
+        if (jobCompanyEl) {
+            jobCompanyEl.textContent = 'Unable to load job information. You can still submit your application.';
+            jobCompanyEl.style.display = 'block';
+        }
     }
 }
 
@@ -732,6 +923,19 @@ function formatFileSize(bytes) {
 async function handleSubmit(e) {
     e.preventDefault();
 
+    // Double-check user role before submission
+    const currentUser = Auth.getCurrentUser();
+    if (!currentUser) {
+        showError('Please login to submit an application');
+        return;
+    }
+
+    const userRole = currentUser.role ? currentUser.role.toUpperCase() : '';
+    if (userRole !== 'STUDENT' && userRole !== 'ALUMNI') {
+        showError('Only students and alumni can submit job applications. Your account is registered as ' + userRole + '.');
+        return;
+    }
+
     const submitBtn = document.getElementById('submitBtn');
     const originalText = submitBtn.innerHTML;
     submitBtn.disabled = true;
@@ -739,6 +943,12 @@ async function handleSubmit(e) {
 
     try {
         const formData = new FormData(e.target);
+        
+        // Ensure email matches logged-in user
+        const userEmail = currentUser.email;
+        if (userEmail) {
+            formData.set('email', userEmail);
+        }
 
         const response = await fetch('/job-applications', {
             method: 'POST',
@@ -750,10 +960,13 @@ async function handleSubmit(e) {
         if (response.ok) {
             document.getElementById('successOverlay').classList.add('show');
         } else {
-            throw new Error(result.message || 'Failed to submit application');
+            // Extract error message from backend response
+            const errorMessage = result.message || result.error || 'Failed to submit application';
+            throw new Error(errorMessage);
         }
     } catch (error) {
-        showError(error.message);
+        let errorMsg = error.message || 'Failed to submit application';
+        showError(errorMsg);
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
     }
@@ -766,30 +979,21 @@ function showError(message) {
     errorDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// Add some visual enhancements
-document.addEventListener('DOMContentLoaded', () => {
-    // Add subtle animations to form cards
-    const cards = document.querySelectorAll('.form-card');
-    cards.forEach((card, index) => {
-        card.style.animationDelay = `${index * 0.1}s`;
-        card.style.animation = 'fadeInUp 0.6s ease-out forwards';
-    });
-
-    // Add CSS for the animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+// Add CSS for the animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
         }
-    `;
-    document.head.appendChild(style);
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+document.head.appendChild(style);
 });
 </script>
 </body>

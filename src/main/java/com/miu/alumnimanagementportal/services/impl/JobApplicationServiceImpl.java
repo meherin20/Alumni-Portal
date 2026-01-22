@@ -5,6 +5,7 @@ import com.miu.alumnimanagementportal.dtos.JobApplicationDto;
 import com.miu.alumnimanagementportal.entities.JobApplication;
 import com.miu.alumnimanagementportal.entities.JobPost;
 import com.miu.alumnimanagementportal.entities.User;
+import com.miu.alumnimanagementportal.exceptions.BadRequestException;
 import com.miu.alumnimanagementportal.exceptions.DataAlreadyExistException;
 import com.miu.alumnimanagementportal.exceptions.ResourceNotFoundException;
 import com.miu.alumnimanagementportal.repositories.JobApplicationRepository;
@@ -36,6 +37,29 @@ public class JobApplicationServiceImpl implements JobApplicationService {
 
     @Override
     public JobApplicationDto create(JobApplicationDto jobApplicationDto, MultipartFile photoFile, MultipartFile resumeFile) {
+        // Validate that only students and alumni can submit applications
+        if (jobApplicationDto.getEmail() != null && !jobApplicationDto.getEmail().isBlank()) {
+            User applicantUser = userRepository.findByEmail(jobApplicationDto.getEmail());
+            if (applicantUser != null && applicantUser.getRole() != null) {
+                String userRole = applicantUser.getRole().getTitle().toUpperCase().trim();
+                if (!userRole.equals("STUDENT") && !userRole.equals("ALUMNI")) {
+                    throw new BadRequestException("Only students and alumni can submit job applications. Your account is registered as " + userRole + ".");
+                }
+            }
+        }
+
+        // If applicantId is provided, also validate the role
+        if (jobApplicationDto.getApplicantId() != null) {
+            User applicant = userRepository.findById(jobApplicationDto.getApplicantId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Applicant not found"));
+            if (applicant.getRole() != null) {
+                String userRole = applicant.getRole().getTitle().toUpperCase().trim();
+                if (!userRole.equals("STUDENT") && !userRole.equals("ALUMNI")) {
+                    throw new BadRequestException("Only students and alumni can submit job applications. Your account is registered as " + userRole + ".");
+                }
+            }
+        }
+
         // Check if user has already applied for this job
         if (jobApplicationDto.getApplicantId() != null &&
             hasUserAppliedForJob(jobApplicationDto.getJobPostId(), jobApplicationDto.getApplicantId())) {

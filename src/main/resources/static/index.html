@@ -674,15 +674,16 @@
             }
         }
 
-        /* Alumni Events Section */
-        .alumni-events-section {
+        /* Alumni News Section */
+        .alumni-news-section {
             padding: 100px 0;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
+            background-attachment: fixed;
             position: relative;
             overflow: hidden;
         }
 
-        .alumni-events-section::before {
+        .alumni-news-section::before {
             content: '';
             position: absolute;
             top: 0;
@@ -690,12 +691,13 @@
             right: 0;
             bottom: 0;
             background:
-                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+                radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
             pointer-events: none;
         }
 
-        .events-container {
+        .news-container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 24px;
@@ -703,17 +705,17 @@
             z-index: 2;
         }
 
-        .events-header {
+        .news-header {
             text-align: center;
             margin-bottom: 80px;
         }
 
-        .events-main-title {
+        .news-main-title {
             font-size: clamp(2.8rem, 6vw, 4rem);
             font-weight: 800;
-            color: #0f172a;
+            color: #ffffff;
             margin: 0 0 16px 0;
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 50%, #f8fafc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -721,7 +723,7 @@
             position: relative;
         }
 
-        .events-main-title::after {
+        .news-main-title::after {
             content: '';
             position: absolute;
             bottom: -8px;
@@ -733,9 +735,9 @@
             border-radius: 2px;
         }
 
-        .events-subtitle {
+        .news-subtitle {
             font-size: 1.3rem;
-            color: #64748b;
+            color: rgba(255, 255, 255, 0.7);
             margin: 0;
             font-weight: 400;
             line-height: 1.6;
@@ -743,30 +745,34 @@
             margin: 0 auto;
         }
 
-        .events-grid {
+        .news-grid-landing {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 32px;
-            margin-bottom: 60px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 80px;
         }
 
-        /* Event Card */
-        .event-card-landing {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 24px;
-            padding: 32px;
+        /* News Card */
+        .news-card-landing {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+            backdrop-filter: blur(30px);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 32px;
+            padding: 0;
             position: relative;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+                0 20px 60px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(99, 102, 241, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            min-height: 520px;
         }
 
-        .event-card-landing::before {
+        .news-card-landing::before {
             content: '';
             position: absolute;
             top: 0;
@@ -775,29 +781,184 @@
             height: 100%;
             background: linear-gradient(90deg,
                 transparent,
-                rgba(99, 102, 241, 0.08),
-                rgba(139, 92, 246, 0.06),
+                rgba(99, 102, 241, 0.2),
+                rgba(139, 92, 246, 0.18),
+                rgba(245, 158, 11, 0.1),
                 transparent);
-            transition: left 0.6s ease;
+            transition: left 0.8s ease;
             z-index: 1;
         }
 
-        .event-card-landing:hover::before {
+        .news-card-landing::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 0;
+        }
+
+        .news-card-landing:hover::before {
             left: 100%;
         }
 
-        .event-card-landing:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow:
-                0 24px 64px rgba(0, 0, 0, 0.12),
-                0 0 32px rgba(99, 102, 241, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5);
-            border-color: rgba(99, 102, 241, 0.4);
+        .news-card-landing:hover::after {
+            opacity: 1;
         }
 
-        .event-card-content-landing {
+        .news-card-landing:hover {
+            transform: translateY(-16px) scale(1.03);
+            box-shadow:
+                0 32px 80px rgba(0, 0, 0, 0.6),
+                0 0 60px rgba(99, 102, 241, 0.4),
+                0 0 100px rgba(139, 92, 246, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            border-color: rgba(99, 102, 241, 0.6);
+            background: linear-gradient(145deg, rgba(99, 102, 241, 0.18), rgba(139, 92, 246, 0.12));
+        }
+
+        .news-card-content-landing {
             position: relative;
             z-index: 2;
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .news-image-container {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.25));
+        }
+
+        .news-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: brightness(0.95) contrast(1.05);
+        }
+
+        .news-card-landing:hover .news-image-container img {
+            transform: scale(1.15);
+            filter: brightness(1.05) contrast(1.1);
+        }
+
+        .news-category-badge {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 
+                0 6px 20px rgba(99, 102, 241, 0.5),
+                0 0 20px rgba(139, 92, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            z-index: 3;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .news-card-landing:hover .news-category-badge {
+            transform: scale(1.05);
+            box-shadow: 
+                0 8px 24px rgba(99, 102, 241, 0.6),
+                0 0 30px rgba(139, 92, 246, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        .news-title-landing {
+            font-size: 1.65rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 28px 0 16px 0;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            letter-spacing: -0.3px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .news-description-landing {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+            font-weight: 400;
+        }
+
+        .news-meta-landing {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 24px;
+            border-top: 2px solid rgba(255, 255, 255, 0.12);
+            margin-top: auto;
+        }
+
+        .news-date-landing {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.65);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .news-date-landing i {
+            color: rgba(99, 102, 241, 0.8);
+        }
+
+        .news-read-more-landing {
+            color: #6366f1;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .news-read-more-landing:hover {
+            color: #ffffff;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            transform: translateX(6px);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .news-read-more-landing i {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+
+        .news-read-more-landing:hover i {
+            transform: translateX(4px);
         }
 
         .event-card-top {
@@ -945,17 +1106,17 @@
             align-items: center;
             justify-content: center;
             padding: 80px 40px;
-            background: rgba(255, 255, 255, 0.8);
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
             backdrop-filter: blur(20px);
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
         }
 
         .loading-placeholder .loading-spinner {
             width: 48px;
             height: 48px;
-            border: 4px solid #e2e8f0;
+            border: 4px solid rgba(255, 255, 255, 0.1);
             border-top: 4px solid #6366f1;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -963,54 +1124,100 @@
         }
 
         .loading-placeholder p {
-            color: #64748b;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 1.1rem;
             margin: 0;
             font-weight: 500;
         }
 
         /* Empty State */
-        .events-empty {
+        .news-empty {
             grid-column: 1 / -1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 80px 40px;
-            background: rgba(255, 255, 255, 0.9);
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
             backdrop-filter: blur(20px);
             border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
-        .events-empty .empty-icon {
+        .news-empty .empty-icon {
             font-size: 4rem;
-            color: #cbd5e1;
+            color: rgba(255, 255, 255, 0.5);
             margin-bottom: 24px;
             animation: pulse 2s infinite;
         }
 
-        .events-empty .empty-title {
+        .news-empty .empty-title {
             font-size: 1.8rem;
             font-weight: 700;
-            color: #374151;
+            color: #ffffff;
             margin-bottom: 12px;
         }
 
-        .events-empty .empty-description {
+        .news-empty .empty-description {
             font-size: 1.1rem;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.7);
             max-width: 500px;
             line-height: 1.6;
             margin: 0;
         }
 
-        /* Events Footer */
-        .events-footer {
+        /* News Footer */
+        .news-footer {
             text-align: center;
             margin-top: 20px;
+        }
+
+        .view-all-news-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-all-news-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .view-all-news-btn:hover::before {
+            left: 100%;
+        }
+
+        .view-all-news-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #5855eb, #7c3aed);
+        }
+
+        .view-all-news-btn i {
+            transition: transform 0.3s ease;
+        }
+
+        .view-all-news-btn:hover i {
+            transform: translateX(4px);
         }
 
         .surveys-grid {
@@ -1108,54 +1315,79 @@
         }
 
         /* Responsive Design */
+        @media (max-width: 1200px) {
+            .news-grid-landing {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 32px;
+            }
+        }
+
         @media (max-width: 1024px) {
-            .events-grid {
-                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-                gap: 28px;
+            .news-grid-landing {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 32px;
             }
         }
 
         @media (max-width: 768px) {
-            .alumni-events-section {
+            .alumni-news-section {
                 padding: 80px 0;
             }
 
-            .events-header {
+            .news-header {
                 margin-bottom: 60px;
             }
 
-            .events-main-title {
+            .news-main-title {
                 font-size: clamp(2.2rem, 7vw, 3.2rem);
             }
 
-            .events-subtitle {
+            .news-subtitle {
                 font-size: 1.1rem;
             }
 
-            .events-grid {
+            .news-grid-landing {
                 grid-template-columns: 1fr;
                 gap: 24px;
                 margin-bottom: 50px;
             }
 
-            .event-card-landing {
+            .news-card-content-landing {
                 padding: 28px;
             }
 
-            .event-card-bottom {
+            .news-image-container {
+                height: 220px;
+            }
+
+            .news-title-landing {
+                font-size: 1.5rem;
+            }
+
+            .news-meta-landing {
                 flex-direction: column;
-                align-items: stretch;
-                gap: 14px;
+                align-items: flex-start;
+                gap: 16px;
             }
 
-            .event-join-btn {
-                justify-content: center;
+            .news-read-more-landing {
                 width: 100%;
-                padding: 14px 24px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .news-grid-landing {
+                grid-template-columns: 1fr;
+                gap: 24px;
             }
 
-            .event-title-landing {
-                font-size: 1.4rem;
+            .news-card-landing {
+                min-height: 480px;
+            }
+
+            .news-image-container {
+                height: 200px;
             }
         }
 
@@ -1176,10 +1408,19 @@
                 font-size: 1.3rem;
             }
 
-            .view-all-events-btn {
+            .view-all-news-btn {
                 padding: 14px 28px;
                 font-size: 1rem;
             }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
     </style>
 </head>
@@ -1300,49 +1541,25 @@
             </div>
         </section>
 
-        <!-- Alumni Events Section -->
-        <section class="alumni-events-section" id="alumni-events-section">
-            <div class="events-container">
-                <div class="events-header">
-                    <h2 class="events-main-title">Upcoming Alumni Events</h2>
-                    <p class="events-subtitle">Discover exclusive networking opportunities and professional development events</p>
+        <!-- Alumni News Section -->
+        <section class="alumni-news-section" id="alumni-news-section">
+            <div class="news-container">
+                <div class="news-header">
+                    <h2 class="news-main-title">Latest Alumni News</h2>
+                    <p class="news-subtitle">Stay connected with inspiring stories, achievements, and updates from our vibrant alumni community</p>
                 </div>
 
-                <div class="events-grid" id="events-grid">
-                    <!-- Events will be loaded here -->
+                <div class="news-grid-landing" id="news-grid-landing">
+                    <!-- News will be loaded here -->
                     <div class="loading-placeholder">
                         <div class="loading-spinner"></div>
-                        <p>Loading events...</p>
+                        <p>Loading news...</p>
                     </div>
                 </div>
 
-                <div class="events-footer">
-                    <a href="/events.html" class="view-all-events-btn">
-                        <span>View All Events</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- Alumni Surveys Section -->
-        <section class="alumni-events-section" id="alumni-surveys-section">
-            <div class="events-container">
-                <div class="events-header">
-                    <h2 class="events-main-title">Surveys for Alumni</h2>
-                    <p class="events-subtitle">Share your feedback to help improve the alumni community</p>
-                </div>
-
-                <div class="surveys-grid" id="landing-surveys-grid">
-                    <div class="loading-placeholder">
-                        <div class="loading-spinner"></div>
-                        <p>Loading surveys...</p>
-                    </div>
-                </div>
-
-                <div class="events-footer">
-                    <a href="/surveys.html" class="view-all-events-btn">
-                        <span>View All Surveys</span>
+                <div class="news-footer">
+                    <a href="/news.html" class="view-all-news-btn">
+                        <span>View All News</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -1399,196 +1616,208 @@
             });
         })();
 
-        // Load dynamic stats and events
+        // Load dynamic stats and news
         async function loadStats() {
             try {
-                const [events, jobs, users] = await Promise.all([
-                    fetch('/events/enhanced').then(r => r.json()).catch(() => ({data: []})),
+                const [news, jobs, users] = await Promise.all([
+                    fetch('/news').then(r => r.json()).catch(() => ({data: []})),
                     fetch('/jobPosts/published').then(r => r.json()).catch(() => ({data: []})),
                     fetch('/users').then(r => r.json()).catch(() => ({data: []}))
                 ]);
 
                 // Update hero stats
-                document.getElementById('events-count').textContent = events.data?.length || '0';
+                document.getElementById('events-count').textContent = news.data?.length || '0';
                 document.getElementById('jobs-count').textContent = jobs.data?.length || '200+';
                 document.getElementById('alumni-count').textContent = users.data?.length || '5K+';
                 document.getElementById('companies-count').textContent = '100+';
 
-                // Load events for display
-                loadEvents(events.data || []);
-                loadLandingSurveys();
+                // Load news for display
+                loadLandingNews(news.data || []);
             } catch (error) {
                 console.log('Stats loading failed, using defaults');
-                // Still try to load events even if stats fail
-                loadEvents([]);
-                loadLandingSurveys();
+                // Still try to load news even if stats fail
+                loadLandingNews([]);
             }
         }
 
-        // Load and display events on the landing page
-        function loadEvents(events) {
-            const eventsGrid = document.getElementById('events-grid');
+        // Load and display news on the landing page
+        function loadLandingNews(newsItems) {
+            const newsGrid = document.getElementById('news-grid-landing');
+            if (!newsGrid) return;
 
-            if (!events || events.length === 0) {
-                eventsGrid.innerHTML = `
-                    <div class="events-empty">
-                        <div class="empty-icon">
-                            <i class="fas fa-calendar-times"></i>
-                        </div>
-                        <h3 class="empty-title">No Upcoming Events</h3>
+            if (!newsItems || newsItems.length === 0) {
+                newsGrid.innerHTML = `
+                    <div class="news-empty">
+                        <div class="empty-icon">📰</div>
+                        <h3 class="empty-title">No News Available</h3>
                         <p class="empty-description">
-                            We're working on exciting alumni events and networking opportunities.
-                            Check back soon for exclusive gatherings and professional development sessions.
+                            Stay tuned for the latest updates, achievements, and stories from our alumni community.
                         </p>
                     </div>
                 `;
                 return;
             }
 
-            // Sort events by date and take first 6
-            const sortedEvents = events
-                .filter(event => event.startDate)
-                .sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+            console.log('[Landing] Loading news items:', newsItems.length);
+            newsItems.forEach((news, idx) => {
+                console.log(`[Landing] News ${idx + 1} (ID: ${news.id}):`, {
+                    title: news.title,
+                    photoUrl: news.photoUrl,
+                    photoUrlType: typeof news.photoUrl,
+                    photoUrlLength: news.photoUrl ? news.photoUrl.length : 0,
+                    hasPhotoUrl: !!news.photoUrl
+                });
+            });
+
+            // Sort news by date (newest first) and take first 6
+            const sortedNews = newsItems
+                .filter(news => news.createdDate || news.lastModifiedDate)
+                .sort((a, b) => {
+                    const dateA = new Date(a.createdDate || a.lastModifiedDate || 0);
+                    const dateB = new Date(b.createdDate || b.lastModifiedDate || 0);
+                    return dateB - dateA;
+                })
                 .slice(0, 6);
 
-            eventsGrid.innerHTML = sortedEvents.map(event => createLandingEventCard(event)).join('');
+            newsGrid.innerHTML = sortedNews.map((news, index) => createLandingNewsCard(news, index)).join('');
         }
 
-        // Load and display surveys on the landing page
-        async function loadLandingSurveys() {
-            const surveysGrid = document.getElementById('landing-surveys-grid');
-            if (!surveysGrid) return;
+        // Create modern news card for landing page
+        function createLandingNewsCard(news, index) {
+            const newsDate = news.createdDate || news.lastModifiedDate;
+            const formattedDate = newsDate ? new Date(newsDate).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            }) : 'Recently';
 
-            try {
-                const res = await fetch('/api/surveys-module');
-                const json = await res.json().catch(() => ({}));
-                const surveys = json.data || [];
+            const newsType = news.newsType || 'NEWS';
+            const typeDisplay = getNewsTypeDisplay(newsType);
+            const typeClass = getNewsTypeClass(newsType);
 
-                if (!surveys.length) {
-                    surveysGrid.innerHTML = `
-                        <div class="events-empty">
-                            <div class="empty-icon">
-                                <i class="fas fa-poll"></i>
-                            </div>
-                            <h3 class="empty-title">No Active Surveys</h3>
-                            <p class="empty-description">Check back soon for new surveys.</p>
-                        </div>
-                    `;
-                    return;
+            const description = (news.description || '').substring(0, 120);
+            const trimmedDesc = news.description && news.description.length > 120 ? description + '...' : description;
+
+            // Handle image URL - construct proper path from photoUrl
+            let imageUrl = '';
+            let hasImage = false;
+            
+            if (news.photoUrl && news.photoUrl.trim() !== '') {
+                let photoUrl = news.photoUrl.trim();
+                console.log(`[Landing] News ${news.id} - Original photoUrl: "${photoUrl}"`);
+                
+                // Extract filename from photoUrl (handle both "/uploads/news/filename" and just "filename")
+                let filename = photoUrl;
+                if (photoUrl.includes('/')) {
+                    filename = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
                 }
-
-                surveysGrid.innerHTML = surveys.slice(0, 6).map(survey => createLandingSurveyCard(survey)).join('');
-            } catch (error) {
-                console.error('Error loading surveys:', error);
-                surveysGrid.innerHTML = `
-                    <div class="events-empty">
-                        <div class="empty-icon">
-                            <i class="fas fa-exclamation-triangle"></i>
-                        </div>
-                        <h3 class="empty-title">Unable to load surveys</h3>
-                        <p class="empty-description">Please try again later.</p>
-                    </div>
-                `;
-            }
-        }
-
-        function createLandingSurveyCard(survey) {
-            const desc = (survey.description || '').substring(0, 140);
-            const trimmed = survey.description && survey.description.length > 140 ? desc + '...' : desc;
-            return `
-                <div class="survey-card-landing">
-                    <h4>${survey.title || 'Untitled Survey'}</h4>
-                    <p>${trimmed || 'Share your feedback with us.'}</p>
-                    <a class="start-survey-btn" href="/surveys.html?surveyId=${encodeURIComponent(survey.id)}">
-                        Start Survey
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            `;
-        }
-
-        // Create modern event card for landing page
-        function createLandingEventCard(event) {
-            const startDate = event.startDate ? new Date(event.startDate).toLocaleDateString('en-US', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric'
-            }) : 'Date TBD';
-
-            const startTime = event.startDate ? new Date(event.startDate).toLocaleTimeString('en-US', {
-                hour: '2-digit',
-                minute: '2-digit'
-            }) : '';
-
-            const statusClass = (event.eventStatus || 'UPCOMING').toLowerCase();
-            const statusLabel = event.eventStatusLabel || event.eventStatus || 'Upcoming';
-
-            const eventType = event.eventTypeLabel || event.eventType || 'Event';
-            const eventIcon = getEventTypeIcon(eventType);
-
-            const hyperlinkBtn = event.hyperlink ? `
-                <a href="${event.hyperlink}" target="_blank" class="event-join-btn" title="Join this online event">
-                    <i class="fas fa-external-link-alt"></i>
-                    <span>Join Event</span>
-                </a>
-            ` : '';
-
-            return `
-                <div class="event-card-landing" onclick="openEventDetails('${event.id}')">
-                    <div class="event-card-content-landing">
-                        <div class="event-card-top">
-                            <span class="event-category-landing">
-                                <i class="${eventIcon}"></i>
-                                ${eventType}
-                            </span>
-                            <span class="event-status-landing ${statusClass}">${statusLabel}</span>
-                        </div>
-
-                        <h3 class="event-title-landing">${event.title}</h3>
-                        <p class="event-description-landing">${event.shortDescription || event.description || 'Join us for this exciting alumni event and networking opportunity!'}</p>
-
-                        <div class="event-details-landing">
-                            <div class="event-detail-landing">
-                                <i class="fas fa-calendar-alt event-detail-icon-landing"></i>
-                                <span><strong>${startDate}</strong> ${startTime ? `at ${startTime}` : ''}</span>
-                            </div>
-                            <div class="event-detail-landing">
-                                <i class="fas fa-map-marker-alt event-detail-icon-landing"></i>
-                                <span>${event.location || 'Location TBD'}</span>
-                            </div>
-                        </div>
-
-                        <div class="event-card-bottom">
-                            <div class="event-date-landing">${startDate}</div>
-                            ${hyperlinkBtn}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Get appropriate icon for event type
-        function getEventTypeIcon(eventType) {
-            const type = eventType.toLowerCase();
-            if (type.includes('workshop') || type.includes('webinar')) {
-                return 'fas fa-tools';
-            } else if (type.includes('meetup') || type.includes('networking')) {
-                return 'fas fa-users';
-            } else if (type.includes('seminar') || type.includes('lecture')) {
-                return 'fas fa-graduation-cap';
-            } else if (type.includes('career') || type.includes('job')) {
-                return 'fas fa-briefcase';
-            } else if (type.includes('social') || type.includes('party')) {
-                return 'fas fa-glass-cheers';
+                // Remove any leading slashes
+                filename = filename.replace(/^\/+/, '');
+                
+                console.log(`[Landing] News ${news.id} - Extracted filename: "${filename}"`);
+                
+                // Construct the proper static resource path
+                imageUrl = `/uploads/news/${encodeURIComponent(filename)}`;
+                hasImage = true;
+                console.log(`[Landing] News ${news.id} - Final image URL: "${imageUrl}"`);
             } else {
-                return 'fas fa-calendar-alt';
+                console.log(`[Landing] News ${news.id} - No photoUrl provided`);
             }
+
+            // Prepare filename for fallback
+            const filenameForFallback = hasImage ? (() => {
+                let photoUrl = news.photoUrl.trim();
+                let filename = photoUrl;
+                if (photoUrl.includes('/')) {
+                    filename = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
+                }
+                return filename.replace(/^\/+/, '');
+            })() : '';
+
+            return `
+                <div class="news-card-landing" onclick="openNewsDetail(${news.id})" style="animation-delay: ${index * 0.1}s;">
+                    ${hasImage ? `
+                        <div class="news-image-container">
+                            <img 
+                                src="${imageUrl}" 
+                                alt="${(news.title || 'News').replace(/"/g, '&quot;')}" 
+                                loading="lazy"
+                                data-filename="${filenameForFallback}"
+                                onerror="
+                                    console.error('❌ [Landing] Failed to load image from static path:', this.src);
+                                    const filename = this.dataset.filename || '';
+                                    if (filename && !this.dataset.retryCount) {
+                                        const fallbackSrc = '/news/photo/' + encodeURIComponent(filename);
+                                        console.log('🔄 [Landing] Trying controller endpoint:', fallbackSrc);
+                                        this.dataset.retryCount = '1';
+                                        this.src = fallbackSrc;
+                                    } else {
+                                        console.error('❌ [Landing] Both paths failed for news ${news.id}. Original photoUrl: ${(news.photoUrl || '').replace(/'/g, "\\'")}');
+                                        const container = this.parentElement;
+                                        const badge = container.querySelector('.news-category-badge');
+                                        const badgeHtml = badge ? badge.outerHTML : '<span class=\\'news-category-badge\\'>${typeDisplay}</span>';
+                                        container.innerHTML = '<div style=\\'width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));\\'><i class=\\'fas fa-newspaper\\' style=\\'font-size: 4rem; color: rgba(255, 255, 255, 0.5);\\'></i></div>' + badgeHtml;
+                                    }
+                                "
+                                onload="console.log('✅ [Landing] Image loaded successfully:', this.src);"
+                            />
+                            <span class="news-category-badge">${typeDisplay}</span>
+                        </div>
+                    ` : `
+                        <div class="news-image-container">
+                            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3));">
+                                <i class="fas fa-newspaper" style="font-size: 4rem; color: rgba(255, 255, 255, 0.5);"></i>
+                            </div>
+                            <span class="news-category-badge">${typeDisplay}</span>
+                        </div>
+                    `}
+                    <div class="news-card-content-landing">
+                        <h3 class="news-title-landing">${news.title || 'Untitled News'}</h3>
+                        <p class="news-description-landing">${trimmedDesc || 'Read more about this exciting update from our alumni community.'}</p>
+                        <div class="news-meta-landing">
+                            <span class="news-date-landing">
+                                <i class="fas fa-calendar"></i>
+                                ${formattedDate}
+                            </span>
+                            <a href="#" class="news-read-more-landing" onclick="event.stopPropagation(); openNewsDetail(${news.id}); return false;">
+                                Read More
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        // Handle event card clicks
-        function openEventDetails(eventId) {
-            // Navigate to full events page with event ID
-            window.location.href = `/events.html?id=${eventId}`;
+        function getNewsTypeDisplay(type) {
+            const typeMap = {
+                'ALUMNI_ACHIEVEMENTS': 'Achievement',
+                'CAREER_MILESTONES': 'Career',
+                'AWARDS': 'Award',
+                'STARTUPS': 'Startup',
+                'PUBLICATIONS': 'Publication',
+                'RESEARCH_INNOVATION': 'Research',
+                'CAMPUS_MEMORIES': 'Memory',
+                'THROWBACK_STORIES': 'Story',
+                'ANNOUNCEMENT': 'Announcement',
+                'UNIVERSITY_UPDATES': 'Update'
+            };
+            return typeMap[type] || 'News';
+        }
+
+        function getNewsTypeClass(type) {
+            const typeLower = (type || '').toLowerCase();
+            if (typeLower.includes('achievement')) return 'achievement';
+            if (typeLower.includes('career') || typeLower.includes('milestone')) return 'career';
+            if (typeLower.includes('award')) return 'award';
+            if (typeLower.includes('startup')) return 'startup';
+            if (typeLower.includes('publication')) return 'publication';
+            if (typeLower.includes('research') || typeLower.includes('innovation')) return 'research';
+            return 'news';
+        }
+
+        function openNewsDetail(newsId) {
+            window.location.href = `/news.html?id=${newsId}`;
         }
 
         loadStats();

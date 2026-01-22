@@ -853,6 +853,85 @@
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
+        [data-theme="light"] {
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+        }
+
+        [data-theme="light"] body {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .survey-card h3,
+        [data-theme="light"] .survey-card .survey-title {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .survey-card p,
+        [data-theme="light"] .survey-card .survey-description {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .question-card h4,
+        [data-theme="light"] .question-card .question-text {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .question-card label {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .question-card .option-label {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .form-label {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-textarea {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .form-input:focus,
+        [data-theme="light"] .form-textarea:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .btn-primary,
+        [data-theme="light"] .btn-submit {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        [data-theme="light"] .nav-link {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .nav-link.active {
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .stat-number {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="light"] .stat-label {
+            color: var(--text-secondary);
+        }
+
         @media (max-width: 1024px) {
             .surveys-section {
                 grid-template-columns: 1fr;

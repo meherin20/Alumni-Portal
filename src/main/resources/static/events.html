@@ -705,6 +705,559 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* Light Theme Styles */
+        [data-theme="light"] {
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f1f5f9;
+            --bg-tertiary: #e2e8f0;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-glass: rgba(255, 255, 255, 0.95);
+            --border: rgba(0, 0, 0, 0.1);
+            --border-hover: rgba(0, 0, 0, 0.2);
+        }
+
+        [data-theme="light"] body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .nav {
+            background: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .nav-brand {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .nav-link {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .hero-title {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        [data-theme="light"] .hero-subtitle {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .search-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .search-input:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .filter-select {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .filter-select:focus {
+            background: rgba(255, 255, 255, 1);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .category-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .category-btn:hover {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .category-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        [data-theme="light"] .category-name {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .event-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="light"] .event-card:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        [data-theme="light"] .event-title {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .event-description {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .event-meta {
+            color: var(--text-muted);
+        }
+
+        [data-theme="light"] .event-location {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .event-date {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .event-status.upcoming {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        [data-theme="light"] .event-status.ongoing {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        [data-theme="light"] .event-status.past {
+            background: rgba(148, 163, 184, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        [data-theme="light"] .btn-secondary {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .btn-secondary:hover {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: var(--primary);
+        }
+
+        [data-theme="light"] .empty-title {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .empty-description {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .loading-state,
+        [data-theme="light"] .empty-state {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .section-title {
+            color: var(--text-primary);
+        }
+
+        [data-theme="light"] .section-subtitle {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .theme-toggle {
+            color: var(--text-secondary);
+        }
+
+        [data-theme="light"] .theme-toggle:hover {
+            color: var(--text-primary);
+        }
+
+        /* Event Detail Modal */
+        .event-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .event-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .event-modal-content {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .event-modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        .event-modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            transform: rotate(90deg);
+        }
+
+        .event-modal-header {
+            margin-bottom: 2rem;
+            padding-right: 3rem;
+        }
+
+        .event-modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .event-modal-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .event-modal-meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .event-modal-meta-icon {
+            color: var(--primary);
+            font-size: 1.5rem;
+            width: 24px;
+            flex-shrink: 0;
+        }
+
+        .event-modal-meta-content {
+            flex: 1;
+        }
+
+        .event-modal-meta-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .event-modal-meta-value {
+            font-size: 1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .event-modal-description {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+        }
+
+        .event-modal-description h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .event-modal-description p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .event-modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .event-modal {
+                padding: 1rem;
+            }
+
+            .event-modal-content {
+                padding: 1.5rem;
+            }
+
+            .event-modal-title {
+                font-size: 1.5rem;
+            }
+
+            .event-modal-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Registration Form Modal */
+        .registration-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            overflow-y: auto;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .registration-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .registration-modal-content {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.98));
+            backdrop-filter: blur(30px);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        .registration-modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            z-index: 10;
+        }
+
+        .registration-modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            transform: rotate(90deg);
+        }
+
+        .registration-modal-header {
+            margin-bottom: 2rem;
+            padding-right: 3rem;
+        }
+
+        .registration-modal-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .registration-modal-subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .registration-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-label i {
+            color: var(--primary);
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            background: rgba(15, 23, 42, 0.6);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+        }
+
+        .form-error {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-error.show {
+            display: block;
+        }
+
+        .form-success {
+            color: var(--success);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .form-success.show {
+            display: block;
+        }
+
+        .registration-form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-cancel {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--text-secondary);
+        }
+
+        .btn-submit-registration {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit-registration:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-submit-registration:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -722,6 +1275,9 @@
                 <a href="/news.html" class="nav-link">News</a>
                 <a href="/surveys.html" class="nav-link">Surveys</a>
                 <a href="/login.html" class="nav-link">Login</a>
+                <button class="theme-toggle" id="theme-toggle" aria-label="Change theme" style="background: none; border: none; color: var(--text-secondary); font-size: 1.2rem; cursor: pointer; padding: 0.5rem; transition: var(--transition);">
+                    <span id="theme-toggle-icon">🌙</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -852,6 +1408,41 @@
         // Redirect will happen in requireAuth
         throw new Error('Authentication required');
     }
+
+    // Theme toggle functionality
+    (function() {
+        const stored = window.localStorage.getItem('amp-theme');
+        if (stored === 'light') {
+            document.body.setAttribute('data-theme', 'light');
+        }
+        const btn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-toggle-icon');
+        if (!btn || !icon) return;
+
+        function syncIcon() {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            icon.textContent = isLight ? '☀️' : '🌙';
+        }
+        syncIcon();
+
+        btn.addEventListener('click', () => {
+            const isLight = document.body.getAttribute('data-theme') === 'light';
+            if (isLight) {
+                document.body.removeAttribute('data-theme');
+                window.localStorage.setItem('amp-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+                window.localStorage.setItem('amp-theme', 'light');
+            }
+            syncIcon();
+
+            document.body.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 300);
+        });
+    })();
+
     // State management
     let allEvents = [];
     let filteredEvents = [];
@@ -1078,14 +1669,132 @@
     }
 
     async function registerForEvent(event, eventId) {
-        event.stopPropagation();
+        if (event && event.stopPropagation) {
+            event.stopPropagation();
+        }
 
-        const button = event.target.closest('.btn-primary');
-        if (!button) return;
+        // Show registration form modal
+        showRegistrationModal(eventId);
+    }
 
-        const originalHTML = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Registering...</span>';
-        button.disabled = true;
+    function showRegistrationModal(eventId) {
+        const modal = document.getElementById('registration-modal');
+        const form = document.getElementById('registration-form');
+        
+        // Reset form
+        form.reset();
+        clearFormErrors();
+        
+        // Store event ID for submission
+        form.dataset.eventId = eventId;
+        
+        // Show modal
+        modal.classList.add('active');
+    }
+
+    function closeRegistrationModal() {
+        const modal = document.getElementById('registration-modal');
+        modal.classList.remove('active');
+        const form = document.getElementById('registration-form');
+        form.reset();
+        clearFormErrors();
+    }
+
+    function clearFormErrors() {
+        document.querySelectorAll('.form-error').forEach(el => el.classList.remove('show'));
+        document.querySelectorAll('.form-input').forEach(el => el.classList.remove('error'));
+    }
+
+    function showFieldError(fieldName, message) {
+        const field = document.getElementById(fieldName);
+        const errorEl = document.getElementById(`${fieldName}-error`);
+        if (field) field.classList.add('error');
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+    }
+
+    async function validateEmail(email) {
+        if (!email || !email.trim()) {
+            return { valid: false, message: 'Email is required' };
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return { valid: false, message: 'Please enter a valid email address' };
+        }
+
+        try {
+            const response = await fetch(`/users/by-email?email=${encodeURIComponent(email)}`);
+            const result = await response.json();
+            const user = result.data;
+
+            if (!user || !user.id) {
+                return { valid: false, message: 'This email is not registered. Only registered alumni and students can register for events.' };
+            }
+
+            // Check if user role is ALUMNI or STUDENT
+            const userRole = user.role?.title?.toUpperCase() || user.role?.toUpperCase() || '';
+            if (userRole !== 'ALUMNI' && userRole !== 'STUDENT') {
+                return { valid: false, message: 'Only registered alumni and students can register for events. Your account role is: ' + userRole };
+            }
+
+            return { valid: true, user: user };
+        } catch (error) {
+            console.error('Error validating email:', error);
+            return { valid: false, message: 'Failed to verify email. Please try again.' };
+        }
+    }
+
+    async function submitRegistration(event) {
+        event.preventDefault();
+        
+        const form = document.getElementById('registration-form');
+        const eventId = form.dataset.eventId;
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const phone = document.getElementById('reg-phone').value.trim();
+
+        // Clear previous errors
+        clearFormErrors();
+
+        // Validate form fields
+        let hasErrors = false;
+
+        if (!name) {
+            showFieldError('reg-name', 'Name is required');
+            hasErrors = true;
+        }
+
+        if (!email) {
+            showFieldError('reg-email', 'Email is required');
+            hasErrors = true;
+        }
+
+        if (!phone) {
+            showFieldError('reg-phone', 'Phone number is required');
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
+            return;
+        }
+
+        // Validate email and get user
+        const emailValidation = await validateEmail(email);
+        if (!emailValidation.valid) {
+            showFieldError('reg-email', emailValidation.message);
+            return;
+        }
+
+        const user = emailValidation.user;
+
+        // Disable submit button
+        const submitBtn = document.getElementById('submit-registration');
+        const originalHTML = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Registering...</span>';
 
         try {
             const response = await fetch('/events/register', {
@@ -1094,27 +1803,35 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    eventId: eventId,
-                    userId: 1 // This should come from authentication context
+                    eventId: parseInt(eventId),
+                    userId: user.id,
+                    userName: name,
+                    userEmail: email,
+                    registrationNotes: `Phone: ${phone}`
                 })
             });
 
+            const result = await response.json();
+
             if (response.ok) {
-                button.innerHTML = '<i class="fas fa-check"></i><span>Registered!</span>';
-                button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                setTimeout(() => loadEvents(), 1500);
+                // Show success message
+                submitBtn.innerHTML = '<i class="fas fa-check"></i><span>Registered!</span>';
+                submitBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                
+                // Close modal after delay and reload events
+                setTimeout(() => {
+                    closeRegistrationModal();
+                    loadEvents();
+                }, 1500);
             } else {
-                throw new Error('Registration failed');
+                throw new Error(result.message || 'Registration failed');
             }
         } catch (error) {
-            button.innerHTML = '<i class="fas fa-exclamation-triangle"></i><span>Failed</span>';
-            button.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
-            setTimeout(() => {
-                button.innerHTML = originalHTML;
-                button.disabled = false;
-                button.style.background = '';
-            }, 2000);
             console.error('Error registering for event:', error);
+            const errorMsg = error.message || 'Failed to register. Please try again.';
+            showFieldError('reg-email', errorMsg);
+            submitBtn.innerHTML = originalHTML;
+            submitBtn.disabled = false;
         }
     }
 
@@ -1154,6 +1871,283 @@
             hero.style.transform = `translateY(${rate}px)`;
         }
     });
+
+    // Event Detail Modal
+    async function viewEventDetails(eventId) {
+        const modal = document.getElementById('event-detail-modal');
+        const modalContent = document.getElementById('event-modal-content');
+        
+        // Show loading state
+        modal.classList.add('active');
+        modalContent.innerHTML = `
+            <div style="text-align: center; padding: 3rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <p style="color: var(--text-secondary);">Loading event details...</p>
+            </div>
+        `;
+
+        try {
+            // Try enhanced endpoint first
+            let response = await fetch(`/events/${eventId}/enhanced`);
+            let result = await response.json();
+            
+            // Extract event from response (API wraps in 'data' field)
+            let event = result.data || result;
+            
+            // If enhanced endpoint failed or returned no data, try regular endpoint
+            if (!event || !event.id) {
+                console.log('Enhanced endpoint failed, trying regular endpoint...');
+                response = await fetch(`/events/${eventId}`);
+                result = await response.json();
+                event = result.data || result;
+            }
+            
+            if (!response.ok || !event || !event.id) {
+                throw new Error('Failed to load event details');
+            }
+
+            console.log('Event loaded successfully:', event);
+            displayEventDetailsInModal(event);
+        } catch (error) {
+            console.error('Error loading event details:', error);
+            modalContent.innerHTML = `
+                <button class="event-modal-close" onclick="closeEventModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <div style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--error); margin-bottom: 1rem;"></i>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Failed to load event details.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">${error.message || 'Please try again later.'}</p>
+                    <button onclick="closeEventModal()" class="btn-primary" style="margin-top: 1rem;">
+                        <i class="fas fa-times"></i>
+                        <span>Close</span>
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    function displayEventDetailsInModal(event) {
+        // Handle date parsing safely
+        let startDate = 'Date TBD';
+        let startTime = '';
+        let endTime = '';
+        
+        try {
+            if (event.startDate) {
+                const startDateObj = new Date(event.startDate);
+                if (!isNaN(startDateObj.getTime())) {
+                    startDate = startDateObj.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric'
+                    });
+                    startTime = startDateObj.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            }
+            
+            if (event.endDate) {
+                const endDateObj = new Date(event.endDate);
+                if (!isNaN(endDateObj.getTime())) {
+                    endTime = endDateObj.toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+            }
+        } catch (dateError) {
+            console.warn('Error parsing dates:', dateError);
+        }
+
+        const statusClass = (event.eventStatus || 'UPCOMING').toLowerCase();
+        const eventTypeIcon = getEventTypeIcon(event.eventType || event.eventTypeLabel);
+
+        const modalContent = document.getElementById('event-modal-content');
+        modalContent.innerHTML = `
+            <button class="event-modal-close" onclick="closeEventModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="event-modal-header">
+                <span class="event-category" style="display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem;">
+                    <i class="${eventTypeIcon}"></i>
+                    ${event.eventTypeLabel || event.eventType || 'Event'}
+                </span>
+                <h2 class="event-modal-title">${event.title}</h2>
+                <span class="event-status ${statusClass}" style="display: inline-block; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+                    ${event.eventStatus || 'Upcoming'}
+                </span>
+            </div>
+
+            <div class="event-modal-meta">
+                <div class="event-modal-meta-item">
+                    <i class="fas fa-calendar-alt event-modal-meta-icon"></i>
+                    <div class="event-modal-meta-content">
+                        <div class="event-modal-meta-label">Date & Time</div>
+                        <div class="event-modal-meta-value">${startDate}<br>${startTime}${endTime ? ' - ' + endTime : ''}</div>
+                    </div>
+                </div>
+                <div class="event-modal-meta-item">
+                    <i class="fas fa-map-marker-alt event-modal-meta-icon"></i>
+                    <div class="event-modal-meta-content">
+                        <div class="event-modal-meta-label">Location</div>
+                        <div class="event-modal-meta-value">${event.location || 'Location TBD'}</div>
+                    </div>
+                </div>
+                <div class="event-modal-meta-item">
+                    <i class="fas fa-users event-modal-meta-icon"></i>
+                    <div class="event-modal-meta-content">
+                        <div class="event-modal-meta-label">Attendees</div>
+                        <div class="event-modal-meta-value">${event.currentParticipants || 0}${event.maxParticipants ? ` / ${event.maxParticipants}` : ''} attending</div>
+                    </div>
+                </div>
+                ${event.organizerNames && event.organizerNames.length > 0 ? `
+                <div class="event-modal-meta-item">
+                    <i class="fas fa-user-tie event-modal-meta-icon"></i>
+                    <div class="event-modal-meta-content">
+                        <div class="event-modal-meta-label">Organizers</div>
+                        <div class="event-modal-meta-value">${event.organizerNames.join(', ')}</div>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+
+            ${event.fullDescription || event.description ? `
+            <div class="event-modal-description">
+                <h3>About This Event</h3>
+                <p>${event.fullDescription || event.description}</p>
+            </div>
+            ` : ''}
+
+            <div class="event-modal-actions">
+                ${event.hyperlink ? `
+                    <a href="${event.hyperlink}" target="_blank" class="btn-secondary" style="flex: 1; text-align: center;" onclick="event.stopPropagation();">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Join Event</span>
+                    </a>
+                ` : ''}
+                <button class="btn-primary" onclick="registerForEvent(event, ${event.id});" style="flex: 1;">
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Register</span>
+                </button>
+            </div>
+        `;
+    }
+
+    function closeEventModal() {
+        const modal = document.getElementById('event-detail-modal');
+        modal.classList.remove('active');
+    }
+
+    // Close modal when clicking outside
+    document.addEventListener('click', function(e) {
+        const modal = document.getElementById('event-detail-modal');
+        if (e.target === modal) {
+            closeEventModal();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeEventModal();
+            closeRegistrationModal();
+        }
+    });
+
+    // Close registration modal when clicking outside
+    document.addEventListener('click', function(e) {
+        const registrationModal = document.getElementById('registration-modal');
+        if (e.target === registrationModal) {
+            closeRegistrationModal();
+        }
+    });
 </script>
+
+    <!-- Event Detail Modal -->
+    <div id="event-detail-modal" class="event-modal">
+        <div id="event-modal-content" class="event-modal-content">
+            <!-- Event details will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Registration Form Modal -->
+    <div id="registration-modal" class="registration-modal">
+        <div class="registration-modal-content">
+            <button class="registration-modal-close" onclick="closeRegistrationModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="registration-modal-header">
+                <h2 class="registration-modal-title">Register for Event</h2>
+                <p class="registration-modal-subtitle">Please fill in your details to register. Only registered alumni and students can register.</p>
+            </div>
+
+            <form id="registration-form" class="registration-form" onsubmit="submitRegistration(event)">
+                <div class="form-group">
+                    <label for="reg-name" class="form-label">
+                        <i class="fas fa-user"></i>
+                        Full Name
+                    </label>
+                    <input 
+                        type="text" 
+                        id="reg-name" 
+                        name="name" 
+                        class="form-input" 
+                        placeholder="Enter your full name"
+                        required
+                    />
+                    <span id="reg-name-error" class="form-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-email" class="form-label">
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <input 
+                        type="email" 
+                        id="reg-email" 
+                        name="email" 
+                        class="form-input" 
+                        placeholder="Enter your registered email"
+                        required
+                    />
+                    <span id="reg-email-error" class="form-error"></span>
+                    <span id="reg-email-success" class="form-success"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-phone" class="form-label">
+                        <i class="fas fa-phone"></i>
+                        Phone Number
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="reg-phone" 
+                        name="phone" 
+                        class="form-input" 
+                        placeholder="Enter your phone number"
+                        required
+                    />
+                    <span id="reg-phone-error" class="form-error"></span>
+                </div>
+
+                <div class="registration-form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeRegistrationModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" id="submit-registration" class="btn-submit-registration">
+                        <i class="fas fa-ticket-alt"></i>
+                        <span>Register</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
