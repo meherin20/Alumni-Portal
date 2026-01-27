@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -133,6 +134,13 @@ public class UserController {
     @PostMapping("/search")
     public ResponseEntity<?> search(@Valid @RequestBody SearchDto searchDto) {
         return converter.buildResponseEntity(Map.of("data", userService.searchBy(searchDto)), HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchByEmailAndRole(@RequestParam(required = false) String email,
+                                                   @RequestParam(required = false) String role) {
+        List<UserDto> users = userService.searchByEmailAndRole(email, role);
+        return converter.buildResponseEntity(Map.of("data", users), HttpStatus.OK);
     }
 
     @PutMapping("/reset-password")

@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="/js/auth.js"></script>
     <style>
         :root {
@@ -832,8 +833,16 @@
 
             <section class="scene-card">
                 <header class="scene-header">
-                    <div>
-                        <div class="scene-title">Alumni Directory 🔍</div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                            <a href="/student-view.html" class="btn-ghost" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; text-decoration: none; border-radius: var(--radius-md); transition: var(--transition);" 
+                               onmouseover="this.style.background='rgba(99, 102, 241, 0.2)'; this.style.borderColor='rgba(99, 102, 241, 0.5)';" 
+                               onmouseout="this.style.background='rgba(255, 255, 255, 0.05)'; this.style.borderColor='var(--border)';">
+                                <i class="fas fa-arrow-left" style="font-size: 0.875rem;"></i>
+                                <span>Back to Profile</span>
+                            </a>
+                            <div class="scene-title" style="flex: 1; margin: 0;">Alumni Directory 🔍</div>
+                        </div>
                         <p class="scene-subtitle">
                             Search and connect with alumni from your university. Browse profiles by passing year, department, and company. This view is read-only for students.
                         </p>
@@ -850,7 +859,8 @@
                                 <form id="student-directory-form">
                                     <div class="form-row">
                                         <label for="studentEmail">Your Email (UIU Student)</label>
-                                        <input id="studentEmail" name="studentEmail" type="email" placeholder="you@student.uiu.ac.bd" required />
+                                        <input id="studentEmail" name="studentEmail" type="email" placeholder="you@student.uiu.ac.bd" />
+                                        <p class="hint" style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">Optional: Enter your email to check connection status with alumni</p>
                                     </div>
                                     <div class="form-row">
                                         <label for="name">Name</label>
@@ -968,14 +978,18 @@
         const clearFilters = document.getElementById('clear-filters');
         const myConnectionsSection = document.getElementById('my-connections-section');
         let currentAlumniData = [];
+        let connectedAlumniEmails = new Set(); // Track connected alumni emails to filter from search
 
         // Load connections when email is entered
         const studentEmailInput = document.getElementById('studentEmail');
         studentEmailInput.addEventListener('blur', () => {
             const email = studentEmailInput.value.trim();
             if (email) {
-                loadMyConnections(email);
-                loadConnectedAlumniInDirectory(email);
+                // Load connections first to populate connectedAlumniEmails
+                loadMyConnections(email).then(() => {
+                    // Then load connected alumni in directory (if needed)
+                    loadConnectedAlumniInDirectory(email);
+                });
             }
         });
 
@@ -990,8 +1004,11 @@
         setTimeout(() => {
             const email = studentEmailInput.value.trim();
             if (email) {
-                loadMyConnections(email);
-                loadConnectedAlumniInDirectory(email);
+                // Load connections first to populate connectedAlumniEmails
+                loadMyConnections(email).then(() => {
+                    // Then load connected alumni in directory (if needed)
+                    loadConnectedAlumniInDirectory(email);
+                });
             }
         }, 500);
 
@@ -1000,22 +1017,25 @@
             const formData = new FormData(form);
             const studentEmail = formData.get('studentEmail');
             
-            if (!studentEmail) {
-                alert('Please enter your email address first.');
-                return;
-            }
-            
-            // Build query parameters matching the API
+            // Build query parameters matching the API (like alumni-directory.html)
             const params = new URLSearchParams();
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const gradYear = formData.get('gradYear');
-            const department = formData.get('department');
+            const name = formData.get('name')?.trim();
+            const email = formData.get('email')?.trim();
+            const gradYear = formData.get('gradYear')?.trim();
+            const department = formData.get('department')?.trim();
             
+            // Add search parameters if they have values
             if (name) params.append('name', name);
             if (email) params.append('email', email);
             if (gradYear) params.append('graduationYear', gradYear);
             if (department) params.append('department', department);
+
+            // Check if at least one search field is filled
+            if (!name && !email && !gradYear && !department) {
+                alumniGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>Please enter at least one search criteria (name, email, department, or passing year) to find alumni.</p></div>';
+                resultsCount.textContent = '';
+                return;
+            }
 
             alumniGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">⏳</div><p>Searching...</p></div>';
 
@@ -1032,15 +1052,29 @@
                 }
 
                 if (result.data && Array.isArray(result.data) && result.data.length > 0) {
-                    // Check connection status for each alumni
-                    const alumniWithStatus = await Promise.all(result.data.map(async (alumni) => {
+                    // Filter out already connected alumni from search results
+                    const filteredAlumni = result.data.filter(alumni => {
+                        if (!alumni.email) return true;
+                        return !connectedAlumniEmails.has(alumni.email.toLowerCase());
+                    });
+
+                    if (filteredAlumni.length === 0) {
+                        alumniGrid.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><p>No new alumni found. All matching alumni are already connected. Check your connections above.</p></div>';
+                        resultsCount.textContent = '';
+                        return;
+                    }
+
+                    // Check connection status for each alumni (only if student email is provided)
+                    const alumniWithStatus = await Promise.all(filteredAlumni.map(async (alumni) => {
                         let connectionStatus = { status: null, canMessage: false, requestId: null };
                         if (studentEmail && alumni.email) {
                             try {
                                 const statusResponse = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(studentEmail)}&alumniEmail=${encodeURIComponent(alumni.email)}`);
-                                const statusData = await statusResponse.json();
-                                if (statusData.data) {
-                                    connectionStatus = statusData.data;
+                                if (statusResponse.ok) {
+                                    const statusData = await statusResponse.json();
+                                    if (statusData.data) {
+                                        connectionStatus = statusData.data;
+                                    }
                                 }
                             } catch (err) {
                                 console.error('Error checking connection status:', err);
@@ -1057,11 +1091,10 @@
                     resultsCount.textContent = '';
                 }
                 
-                // Always load connections after search (regardless of results)
+                // Load connections after search if student email is provided (to update connectedAlumniEmails)
                 if (studentEmail) {
                     console.log('Search completed, loading connections for:', studentEmail);
                     loadMyConnections(studentEmail);
-                    // Don't reload connected alumni here as search results are already displayed
                 }
             } catch (error) {
                 console.error('Error fetching alumni:', error);
@@ -1180,12 +1213,13 @@
 
                 if (response.ok) {
                     alert('Connection request sent successfully!');
-                    // Refresh the search results
-                    form.dispatchEvent(new Event('submit'));
-                    // Refresh connections after a short delay to ensure backend has processed
+                    // Refresh connections first to update connectedAlumniEmails
                     setTimeout(() => {
                         console.log('Refreshing connections after sending request');
-                        loadMyConnections(studentEmail);
+                        loadMyConnections(studentEmail).then(() => {
+                            // Then refresh the search results to filter out newly connected alumni
+                            form.dispatchEvent(new Event('submit'));
+                        });
                     }, 1000);
                 } else {
                     // Show specific error message from backend
@@ -1546,6 +1580,7 @@
         async function loadMyConnections(studentEmail) {
             if (!studentEmail) {
                 myConnectionsSection.style.display = 'none';
+                connectedAlumniEmails.clear(); // Clear connected emails if no student email
                 return;
             }
 
@@ -1593,8 +1628,14 @@
                 console.log('Extracted pending requests:', pendingRequests);
                 console.log('Extracted accepted connections:', acceptedConnections);
 
-                console.log('Pending requests:', pendingRequests);
-                console.log('Accepted connections:', acceptedConnections);
+                // Update connectedAlumniEmails Set to track connected alumni
+                connectedAlumniEmails.clear();
+                acceptedConnections.forEach(conn => {
+                    if (conn.alumniEmail) {
+                        connectedAlumniEmails.add(conn.alumniEmail.toLowerCase());
+                    }
+                });
+                console.log('Connected alumni emails:', Array.from(connectedAlumniEmails));
 
                 // Update counts (if elements exist)
                 if (pendingCount) {

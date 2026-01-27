@@ -13,7 +13,10 @@ import com.miu.alumnimanagementportal.services.FriendRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -145,6 +148,44 @@ public class FriendRequestServiceImpl implements FriendRequestService {
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FriendRequestDto> getAllAcceptedConnectionsForAlumni(String alumniEmail) {
+        // Validate user exists and has ALUMNI role
+        User alumni = userRepository.findByEmail(alumniEmail);
+        if (alumni == null) {
+            throw new ResourceNotFoundException("Alumni user with email " + alumniEmail + " not found");
+        }
+        if (alumni.getRole() == null || !"ALUMNI".equalsIgnoreCase(alumni.getRole().getTitle())) {
+            throw new BadRequestException("User with email " + alumniEmail + " is not an ALUMNI.");
+        }
+        
+        // Get connections where user is the target (alumni field)
+        List<FriendRequest> asTarget = friendRequestRepository.findByAlumniEmailAndStatus(alumniEmail, FriendRequestStatus.ACCEPTED);
+        
+        // Get connections where user is the requester (student field) - for alumni-to-alumni
+        List<FriendRequest> asRequester = friendRequestRepository.findByStudentEmailAndStatus(alumniEmail, FriendRequestStatus.ACCEPTED);
+        
+        // Combine and deduplicate
+        Set<Long> seenIds = new HashSet<>();
+        List<FriendRequestDto> allConnections = new ArrayList<>();
+        
+        for (FriendRequest fr : asTarget) {
+            if (!seenIds.contains(fr.getId())) {
+                seenIds.add(fr.getId());
+                allConnections.add(toDto(fr));
+            }
+        }
+        
+        for (FriendRequest fr : asRequester) {
+            if (!seenIds.contains(fr.getId())) {
+                seenIds.add(fr.getId());
+                allConnections.add(toDto(fr));
+            }
+        }
+        
+        return allConnections;
     }
 
     @Override

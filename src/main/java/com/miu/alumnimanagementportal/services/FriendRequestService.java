@@ -17,6 +17,8 @@ public interface FriendRequestService {
 
     List<FriendRequestDto> getAcceptedForAlumni(String alumniEmail);
 
+    List<FriendRequestDto> getAllAcceptedConnectionsForAlumni(String alumniEmail);
+
     void accept(Long id);
 
     void decline(Long id);

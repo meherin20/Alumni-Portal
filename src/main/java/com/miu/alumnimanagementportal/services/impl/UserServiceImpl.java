@@ -436,6 +436,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> searchByEmailAndRole(String email, String role) {
+        List<User> allUsers = repository.findAll();
+        
+        return allUsers.stream()
+                .filter(user -> {
+                    // Filter by role if provided
+                    if (role != null && !role.trim().isEmpty()) {
+                        if (user.getRole() == null || !role.equalsIgnoreCase(user.getRole().getTitle())) {
+                            return false;
+                        }
+                    }
+                    
+                    // Filter by email if provided
+                    if (email != null && !email.trim().isEmpty()) {
+                        if (user.getEmail() == null || !user.getEmail().toLowerCase().contains(email.toLowerCase().trim())) {
+                            return false;
+                        }
+                    }
+                    
+                    return true;
+                })
+                .map(user -> converter.convert(user, UserDto.class))
+                .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public UserDto updateRole(Long id, String roleTitle) {
         if (id == null) throw new BadRequestException("User id is required");

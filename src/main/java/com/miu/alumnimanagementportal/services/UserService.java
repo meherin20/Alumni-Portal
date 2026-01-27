@@ -30,6 +30,11 @@ public interface UserService {
     UserDto getUserByEmail(String email);
 
     /**
+     * Search users by email and role
+     */
+    List<UserDto> searchByEmailAndRole(String email, String role);
+
+    /**
      * Update a user's primary role (e.g. ADMIN, ALUMNI, MODERATOR).
      */
     UserDto updateRole(Long id, String roleTitle);

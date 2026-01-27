@@ -59,6 +59,14 @@ public class FriendRequestController {
         );
     }
 
+    @GetMapping("/alumni/all-accepted")
+    public ResponseEntity<?> getAllAcceptedConnectionsForAlumni(@RequestParam String email) {
+        return converter.buildResponseEntity(
+                Map.of("data", friendRequestService.getAllAcceptedConnectionsForAlumni(email)),
+                HttpStatus.OK
+        );
+    }
+
     @PostMapping("/{id}/accept")
     public ResponseEntity<?> accept(@PathVariable Long id) {
         friendRequestService.accept(id);
