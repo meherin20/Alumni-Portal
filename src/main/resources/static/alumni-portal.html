@@ -551,6 +551,8 @@
             <div class="sidebar-heading">Alumni</div>
             <ul class="sidebar-list">
                 <li><a href="/alumni-portal.html" class="sidebar-link sidebar-link-active"><span class="sidebar-dot dot-green"></span>Profile &amp; account</a></li>
+                <li><a href="#search-alumni" id="alumni-search-alumni-nav-btn" class="sidebar-link"><span class="sidebar-dot" style="background: #3b82f6;"></span>Search Alumni</a></li>
+                <li><a href="#search-students" id="alumni-search-students-nav-btn" class="sidebar-link"><span class="sidebar-dot" style="background: #06b6d4;"></span>Search Students</a></li>
                 <li><a href="#job-management" id="alumni-job-nav-btn" class="sidebar-link"><span class="sidebar-dot dot-orange"></span>Job management</a></li>
                 <li><a href="#survey-participation" id="alumni-survey-nav-btn" class="sidebar-link"><span class="sidebar-dot dot-blue"></span>Survey participation</a></li>
                 <li><a href="#post-memories" id="alumni-memories-nav-btn" class="sidebar-link"><span class="sidebar-dot" style="background: #8b5cf6;"></span>Post Memories</a></li>
@@ -880,6 +882,80 @@
                                 Loading responded surveys...
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Search Alumni Directory Section -->
+                <div class="form-card" id="search-alumni-section" style="display: none;">
+                    <!-- Connected Alumni Section -->
+                    <div id="connected-alumni-section" style="margin-bottom: 2.5rem;">
+                        <div class="section-label" style="margin-bottom: 1rem;">
+                            <span style="font-size: 1.25rem; margin-right: 0.5rem;">👥</span>
+                            Connected Alumni
+                        </div>
+                        <p class="hint" style="margin-bottom: 1rem; color: var(--text-secondary);">
+                            Your connected alumni network. You can message any of these alumni directly.
+                        </p>
+                        <div id="connected-alumni-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                                <p style="margin: 0.5rem 0 0 0;">Loading connected alumni...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--border); margin: 2rem 0; padding-top: 2rem;">
+                        <div class="section-label">
+                            <span style="font-size: 1.25rem; margin-right: 0.5rem;">🔍</span>
+                            Search Alumni Directory
+                        </div>
+                        <p class="hint" style="margin-bottom: 1.5rem;">
+                            Search for alumni by registered email address. Click on a name or email to send a connection request.
+                        </p>
+
+                    <div class="form-row" style="margin-bottom: 1.5rem;">
+                        <label for="alumni-search-email">
+                            <i class="fas fa-envelope" style="margin-right: 8px;"></i>Search by Email
+                        </label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="email" id="alumni-search-email" placeholder="Enter alumni email address..." 
+                                   style="flex: 1; padding: 0.75rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);" />
+                            <button type="button" onclick="searchAlumniByEmail()" class="btn">
+                                <i class="fas fa-search" style="margin-right: 8px;"></i>Search
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="alumni-search-results" style="margin-top: 1.5rem;">
+                        <!-- Search results will appear here -->
+                    </div>
+                </div>
+
+                <!-- Search Students Directory Section -->
+                <div class="form-card" id="search-students-section" style="display: none;">
+                    <div class="section-label">
+                        <span style="font-size: 1.25rem; margin-right: 0.5rem;">🎓</span>
+                        Search Students Directory
+                    </div>
+                    <p class="hint" style="margin-bottom: 1.5rem;">
+                        Search for students by registered email address. Click on a name or email to send a connection request.
+                    </p>
+
+                    <div class="form-row" style="margin-bottom: 1.5rem;">
+                        <label for="student-search-email">
+                            <i class="fas fa-envelope" style="margin-right: 8px;"></i>Search by Email
+                        </label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="email" id="student-search-email" placeholder="Enter student email address..." 
+                                   style="flex: 1; padding: 0.75rem; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);" />
+                            <button type="button" onclick="searchStudentsByEmail()" class="btn">
+                                <i class="fas fa-search" style="margin-right: 8px;"></i>Search
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="student-search-results" style="margin-top: 1.5rem;">
+                        <!-- Search results will appear here -->
                     </div>
                 </div>
 
@@ -2259,6 +2335,719 @@
         }
     });
 
+    // Search Alumni Directory functionality
+    const searchAlumniNavBtn = document.getElementById('alumni-search-alumni-nav-btn');
+    const searchAlumniSection = document.getElementById('search-alumni-section');
+
+    if (searchAlumniNavBtn) {
+        searchAlumniNavBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Hide all other sections
+            document.querySelectorAll('.form-card, .list-card').forEach(card => {
+                if (card.id !== 'search-alumni-section') {
+                    card.style.display = 'none';
+                }
+            });
+            // Show search alumni section
+            searchAlumniSection.style.display = 'block';
+            // Update active sidebar link
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('sidebar-link-active'));
+            searchAlumniNavBtn.classList.add('sidebar-link-active');
+            // Load connected alumni
+            loadConnectedAlumni();
+        });
+    }
+
+    // Search Students Directory functionality
+    const searchStudentsNavBtn = document.getElementById('alumni-search-students-nav-btn');
+    const searchStudentsSection = document.getElementById('search-students-section');
+
+    if (searchStudentsNavBtn) {
+        searchStudentsNavBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Hide all other sections
+            document.querySelectorAll('.form-card, .list-card').forEach(card => {
+                if (card.id !== 'search-students-section') {
+                    card.style.display = 'none';
+                }
+            });
+            // Show search students section
+            searchStudentsSection.style.display = 'block';
+            // Update active sidebar link
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('sidebar-link-active'));
+            searchStudentsNavBtn.classList.add('sidebar-link-active');
+        });
+    }
+
+    // Search Alumni by Email
+    async function searchAlumniByEmail() {
+        const email = document.getElementById('alumni-search-email').value.trim();
+        const resultsDiv = document.getElementById('alumni-search-results');
+
+        if (!email) {
+            resultsDiv.innerHTML = '<div class="alert alert-error">Please enter an email address</div>';
+            return;
+        }
+
+        resultsDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+
+        try {
+            const url = `/api/alumni-directory/search?email=${encodeURIComponent(email)}`;
+            console.log('Searching alumni with URL:', url);
+            
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                let errorMessage = `Error: ${response.status} ${response.statusText}`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                } catch (e) {
+                    const errorText = await response.text();
+                    if (errorText) errorMessage = errorText;
+                }
+                console.error('API Error:', response.status, errorMessage);
+                resultsDiv.innerHTML = `<div class="alert alert-error">${errorMessage}</div>`;
+                return;
+            }
+
+            let data;
+            try {
+                data = await response.json();
+                console.log('Search response:', data);
+            } catch (jsonError) {
+                console.error('JSON parsing error:', jsonError);
+                resultsDiv.innerHTML = '<div class="alert alert-error">Invalid response from server. Please try again.</div>';
+                return;
+            }
+
+            if (!data) {
+                resultsDiv.innerHTML = '<div class="alert alert-error">No data received from server</div>';
+                return;
+            }
+
+            // Check if there's an error message in the response
+            if (data.success === false || data.message) {
+                resultsDiv.innerHTML = `<div class="alert alert-error">${data.message || 'Error searching for alumni'}</div>`;
+                return;
+            }
+
+            // Handle case where data might be an array directly or wrapped in data property
+            const alumniList = Array.isArray(data) ? data : (data.data || []);
+            
+            if (alumniList.length > 0) {
+                const alumni = alumniList[0];
+                const currentUser = Auth.getCurrentUser();
+                const currentUserEmail = (currentUser && currentUser.email) || window.localStorage.getItem('amp-user-email');
+                
+                // Check connection status (only if user is logged in)
+                let connectionStatus = 'NOT_CONNECTED';
+                if (currentUserEmail && currentUserEmail !== alumni.email) {
+                    try {
+                        const statusResponse = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(currentUserEmail)}&alumniEmail=${encodeURIComponent(alumni.email)}`);
+                        if (statusResponse.ok) {
+                            const statusData = await statusResponse.json();
+                            connectionStatus = statusData.data?.status || 'NOT_CONNECTED';
+                        }
+                    } catch (e) {
+                        console.error('Error checking connection:', e);
+                        // Continue without connection status if check fails
+                    }
+                }
+
+                const canMessage = connectionStatus === 'ACCEPTED';
+                const isPending = connectionStatus === 'PENDING';
+                const isSelf = currentUserEmail && currentUserEmail.toLowerCase() === alumni.email.toLowerCase();
+
+                resultsDiv.innerHTML = `
+                    <div class="profile-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 600;">
+                                ${(alumni.firstName || 'A').charAt(0).toUpperCase()}
+                            </div>
+                            <div style="flex: 1;">
+                                <h3 style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">
+                                    <a href="#" onclick="handleAlumniClick('${alumni.email}', '${alumni.id}'); return false;" style="color: var(--primary); text-decoration: none; cursor: pointer;">
+                                        ${alumni.firstName || ''} ${alumni.lastName || ''}
+                                    </a>
+                                </h3>
+                                <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary);">
+                                    <a href="#" onclick="handleAlumniClick('${alumni.email}', '${alumni.id}'); return false;" style="color: var(--text-secondary); text-decoration: none; cursor: pointer;">
+                                        <i class="fas fa-envelope" style="margin-right: 4px;"></i>${alumni.email}
+                                    </a>
+                                </p>
+                                ${alumni.jobTitle ? `<p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;">${alumni.jobTitle}</p>` : ''}
+                                ${alumni.department ? `<p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;">${alumni.department} • ${alumni.passingYear || ''}</p>` : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            ${isSelf ? '<button class="btn-ghost" disabled>This is your profile</button>' : 
+                              canMessage ? `<button class="btn open-message-btn" data-email="${alumni.email.replace(/"/g, '&quot;')}"><i class="fas fa-comment" style="margin-right: 6px;"></i>Message</button>` :
+                              isPending ? '<button class="btn-ghost" disabled><i class="fas fa-clock" style="margin-right: 6px;"></i>Request Pending</button>' :
+                              `<button class="btn send-connection-btn" data-email="${alumni.email.replace(/"/g, '&quot;')}" data-type="alumni"><i class="fas fa-user-plus" style="margin-right: 6px;"></i>Send Connection Request</button>`}
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = '<div class="alert" style="background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); color: #f59e0b;"><i class="fas fa-info-circle" style="margin-right: 8px;"></i>No alumni found with that email address</div>';
+            }
+        } catch (error) {
+            console.error('Error searching alumni:', error);
+            let errorMessage = 'Error searching for alumni. Please try again.';
+            if (error.message) {
+                errorMessage += ` (${error.message})`;
+            }
+            resultsDiv.innerHTML = `<div class="alert alert-error">${errorMessage}</div>`;
+        }
+    }
+
+    // Search Students by Email
+    async function searchStudentsByEmail() {
+        const email = document.getElementById('student-search-email').value.trim();
+        const resultsDiv = document.getElementById('student-search-results');
+
+        if (!email) {
+            resultsDiv.innerHTML = '<div class="alert alert-error">Please enter an email address</div>';
+            return;
+        }
+
+        resultsDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin"></i> Searching...</div>';
+
+        try {
+            const response = await fetch(`/api/users/search?email=${encodeURIComponent(email)}&role=STUDENT`);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error:', response.status, errorText);
+                resultsDiv.innerHTML = `<div class="alert alert-error">Error: ${response.status} ${response.statusText}. Please try again.</div>`;
+                return;
+            }
+
+            const data = await response.json();
+
+            if (!data) {
+                resultsDiv.innerHTML = '<div class="alert alert-error">No data received from server</div>';
+                return;
+            }
+
+            if (data.data && data.data.length > 0) {
+                const studentData = data.data[0];
+                // Convert UserDto to format expected by UI
+                const student = {
+                    id: studentData.id,
+                    email: studentData.email,
+                    firstName: studentData.firstName || '',
+                    lastName: studentData.lastName || '',
+                    department: (studentData.profile && studentData.profile.department) ? studentData.profile.department : '',
+                    passingYear: (studentData.profile && studentData.profile.passingYear) ? studentData.profile.passingYear : ''
+                };
+                const currentUser = Auth.getCurrentUser();
+                const currentUserEmail = (currentUser && currentUser.email) || window.localStorage.getItem('amp-user-email');
+                
+                // Check connection status (only if user is logged in)
+                let connectionStatus = 'NOT_CONNECTED';
+                if (currentUserEmail) {
+                    try {
+                        const statusResponse = await fetch(`/api/alumni-directory/check-connection?studentEmail=${encodeURIComponent(student.email)}&alumniEmail=${encodeURIComponent(currentUserEmail)}`);
+                        if (statusResponse.ok) {
+                            const statusData = await statusResponse.json();
+                            connectionStatus = statusData.data?.status || 'NOT_CONNECTED';
+                        }
+                    } catch (e) {
+                        console.error('Error checking connection:', e);
+                        // Continue without connection status if check fails
+                    }
+                }
+
+                const canMessage = connectionStatus === 'ACCEPTED';
+                const isPending = connectionStatus === 'PENDING';
+                const isSelf = currentUserEmail && currentUserEmail.toLowerCase() === student.email.toLowerCase();
+
+                resultsDiv.innerHTML = `
+                    <div class="profile-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--gradient-success); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 600;">
+                                ${(student.firstName || 'S').charAt(0).toUpperCase()}
+                            </div>
+                            <div style="flex: 1;">
+                                <h3 style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">
+                                    <a href="#" onclick="handleStudentClick('${student.email}', '${student.id}'); return false;" style="color: var(--primary); text-decoration: none; cursor: pointer;">
+                                        ${student.firstName || ''} ${student.lastName || ''}
+                                    </a>
+                                </h3>
+                                <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary);">
+                                    <a href="#" onclick="handleStudentClick('${student.email}', '${student.id}'); return false;" style="color: var(--text-secondary); text-decoration: none; cursor: pointer;">
+                                        <i class="fas fa-envelope" style="margin-right: 4px;"></i>${student.email}
+                                    </a>
+                                </p>
+                                ${student.department ? `<p style="margin: 0.25rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;">${student.department}</p>` : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            ${isSelf ? '<button class="btn-ghost" disabled>This is your profile</button>' : 
+                              canMessage ? `<button class="btn open-message-btn" data-email="${student.email.replace(/"/g, '&quot;')}"><i class="fas fa-comment" style="margin-right: 6px;"></i>Message</button>` :
+                              isPending ? '<button class="btn-ghost" disabled><i class="fas fa-clock" style="margin-right: 6px;"></i>Request Pending</button>' :
+                              `<button class="btn send-connection-btn" data-email="${student.email.replace(/"/g, '&quot;')}" data-type="student"><i class="fas fa-user-plus" style="margin-right: 6px;"></i>Send Connection Request</button>`}
+                        </div>
+                    </div>
+                `;
+            } else {
+                resultsDiv.innerHTML = '<div class="alert alert-error">No student found with that email address</div>';
+            }
+        } catch (error) {
+            console.error('Error searching students:', error);
+            let errorMessage = 'Error searching for students. Please try again.';
+            if (error.message) {
+                errorMessage += ` (${error.message})`;
+            }
+            resultsDiv.innerHTML = `<div class="alert alert-error">${errorMessage}</div>`;
+        }
+    }
+
+    // Handle click on alumni name/email
+    function handleAlumniClick(email, id) {
+        sendAlumniConnectionRequest(email, null);
+    }
+
+    // Handle click on student name/email
+    function handleStudentClick(email, id) {
+        sendStudentConnectionRequest(email, null);
+    }
+
+    // Send connection request to alumni
+    async function sendAlumniConnectionRequest(alumniEmail, clickEvent) {
+        const currentUser = Auth.getCurrentUser();
+        const currentUserEmail = (currentUser && currentUser.email) || window.localStorage.getItem('amp-user-email');
+        
+        if (!currentUserEmail) {
+            alert('Please login to send connection requests.');
+            return;
+        }
+
+        if (currentUserEmail.toLowerCase() === alumniEmail.toLowerCase()) {
+            alert('Cannot send connection request to yourself.');
+            return;
+        }
+
+        // Show loading state
+        const button = clickEvent?.target || document.querySelector(`button[onclick*="sendAlumniConnectionRequest('${alumniEmail.replace(/'/g, "\\'")}')"]`);
+        const originalText = button ? button.innerHTML : '';
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px;"></i>Sending...';
+        }
+
+        try {
+            console.log('Sending connection request:', { requesterEmail: currentUserEmail, targetEmail: alumniEmail });
+            const response = await fetch('/api/connections/alumni-to-alumni', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    requesterEmail: currentUserEmail,
+                    targetEmail: alumniEmail
+                })
+            });
+
+            const data = await response.json();
+            console.log('Connection request response:', data);
+
+            if (response.ok) {
+                alert('Connection request sent successfully! You will be able to message once they accept.');
+                // Refresh search results to show updated status
+                setTimeout(() => {
+                    searchAlumniByEmail();
+                }, 500);
+            } else {
+                const errorMsg = data.message || data.error || 'Failed to send connection request.';
+                alert(errorMsg);
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            }
+        } catch (error) {
+            console.error('Error sending connection request:', error);
+            alert('Failed to send connection request: ' + (error.message || 'Please try again.'));
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+    }
+
+    // Send connection request to student
+    async function sendStudentConnectionRequest(studentEmail, clickEvent) {
+        const currentUser = Auth.getCurrentUser();
+        const currentUserEmail = (currentUser && currentUser.email) || window.localStorage.getItem('amp-user-email');
+        
+        if (!currentUserEmail) {
+            alert('Please login to send connection requests.');
+            return;
+        }
+
+        if (currentUserEmail.toLowerCase() === studentEmail.toLowerCase()) {
+            alert('Cannot send connection request to yourself.');
+            return;
+        }
+
+        // Show loading state
+        const button = clickEvent?.target || document.querySelector(`button[onclick*="sendStudentConnectionRequest('${studentEmail.replace(/'/g, "\\'")}')"]`);
+        const originalText = button ? button.innerHTML : '';
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px;"></i>Sending...';
+        }
+
+        try {
+            console.log('Sending connection request:', { alumniEmail: currentUserEmail, studentEmail: studentEmail });
+            const response = await fetch('/api/connections/alumni-to-student', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    alumniEmail: currentUserEmail,
+                    studentEmail: studentEmail
+                })
+            });
+
+            const data = await response.json();
+            console.log('Connection request response:', data);
+
+            if (response.ok) {
+                alert('Connection request sent successfully! You will be able to message once they accept.');
+                // Refresh search results to show updated status
+                setTimeout(() => {
+                    searchStudentsByEmail();
+                }, 500);
+            } else {
+                const errorMsg = data.message || data.error || 'Failed to send connection request.';
+                alert(errorMsg);
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            }
+        } catch (error) {
+            console.error('Error sending connection request:', error);
+            alert('Failed to send connection request: ' + (error.message || 'Please try again.'));
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+    }
+
+    // Open messaging page
+    function openMessage(recipientEmail) {
+        window.location.href = `/messages.html?recipient=${encodeURIComponent(recipientEmail)}`;
+    }
+
+    // Remove connection with an alumni
+    async function removeConnection(connectionId, alumniEmail, clickEvent) {
+        if (!connectionId) {
+            console.error('No connection ID provided');
+            alert('Unable to remove connection: Missing connection ID');
+            return;
+        }
+
+        if (!confirm(`Are you sure you want to remove the connection with ${alumniEmail}?`)) {
+            return;
+        }
+
+        const button = clickEvent?.target?.closest('.remove-connection-btn') || document.querySelector(`.remove-connection-btn[data-connection-id="${connectionId}"]`);
+        const originalText = button ? button.innerHTML : '';
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px;"></i>Removing...';
+        }
+
+        try {
+            console.log('Removing connection:', connectionId);
+            const response = await fetch(`/friend-requests/${connectionId}/decline`, {
+                method: 'POST'
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert('Connection removed successfully!');
+                // Refresh the connected alumni list
+                loadConnectedAlumni();
+            } else {
+                const errorMsg = data.message || data.error || 'Failed to remove connection.';
+                alert(errorMsg);
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = originalText;
+                }
+            }
+        } catch (error) {
+            console.error('Error removing connection:', error);
+            alert('Failed to remove connection: ' + (error.message || 'Please try again.'));
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+    }
+
+    // Load connected alumni (both directions - where user is target and where user is requester)
+    async function loadConnectedAlumni() {
+        const grid = document.getElementById('connected-alumni-grid');
+        if (!grid) return;
+
+        const currentUser = Auth.getCurrentUser();
+        const currentUserEmail = (currentUser && currentUser.email) || window.localStorage.getItem('amp-user-email');
+        
+        if (!currentUserEmail) {
+            grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);"><p>Please login to view connected alumni.</p></div>';
+            return;
+        }
+
+        grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);"><i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i><p style="margin: 0.5rem 0 0 0;">Loading connected alumni...</p></div>';
+
+        try {
+            console.log('Loading connected alumni for:', currentUserEmail);
+            
+            // Get all accepted connections for alumni (both directions - where user is target and where user is requester)
+            let allConnections = [];
+            try {
+                const allConnectionsResponse = await fetch(`/friend-requests/alumni/all-accepted?email=${encodeURIComponent(currentUserEmail)}`);
+                
+                if (allConnectionsResponse.ok) {
+                    const allConnectionsData = await allConnectionsResponse.json();
+                    allConnections = allConnectionsData.data || [];
+                    console.log('All accepted connections:', allConnections);
+                } else {
+                    // Try to get error message from response
+                    let errorMessage = `HTTP ${allConnectionsResponse.status}`;
+                    try {
+                        const errorData = await allConnectionsResponse.json();
+                        errorMessage = errorData.message || errorData.error || errorMessage;
+                    } catch (e) {
+                        const errorText = await allConnectionsResponse.text().catch(() => '');
+                        if (errorText) errorMessage = errorText;
+                    }
+                    console.warn('Failed to get all connections, trying fallback:', errorMessage);
+                    
+                    // Fallback to just target connections
+                    const targetResponse = await fetch(`/friend-requests/alumni/accepted?email=${encodeURIComponent(currentUserEmail)}`);
+                    if (targetResponse.ok) {
+                        const targetData = await targetResponse.json();
+                        allConnections = targetData.data || [];
+                        console.log('Using fallback - target connections only:', allConnections);
+                    } else {
+                        console.error('Fallback also failed:', targetResponse.status);
+                        throw new Error(`Failed to load connections: ${errorMessage}`);
+                    }
+                }
+            } catch (fetchError) {
+                console.error('Network error fetching connections:', fetchError);
+                throw new Error(`Network error: ${fetchError.message}`);
+            }
+
+            // Process all connections and extract connected alumni emails
+            const connectedAlumniList = [];
+            const seenEmails = new Set();
+
+            if (!Array.isArray(allConnections)) {
+                console.error('Invalid response format - allConnections is not an array:', allConnections);
+                throw new Error('Invalid response format from server');
+            }
+
+            console.log('Processing', allConnections.length, 'connections');
+
+            for (const conn of allConnections) {
+                // Determine which email is the connected alumni (not the current user)
+                let connectedEmail = '';
+                let connectedName = '';
+                
+                // If current user is the target (alumni field), the requester (student) is the connected alumni
+                if (conn.alumniEmail && (conn.alumniEmail.toLowerCase() === currentUserEmail.toLowerCase())) {
+                    connectedEmail = conn.studentEmail || conn.student_email || '';
+                    connectedName = conn.studentName || conn.student_name || 'Alumni';
+                }
+                // If current user is the requester (student field), the target (alumni) is the connected alumni
+                else if (conn.studentEmail && (conn.studentEmail.toLowerCase() === currentUserEmail.toLowerCase())) {
+                    connectedEmail = conn.alumniEmail || conn.alumni_email || '';
+                    connectedName = conn.alumniName || conn.alumni_name || 'Alumni';
+                }
+                
+                // Only add if we found a connected email and haven't seen it before
+                if (connectedEmail && !seenEmails.has(connectedEmail.toLowerCase())) {
+                    seenEmails.add(connectedEmail.toLowerCase());
+                    // Verify this is an alumni by checking the alumni directory
+                    try {
+                        const verifyResponse = await fetch(`/api/alumni-directory/search?email=${encodeURIComponent(connectedEmail)}`);
+                        if (verifyResponse.ok) {
+                            const verifyData = await verifyResponse.json();
+                            // Only add if found in alumni directory (meaning they're an alumni, not a student)
+                            if (verifyData.data && verifyData.data.length > 0) {
+                                connectedAlumniList.push({
+                                    email: connectedEmail,
+                                    name: connectedName,
+                                    connectionId: conn.id, // Store the connection ID for removal
+                                    id: conn.id
+                                });
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error verifying alumni:', connectedEmail, error);
+                    }
+                }
+            }
+
+            if (connectedAlumniList.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);"><div style="font-size: 3rem; margin-bottom: 1rem;">👥</div><p style="margin: 0;">No connected alumni yet. Search for alumni above to send connection requests.</p></div>';
+                return;
+            }
+
+            // Fetch full alumni details for each verified connection
+            const alumniWithDetails = await Promise.all(connectedAlumniList.map(async (conn) => {
+                try {
+                    let alumni = {};
+                    
+                    // Get full alumni profile (we already verified they're an alumni)
+                    const searchResponse = await fetch(`/api/alumni-directory/search?email=${encodeURIComponent(conn.email)}`);
+                    if (searchResponse.ok) {
+                        const searchResult = await searchResponse.json();
+                        if (searchResult.data && searchResult.data.length > 0) {
+                            alumni = searchResult.data[0];
+                        }
+                    }
+                    
+                    // If not found, use fallback from connection data
+                    if (!alumni.firstName && conn.name) {
+                        const nameParts = (conn.name || 'Unknown').split(' ');
+                        alumni = {
+                            firstName: nameParts[0] || '',
+                            lastName: nameParts.slice(1).join(' ') || '',
+                            email: conn.email || '',
+                            department: '',
+                            passingYear: '',
+                            jobTitle: '',
+                            company: '',
+                            id: 0
+                        };
+                    }
+                    
+                    // Add connection ID to alumni object for removal
+                    alumni.connectionId = conn.connectionId || conn.id;
+                    
+                    return alumni;
+                } catch (error) {
+                    console.error('Error fetching alumni details:', error);
+                    // Return fallback
+                    const nameParts = (conn.name || 'Unknown').split(' ');
+                    return {
+                        firstName: nameParts[0] || '',
+                        lastName: nameParts.slice(1).join(' ') || '',
+                        email: conn.email || '',
+                        department: '',
+                        passingYear: '',
+                        jobTitle: '',
+                        company: '',
+                        id: 0
+                    };
+                }
+            }));
+
+            // Render connected alumni cards
+            grid.innerHTML = alumniWithDetails.map(alumni => {
+                const initials = ((alumni.firstName || 'A').charAt(0) + (alumni.lastName || 'A').charAt(0)).toUpperCase();
+                const fullName = `${alumni.firstName || ''} ${alumni.lastName || ''}`.trim() || 'Alumni';
+                const email = alumni.email || '';
+                const department = alumni.department || '';
+                const passingYear = alumni.passingYear || '';
+                const jobTitle = alumni.jobTitle || '';
+                const company = alumni.company || '';
+
+                return `
+                    <div class="profile-card" style="background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; transition: all 0.3s ease; cursor: pointer;" 
+                         onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.3)';" 
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--gradient-primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: 600; flex-shrink: 0;">
+                                ${initials}
+                            </div>
+                            <div style="flex: 1; min-width: 0;">
+                                <h3 style="margin: 0; color: var(--text-primary); font-size: 1.1rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    ${fullName}
+                                </h3>
+                                <p style="margin: 0.25rem 0 0 0; color: var(--text-secondary); font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <i class="fas fa-envelope" style="margin-right: 4px; font-size: 0.75rem;"></i>${email}
+                                </p>
+                            </div>
+                        </div>
+                        ${department ? `<p style="margin: 0.5rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-graduation-cap" style="margin-right: 6px;"></i>${department}${passingYear ? ` • ${passingYear}` : ''}</p>` : ''}
+                        ${jobTitle ? `<p style="margin: 0.5rem 0 0 0; color: var(--text-muted); font-size: 0.9rem;"><i class="fas fa-briefcase" style="margin-right: 6px;"></i>${jobTitle}${company ? ` at ${company}` : ''}</p>` : ''}
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="btn open-message-btn" data-email="${email.replace(/"/g, '&quot;')}" style="flex: 1; padding: 0.75rem; font-size: 0.9rem;">
+                                <i class="fas fa-comment" style="margin-right: 6px;"></i>Message
+                            </button>
+                            <button class="btn-ghost remove-connection-btn" data-connection-id="${alumni.connectionId || ''}" data-email="${email.replace(/"/g, '&quot;')}" style="padding: 0.75rem; font-size: 0.9rem; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;" title="Remove connection">
+                                <i class="fas fa-user-minus" style="margin-right: 6px;"></i>Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error loading connected alumni:', error);
+            const errorMessage = error.message || 'Unknown error occurred';
+            grid.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-error);">
+                <i class="fas fa-exclamation-circle" style="font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                <p style="margin: 0.5rem 0 0 0;">Error loading connected alumni: ${errorMessage}</p>
+                <p style="margin: 0.5rem 0 0 0; font-size: 0.85rem; color: var(--text-secondary);">Please check the browser console for more details.</p>
+            </div>`;
+        }
+    }
+
+    // Make functions globally available (after they're defined)
+    window.sendAlumniConnectionRequest = sendAlumniConnectionRequest;
+    window.sendStudentConnectionRequest = sendStudentConnectionRequest;
+    window.openMessage = openMessage;
+    window.removeConnection = removeConnection;
+    window.handleAlumniClick = handleAlumniClick;
+    window.handleStudentClick = handleStudentClick;
+
+    // Event delegation for dynamically created buttons
+    document.addEventListener('click', function(e) {
+        // Handle connection request buttons
+        if (e.target.closest('.send-connection-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const button = e.target.closest('.send-connection-btn');
+            const email = button.getAttribute('data-email');
+            const type = button.getAttribute('data-type');
+            
+            if (type === 'alumni') {
+                sendAlumniConnectionRequest(email, e);
+            } else if (type === 'student') {
+                sendStudentConnectionRequest(email, e);
+            }
+        }
+        
+        // Handle message buttons
+        if (e.target.closest('.open-message-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const button = e.target.closest('.open-message-btn');
+            const email = button.getAttribute('data-email');
+            openMessage(email);
+        }
+        
+        // Handle remove connection buttons
+        if (e.target.closest('.remove-connection-btn')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const button = e.target.closest('.remove-connection-btn');
+            const connectionId = button.getAttribute('data-connection-id');
+            const email = button.getAttribute('data-email');
+            removeConnection(connectionId, email, e);
+        }
+    });
+
     // Post Memories functionality
     const memoriesNavBtn = document.getElementById('alumni-memories-nav-btn');
     const memoriesSection = document.getElementById('post-memories-section');
@@ -2297,7 +3086,7 @@
             const story = document.getElementById('alumni-portal-memory-story').value;
             
             // Get user email from auth
-            const userEmail = window.localStorage.getItem('amp-user-email') || Auth.getUserEmail();
+            const userEmail = window.localStorage.getItem('amp-user-email') || Auth.getEmail();
             
             if (!userEmail) {
                 statusDiv.className = 'alert alert-error';

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -26,10 +27,19 @@ public class AlumniDirectoryController {
             @RequestParam(required = false) String graduationYear,
             @RequestParam(required = false) String jobTitle,
             @RequestParam(required = false) String company) {
-        return converter.buildResponseEntity(
-                Map.of("data", alumniDirectoryService.searchAlumni(name, email, department, graduationYear, jobTitle, company)),
-                HttpStatus.OK
-        );
+        try {
+            List<AlumniDirectoryDto> results = alumniDirectoryService.searchAlumni(name, email, department, graduationYear, jobTitle, company);
+            return converter.buildResponseEntity(
+                    Map.of("data", results),
+                    HttpStatus.OK
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return converter.buildResponseEntity(
+                    Map.of("success", false, "message", "Error searching alumni: " + e.getMessage(), "data", List.of()),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     @GetMapping("/{id}")

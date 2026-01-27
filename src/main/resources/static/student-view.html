@@ -100,286 +100,7 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* Modern Profile Layout */
-        .profile-container {
-            display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 2.5rem;
-            padding: 2.5rem;
-            max-width: 1500px;
-            margin: 0 auto;
-        }
 
-        @media (max-width: 1200px) {
-            .profile-container {
-                grid-template-columns: 1fr;
-                gap: 2rem;
-                padding: 1.5rem;
-            }
-        }
-
-        /* Profile Identity Card - Premium LinkedIn Style */
-        .profile-identity-card {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 0;
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-            position: sticky;
-            top: 2rem;
-            height: fit-content;
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .profile-identity-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 24px 72px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(99, 102, 241, 0.2) inset;
-        }
-
-        .profile-identity-header {
-            background: linear-gradient(180deg, 
-                rgba(99, 102, 241, 0.25) 0%, 
-                rgba(139, 92, 246, 0.15) 50%,
-                transparent 100%);
-            padding: 3rem 2rem 5rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-identity-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .profile-avatar-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-bottom: 1.5rem;
-            z-index: 1;
-        }
-
-        .profile-avatar-large {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            border: 5px solid rgba(255, 255, 255, 0.15);
-            object-fit: cover;
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #ec4899 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-            font-weight: 800;
-            color: white;
-            box-shadow: 
-                0 12px 40px rgba(99, 102, 241, 0.4),
-                0 0 0 8px rgba(15, 23, 42, 0.5),
-                0 0 0 12px rgba(99, 102, 241, 0.1);
-            transition: var(--transition);
-            position: relative;
-            z-index: 1;
-        }
-
-        .profile-avatar-large:hover {
-            transform: scale(1.05);
-            box-shadow: 
-                0 16px 50px rgba(99, 102, 241, 0.5),
-                0 0 0 8px rgba(15, 23, 42, 0.5),
-                0 0 0 12px rgba(99, 102, 241, 0.2);
-        }
-
-        .profile-avatar-edit {
-            position: absolute;
-            bottom: 8px;
-            right: 8px;
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border-radius: 50%;
-            border: 4px solid rgba(15, 23, 42, 0.9);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            z-index: 2;
-            font-size: 1.2rem;
-        }
-
-        .profile-avatar-edit:hover {
-            background: linear-gradient(135deg, #8b5cf6, #ec4899);
-            transform: scale(1.15) rotate(15deg);
-            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
-        }
-
-        .profile-name {
-            font-size: 1.75rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.5px;
-            z-index: 1;
-            position: relative;
-        }
-
-        .profile-department {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            z-index: 1;
-            position: relative;
-        }
-
-        .profile-graduation {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            z-index: 1;
-            position: relative;
-        }
-
-        .profile-role-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1.25rem;
-            background: linear-gradient(135deg, #10b981, #34d399);
-            color: white;
-            border-radius: 25px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-top: 1.25rem;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            z-index: 1;
-            position: relative;
-        }
-
-        .profile-identity-body {
-            padding: 2rem;
-            background: rgba(15, 23, 42, 0.3);
-        }
-
-        .profile-identity-section {
-            padding: 1.25rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            transition: var(--transition);
-        }
-
-        .profile-identity-section:hover {
-            padding-left: 0.5rem;
-        }
-
-        .profile-identity-section:last-child {
-            border-bottom: none;
-        }
-
-        .profile-identity-label {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-
-        .profile-identity-value {
-            font-size: 1rem;
-            color: var(--text-primary);
-            font-weight: 600;
-            word-break: break-word;
-        }
-
-        /* Profile Form Card - Premium Design */
-        .profile-form-card {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 2.5rem;
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.4),
-                0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-            margin-bottom: 2rem;
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .profile-form-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6, #ec4899);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .profile-form-card:hover::before {
-            opacity: 1;
-        }
-
-        .profile-form-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                0 24px 72px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(99, 102, 241, 0.2) inset;
-        }
-
-        .form-section {
-            margin-bottom: 2.5rem;
-        }
-
-        .form-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .form-section-title {
-            font-size: 1.125rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid transparent;
-            border-image: linear-gradient(90deg, #6366f1, transparent) 1;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            letter-spacing: -0.3px;
-            position: relative;
-        }
-
-        .form-section-title::before {
-            content: '';
-            width: 5px;
-            height: 24px;
-            background: linear-gradient(180deg, #6366f1, #8b5cf6);
-            border-radius: 3px;
-            box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
-        }
 
         /* Stats Card - Premium Design */
         .stats-grid {
@@ -935,7 +656,7 @@
             <a href="/" class="app-nav-link">Home</a>
             <a href="/student-view.html" class="app-nav-link">Student view</a>
             <a href="/student-directory.html" class="app-nav-link">Alumni directory</a>
-            <a href="#memories" class="app-nav-link" onclick="document.getElementById('student-memories-section').scrollIntoView({behavior: 'smooth'}); return false;">Post Memories</a>
+            <a href="#memories" class="app-nav-link" onclick="document.getElementById('student-memories-nav-btn')?.click(); return false;">Post Memories</a>
             <a href="#" class="app-nav-cta" onclick="Auth.logout(); return false;">Logout</a>
             <button type="button" id="student-notif-bell" class="btn-ghost notif-bell" style="margin-left:8px;" aria-label="Notifications">
                 🔔
@@ -946,57 +667,41 @@
         </nav>
     </header>
 
-    <main class="scene-card">
-        <header class="scene-header">
-            <div>
-                <div class="scene-title">Welcome, <span id="student-name-label">Student</span> 👋</div>
-                <p class="scene-subtitle">
-                    Manage your profile information and connect with alumni from your university. Explore opportunities and build your network.
-                </p>
-            </div>
-            <span class="scene-badge">Student</span>
-        </header>
+    <main class="layout-main">
+        <aside class="sidebar">
+            <div class="sidebar-heading">Student</div>
+            <ul class="sidebar-list">
+                <li><a href="/student-view.html" class="sidebar-link sidebar-link-active"><span class="sidebar-dot dot-green"></span>Profile &amp; account</a></li>
+                <li><a href="/student-directory.html" class="sidebar-link"><span class="sidebar-dot dot-blue"></span>Alumni directory</a></li>
+                <li><a href="#memories" id="student-memories-nav-btn" class="sidebar-link"><span class="sidebar-dot" style="background: #8b5cf6;"></span>Post Memories</a></li>
+            </ul>
+        </aside>
 
-        <div class="profile-container">
-            <!-- LEFT COLUMN: Profile Identity Card -->
-            <div class="profile-identity-card">
-                <div class="profile-identity-header">
-                    <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar-large" id="student-avatar-large">
-                            <span id="student-avatar-initials">ST</span>
-                        </div>
-                        <div class="profile-avatar-edit" id="avatar-edit-btn" title="Change profile picture">
-                            ✏️
-                        </div>
-                    </div>
-                    <div class="profile-name" id="profile-display-name">Your Name</div>
-                    <div class="profile-department" id="profile-display-dept">Department</div>
-                    <div class="profile-graduation" id="profile-display-grad">Graduation Year</div>
-                    <span class="profile-role-badge">Student</span>
+        <section class="scene-card">
+            <header class="scene-header">
+                <div>
+                    <div class="scene-title">My Student Profile</div>
+                    <p class="scene-subtitle">
+                        Manage your profile information and connect with alumni from your university. Explore opportunities and build your network.
+                    </p>
                 </div>
-                <div class="profile-identity-body">
-                    <div class="profile-identity-section">
-                        <div class="profile-identity-label">Email</div>
-                        <div class="profile-identity-value" id="profile-display-email">email@example.com</div>
-                    </div>
-                    <div class="profile-identity-section">
-                        <div class="profile-identity-label">Department</div>
-                        <div class="profile-identity-value" id="profile-display-dept-value">Not set</div>
-                    </div>
-                    <div class="profile-identity-section">
-                        <div class="profile-identity-label">Graduation Year</div>
-                        <div class="profile-identity-value" id="profile-display-grad-value">Not set</div>
-                    </div>
-                </div>
-            </div>
+                <span class="scene-badge">Student</span>
+            </header>
 
-            <!-- RIGHT COLUMN: Editable Profile Form -->
-            <div>
-                <form id="student-profile-form">
-                    <!-- Personal Information Section -->
-                    <div class="profile-form-card">
-                        <div class="form-section-title">1️⃣ Personal Information</div>
-                        <div class="form-section">
+            <div class="scene-body" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
+                <!-- Left Column: Edit Form -->
+                <div class="form-card" style="position: sticky; top: 2rem; height: fit-content; max-height: calc(100vh - 4rem); overflow-y: auto;">
+                    <div class="section-label">
+                        <span style="font-size: 1.25rem; margin-right: 0.5rem;">✏️</span>
+                        Edit Profile Information
+                    </div>
+                    <p class="hint" style="margin-bottom: 2rem;">
+                        Fill in your profile details below. All fields are optional - save what you have!
+                    </p>
+                    <form id="student-profile-form">
+                        <!-- Personal Information Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Personal Information</h3>
                             <div class="form-row-inline">
                                 <div class="form-row">
                                     <label for="studentFirstName">First Name</label>
@@ -1013,28 +718,25 @@
                                 <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Email cannot be changed</p>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Academic Information Section -->
-                    <div class="profile-form-card">
-                        <div class="form-section-title">2️⃣ Academic Information</div>
-                        <div class="form-section">
-                            <div class="form-row">
-                                <label for="studentDept">Department</label>
-                                <input id="studentDept" name="studentDept" placeholder="e.g. Computer Science" />
-                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Enter your department or field of study</p>
-                            </div>
-                            <div class="form-row">
-                                <label for="studentGraduationYear">Graduation Year</label>
-                                <input id="studentGraduationYear" name="studentGraduationYear" type="number" placeholder="e.g. 2024" min="2000" max="2100" />
+                        <!-- Academic Information Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Academic Information</h3>
+                            <div class="form-row-inline">
+                                <div class="form-row">
+                                    <label for="studentDept">Department</label>
+                                    <input id="studentDept" name="studentDept" placeholder="e.g. Computer Science" />
+                                </div>
+                                <div class="form-row">
+                                    <label for="studentGraduationYear">Graduation Year</label>
+                                    <input id="studentGraduationYear" name="studentGraduationYear" type="number" placeholder="e.g. 2024" min="2000" max="2100" />
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Profile & Social Links Section -->
-                    <div class="profile-form-card">
-                        <div class="form-section-title">3️⃣ Profile & Social Links</div>
-                        <div class="form-section">
+                        <!-- Profile & Social Links Section -->
+                        <div style="margin-bottom: 2rem;">
+                            <h3 style="font-size: 0.875rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px;">Profile & Social Links</h3>
                             <div class="form-row">
                                 <label for="studentBio">Short Bio / About Me</label>
                                 <textarea id="studentBio" name="studentBio" rows="4" placeholder="Tell us about yourself, your interests, and career goals..."></textarea>
@@ -1054,99 +756,70 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Action Buttons -->
-                    <div class="profile-form-card">
-                        <div class="btn-row">
-                            <button type="submit" class="btn" style="flex: 1;">
+                        <!-- Action Buttons -->
+                        <div class="form-row">
+                            <button type="submit" class="btn" style="width: 100%; padding: 1rem; font-size: 1rem; font-weight: 600;">
                                 💾 Save Changes
                             </button>
-                            <button type="button" id="student-delete-btn" class="btn-ghost">
+                        </div>
+                        <div class="form-row">
+                            <button type="button" id="student-delete-btn" class="btn-ghost" style="width: 100%;">
                                 🗑️ Delete Account
                             </button>
                         </div>
                         <div id="student-profile-message" class="alert" style="display:none; margin-top: 1rem;"></div>
-                    </div>
-                </form>
+                    </form>
+                </div>
 
-                <!-- Quick Stats Card -->
-                <div class="profile-form-card">
-                    <div class="form-section-title">📊 Quick Stats</div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="stat-alumni-connected">0</div>
-                            <div class="stat-label">Alumni Connected</div>
+                <!-- Right Column: Quick Stats -->
+                <div class="form-card">
+                    <div class="section-label">
+                        <span style="font-size: 1.25rem; margin-right: 0.5rem;">📊</span>
+                        Quick Stats
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 2rem;">
+                        <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2); border-radius: var(--radius-md); padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;" id="stat-alumni-connected">0</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Alumni Connected</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="stat-events-attended">0</div>
-                            <div class="stat-label">Events Attended</div>
+                        <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--radius-md); padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--success); margin-bottom: 0.5rem;" id="stat-events-attended">0</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Events Attended</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="stat-jobs-applied">0</div>
-                            <div class="stat-label">Jobs Applied</div>
+                        <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: var(--radius-md); padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--accent); margin-bottom: 0.5rem;" id="stat-jobs-applied">0</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Jobs Applied</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="stat-profile-completion">0%</div>
-                            <div class="stat-label">Profile Complete</div>
+                        <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); border-radius: var(--radius-md); padding: 1.5rem; text-align: center;">
+                            <div style="font-size: 2rem; font-weight: 700; color: var(--secondary); margin-bottom: 0.5rem;" id="stat-profile-completion">0%</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">Profile Complete</div>
                         </div>
                     </div>
-                    <div class="profile-completion">
-                        <div class="completion-header">
-                            <span class="completion-label">Profile Completion</span>
-                            <span class="completion-percentage" id="completion-percentage">0%</span>
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: var(--radius-md); padding: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary);">Profile Completion</span>
+                            <span style="font-size: 0.875rem; font-weight: 700; color: var(--primary);" id="completion-percentage">0%</span>
                         </div>
-                        <div class="completion-bar">
-                            <div class="completion-fill" id="completion-fill" style="width: 0%;"></div>
+                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: var(--radius-sm); height: 8px; overflow: hidden;">
+                            <div id="completion-fill" style="background: var(--gradient-primary); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+    </main>
 
-                <!-- Search for Jobs Card -->
-                <div class="profile-form-card" style="background: linear-gradient(145deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.15)); border: 2px solid rgba(99, 102, 241, 0.3);">
-                    <div class="form-section-title" style="border-image: linear-gradient(90deg, #6366f1, #8b5cf6) 1;">
-                        💼 Career Opportunities
-                    </div>
-                    <div style="text-align: center; padding: 1rem 0;">
-                        <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem; line-height: 1.6;">
-                            Explore job opportunities posted by alumni and companies. Find your next career move!
-                        </p>
-                        <a href="/jobs.html" class="btn" style="min-width: 250px; font-size: 1rem; padding: 1.125rem 2.5rem; box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);">
-                            <span>🔍</span>
-                            Search for Jobs
-                            <span>→</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Live Profile Preview -->
-                <div class="live-preview-card">
-                    <div class="preview-header">
-                        <div class="preview-title">
-                            <span>👁️</span>
-                            Live Profile Preview
-                        </div>
-                        <span class="preview-badge">LIVE</span>
-                    </div>
-                    <div id="student-preview-content" style="min-height: 300px;">
-                        <div style="text-align: center; padding: 3rem 2rem; color: var(--text-muted);">
-                            <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;">👤</div>
-                            <p style="font-size: 1rem; margin-bottom: 0.5rem; font-weight: 600;">Start filling out your profile</p>
-                            <p style="font-size: 0.875rem;">Your profile preview will appear here as you type</p>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Post Memories Section -->
-                <div id="student-memories-section" class="profile-form-card" style="margin-top: 2rem;">
-                    <div class="form-section-title">
-                        <i class="fas fa-images" style="margin-right: 8px;"></i>
-                        Post Memories
-                    </div>
-                    <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem;">
-                        Share your academic memories with pictures and stories. These will be published in the Photo Library.
-                    </p>
+    <!-- Post Memories Section (separate form-card) -->
+    <div class="page-shell" style="padding: 2rem; max-width: 1500px; margin: 0 auto;">
+        <div class="form-card" id="student-memories-section" style="display: none;">
+            <div class="section-label">
+                <span style="font-size: 1.25rem; margin-right: 0.5rem;">📸</span>
+                Post Memories
+            </div>
+            <p class="hint" style="margin-bottom: 1.5rem;">
+                Share your academic memories with pictures and stories. These will be published in the Photo Library for everyone to see.
+            </p>
                     
                     <form id="student-post-memory-form" enctype="multipart/form-data">
                         <div class="form-row" style="margin-bottom: 1.5rem;">
@@ -1183,24 +856,23 @@
                         <div id="student-memory-status" class="alert" style="display: none; margin-top: 1rem;"></div>
                     </form>
 
-                    <!-- Photo Library -->
-                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                            <div class="form-section-title" style="margin: 0;">
-                                <i class="fas fa-images" style="margin-right: 8px;"></i>
-                                Photo Library
-                            </div>
-                            <button onclick="loadStudentPhotoLibrary()" class="btn-ghost" style="font-size: 0.875rem;">
-                                <i class="fas fa-sync-alt" style="margin-right: 6px;"></i>Refresh
-                            </button>
-                        </div>
-                        <div id="student-photo-library-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
-                            <!-- Memories will be loaded here -->
-                        </div>
+            <!-- Photo Library -->
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div class="section-label" style="margin: 0;">
+                        <span style="font-size: 1.25rem; margin-right: 0.5rem;">🖼️</span>
+                        Photo Library
                     </div>
+                    <button onclick="loadStudentPhotoLibrary()" class="btn-ghost" style="font-size: 0.875rem;">
+                        <i class="fas fa-sync-alt" style="margin-right: 6px;"></i>Refresh
+                    </button>
+                </div>
+                <div id="student-photo-library-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
+                    <!-- Memories will be loaded here -->
                 </div>
             </div>
-    </main>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -1209,6 +881,42 @@
         // Redirect will happen in requireAuth, but stop script execution
         throw new Error('Authentication required');
     }
+
+    // Sidebar navigation for memories
+    const studentMemoriesNavBtn = document.getElementById('student-memories-nav-btn');
+    const studentMemoriesSection = document.getElementById('student-memories-section');
+
+    if (studentMemoriesNavBtn) {
+        studentMemoriesNavBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Hide main scene
+            document.querySelector('.scene-card').style.display = 'none';
+            // Show memories section
+            if (studentMemoriesSection) {
+                studentMemoriesSection.style.display = 'block';
+                // Update active sidebar link
+                document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('sidebar-link-active'));
+                studentMemoriesNavBtn.classList.add('sidebar-link-active');
+                // Load photo library
+                loadStudentPhotoLibrary();
+            }
+        });
+    }
+
+    // Handle profile link click
+    document.querySelector('.sidebar-link[href="/student-view.html"]')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        // Show main scene
+        document.querySelector('.scene-card').style.display = 'block';
+        // Hide memories section
+        if (studentMemoriesSection) {
+            studentMemoriesSection.style.display = 'none';
+        }
+        // Update active sidebar link
+        document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('sidebar-link-active'));
+        e.target.closest('.sidebar-link').classList.add('sidebar-link-active');
+    });
+
     (function() {
         const stored = window.localStorage.getItem('amp-theme');
         if (stored === 'light') {
@@ -1245,56 +953,89 @@
         }
         const email = user.email;
         try {
+            // Fetch user profile and notifications
             const [userRes, notifRes] = await Promise.all([
-                fetch('/users/by-email?email=' + encodeURIComponent(email)),
-                fetch('/friend-requests/student?email=' + encodeURIComponent(email))
+                fetch('/users/by-email?email=' + encodeURIComponent(email)).catch(err => {
+                    console.error('Error fetching user:', err);
+                    return { ok: false, json: async () => ({}) };
+                }),
+                fetch('/friend-requests/student?email=' + encodeURIComponent(email)).catch(err => {
+                    console.error('Error fetching notifications:', err);
+                    return { ok: false, json: async () => ({ data: [] }) };
+                })
             ]);
+            
             const userJson = await userRes.json().catch(() => ({}));
-            const notifJson = await notifRes.json().catch(() => ({}));
-            const user = userJson.data;
+            const notifJson = await notifRes.json().catch(() => ({ data: [] }));
+            let userData = userJson.data || userJson;
             const acceptedRequests = notifJson.data || [];
 
-            if (!user) {
-                alert('Could not load your profile.');
-                return;
+            if (!userData || (!userData.id && !userData.email)) {
+                console.error('Invalid user data received:', userJson);
+                // Use current user from Auth if API fails
+                if (user && user.email) {
+                    console.log('Using current user from Auth as fallback');
+                    userData = user;
+                } else {
+                    alert('Could not load your profile. Please refresh the page.');
+                    return;
+                }
             }
-            currentUser = user;
-            const fullName = (user.firstName || '') + ' ' + (user.lastName || '');
-            document.getElementById('student-name-label').textContent = fullName.trim() || 'Student';
+            
+            const loadedUser = userData;
+            currentUser = loadedUser;
+            const fullName = (loadedUser.firstName || '') + ' ' + (loadedUser.lastName || '');
+            const studentNameLabel = document.getElementById('student-name-label');
+            if (studentNameLabel) {
+                studentNameLabel.textContent = fullName.trim() || 'Student';
+            }
 
-            document.getElementById('studentEmail').value = user.email || email;
-            document.getElementById('studentFirstName').value = user.firstName || '';
-            document.getElementById('studentLastName').value = user.lastName || '';
+            const studentEmailEl = document.getElementById('studentEmail');
+            const studentFirstNameEl = document.getElementById('studentFirstName');
+            const studentLastNameEl = document.getElementById('studentLastName');
+            
+            if (studentEmailEl) studentEmailEl.value = loadedUser.email || email;
+            if (studentFirstNameEl) studentFirstNameEl.value = loadedUser.firstName || '';
+            if (studentLastNameEl) studentLastNameEl.value = loadedUser.lastName || '';
 
             let dept = '';
-            if (user.profile && user.profile.educationDetails && user.profile.educationDetails.length) {
-                const firstEdu = user.profile.get ? user.profile.get(0) : user.profile[0];
+            if (loadedUser.profile && loadedUser.profile.educationDetails && loadedUser.profile.educationDetails.length) {
+                const firstEdu = Array.isArray(loadedUser.profile.educationDetails) ? loadedUser.profile.educationDetails[0] : null;
                 if (firstEdu && firstEdu.course) {
                     dept = firstEdu.course;
                 }
             }
-            if (!dept && user.profile && user.profile.department) {
-                dept = user.profile.department;
+            if (!dept && loadedUser.profile && loadedUser.profile.department) {
+                dept = loadedUser.profile.department;
             }
-            document.getElementById('studentDept').value = dept;
+            const studentDeptEl = document.getElementById('studentDept');
+            if (studentDeptEl) studentDeptEl.value = dept;
 
             // New fields
-            document.getElementById('studentGraduationYear').value = user.profile?.passingYear || '';
-            document.getElementById('studentBio').value = localStorage.getItem('student-bio') || '';
-            document.getElementById('studentLinkedIn').value = localStorage.getItem('student-linkedin') || '';
-            document.getElementById('studentGitHub').value = localStorage.getItem('student-github') || '';
+            const studentGraduationYearEl = document.getElementById('studentGraduationYear');
+            const studentBioEl = document.getElementById('studentBio');
+            const studentLinkedInEl = document.getElementById('studentLinkedIn');
+            const studentGitHubEl = document.getElementById('studentGitHub');
+            
+            if (studentGraduationYearEl) studentGraduationYearEl.value = loadedUser.profile?.passingYear || '';
+            if (studentBioEl) studentBioEl.value = localStorage.getItem('student-bio') || '';
+            if (studentLinkedInEl) studentLinkedInEl.value = localStorage.getItem('student-linkedin') || '';
+            if (studentGitHubEl) studentGitHubEl.value = localStorage.getItem('student-github') || '';
 
-            const avatar = document.getElementById('student-avatar-large');
-            const initialsEl = document.getElementById('student-avatar-initials');
             const imageUrlInput = document.getElementById('studentImageUrl');
-            const imageUrl = user.profile && user.profile.profileImage ? user.profile.profileImage : '';
-            imageUrlInput.value = imageUrl;
+            if (imageUrlInput) {
+                const imageUrl = loadedUser.profile && loadedUser.profile.profileImage ? loadedUser.profile.profileImage : '';
+                imageUrlInput.value = imageUrl;
+            }
             
-            // Update profile identity card
-            updateProfileIdentityCard(user);
+            // Update profile identity card (if elements exist)
+            updateProfileIdentityCard(loadedUser);
             
-            // Render profile preview with loaded data
-            renderStudentProfilePreview(user);
+            // Render profile preview with loaded data (if element exists)
+            const previewContent = document.getElementById('student-preview-content');
+            if (previewContent) {
+                renderStudentProfilePreview(loadedUser);
+            }
             
             // Calculate and update profile completion
             updateProfileCompletion();
@@ -1311,12 +1052,32 @@
                 });
             }
         } catch (e) {
-            alert('Error loading your profile or notifications.');
+            console.error('Error loading profile:', e);
+            // Only show alert if it's a critical error, otherwise just log it
+            if (e.message && !e.message.includes('getElementById')) {
+                alert('Error loading your profile or notifications: ' + e.message);
+            }
         }
     }
 
-    // Function to update profile identity card (left column)
+    // Function to update profile identity card (left column) - now optional since we removed the card
     function updateProfileIdentityCard(user) {
+        // These elements may not exist after restructuring, so check before accessing
+        const profileDisplayName = document.getElementById('profile-display-name');
+        const profileDisplayEmail = document.getElementById('profile-display-email');
+        const profileDisplayDept = document.getElementById('profile-display-dept');
+        const profileDisplayDeptValue = document.getElementById('profile-display-dept-value');
+        const profileDisplayGrad = document.getElementById('profile-display-grad');
+        const profileDisplayGradValue = document.getElementById('profile-display-grad-value');
+        const avatar = document.getElementById('student-avatar-large');
+        const initialsEl = document.getElementById('student-avatar-initials');
+
+        // Only update if elements exist
+        if (!profileDisplayName && !avatar) {
+            // Elements don't exist, skip update
+            return;
+        }
+
         const firstName = document.getElementById('studentFirstName')?.value || user?.firstName || '';
         const lastName = document.getElementById('studentLastName')?.value || user?.lastName || '';
         const fullName = (firstName + ' ' + lastName).trim() || 'Your Name';
@@ -1325,23 +1086,25 @@
         const gradYear = document.getElementById('studentGraduationYear')?.value || user?.profile?.passingYear || 'Not set';
         const imageUrl = document.getElementById('studentImageUrl')?.value || user?.profile?.profileImage || '';
 
-        // Update name
-        document.getElementById('profile-display-name').textContent = fullName;
-        document.getElementById('profile-display-email').textContent = email;
-        document.getElementById('profile-display-dept').textContent = dept !== 'Not set' ? dept : 'Department';
-        document.getElementById('profile-display-dept-value').textContent = dept;
-        document.getElementById('profile-display-grad').textContent = gradYear !== 'Not set' ? `Class of ${gradYear}` : 'Graduation Year';
-        document.getElementById('profile-display-grad-value').textContent = gradYear;
+        // Update name elements if they exist
+        if (profileDisplayName) profileDisplayName.textContent = fullName;
+        if (profileDisplayEmail) profileDisplayEmail.textContent = email;
+        if (profileDisplayDept) profileDisplayDept.textContent = dept !== 'Not set' ? dept : 'Department';
+        if (profileDisplayDeptValue) profileDisplayDeptValue.textContent = dept;
+        if (profileDisplayGrad) profileDisplayGrad.textContent = gradYear !== 'Not set' ? `Class of ${gradYear}` : 'Graduation Year';
+        if (profileDisplayGradValue) profileDisplayGradValue.textContent = gradYear;
 
-        // Update avatar
-        const avatar = document.getElementById('student-avatar-large');
-        const initialsEl = document.getElementById('student-avatar-initials');
-        if (imageUrl) {
-            avatar.innerHTML = `<img src="${imageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />`;
-        } else {
-            const initials = (firstName ? firstName.charAt(0) : 'S') + (lastName ? lastName.charAt(0) : 'T');
-            initialsEl.textContent = initials.toUpperCase() || 'ST';
-            avatar.innerHTML = `<span id="student-avatar-initials">${initials.toUpperCase() || 'ST'}</span>`;
+        // Update avatar if it exists
+        if (avatar) {
+            if (imageUrl) {
+                avatar.innerHTML = `<img src="${imageUrl}" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />`;
+            } else {
+                const initials = (firstName ? firstName.charAt(0) : 'S') + (lastName ? lastName.charAt(0) : 'T');
+                if (initialsEl) {
+                    initialsEl.textContent = initials.toUpperCase() || 'ST';
+                }
+                avatar.innerHTML = `<span id="student-avatar-initials">${initials.toUpperCase() || 'ST'}</span>`;
+            }
         }
     }
 
@@ -1365,32 +1128,50 @@
     // Function to update profile completion UI
     function updateProfileCompletion() {
         const percentage = calculateProfileCompletion();
-        document.getElementById('completion-percentage').textContent = percentage + '%';
-        document.getElementById('stat-profile-completion').textContent = percentage + '%';
+        const completionPercentageEl = document.getElementById('completion-percentage');
+        const statProfileCompletionEl = document.getElementById('stat-profile-completion');
         const fillBar = document.getElementById('completion-fill');
-        fillBar.style.width = percentage + '%';
         
-        // Color based on completion
-        if (percentage >= 80) {
-            fillBar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
-        } else if (percentage >= 50) {
-            fillBar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
-        } else {
-            fillBar.style.background = 'var(--gradient-primary)';
+        if (completionPercentageEl) {
+            completionPercentageEl.textContent = percentage + '%';
+        }
+        if (statProfileCompletionEl) {
+            statProfileCompletionEl.textContent = percentage + '%';
+        }
+        if (fillBar) {
+            fillBar.style.width = percentage + '%';
+            
+            // Color based on completion
+            if (percentage >= 80) {
+                fillBar.style.background = 'linear-gradient(90deg, #10b981, #059669)';
+            } else if (percentage >= 50) {
+                fillBar.style.background = 'linear-gradient(90deg, #f59e0b, #d97706)';
+            } else {
+                fillBar.style.background = 'var(--gradient-primary)';
+            }
         }
     }
 
     // Function to update stats (mock data for now)
     function updateStats() {
         // These would come from API in production
-        document.getElementById('stat-alumni-connected').textContent = '0';
-        document.getElementById('stat-events-attended').textContent = '0';
-        document.getElementById('stat-jobs-applied').textContent = '0';
+        const statAlumniConnected = document.getElementById('stat-alumni-connected');
+        const statEventsAttended = document.getElementById('stat-events-attended');
+        const statJobsApplied = document.getElementById('stat-jobs-applied');
+        
+        if (statAlumniConnected) statAlumniConnected.textContent = '0';
+        if (statEventsAttended) statEventsAttended.textContent = '0';
+        if (statJobsApplied) statJobsApplied.textContent = '0';
     }
 
     // Function to render profile preview
     function renderStudentProfilePreview(user) {
         const previewContent = document.getElementById('student-preview-content');
+        
+        // If preview element doesn't exist, skip rendering
+        if (!previewContent) {
+            return;
+        }
         
         // Get current form values first (to show what's being saved)
         const formFirstName = document.getElementById('studentFirstName')?.value || '';
