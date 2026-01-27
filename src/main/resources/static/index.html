@@ -938,7 +938,7 @@
         }
 
         .hero-stats .feature-photo-library {
-            background: linear-gradient(135deg, #2196F3 0%, #1976D2 50%, #1565C0 100%) !important;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%) !important;
             background-size: 200% 200%;
             border-radius: 20px;
             display: flex;
@@ -948,15 +948,21 @@
             padding: 2rem 1.5rem;
             flex-shrink: 0;
             margin: 0;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(148, 163, 184, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(251, 191, 36, 0.4);
             height: 190px;
             grid-column: 2 / 4;
             animation: gradientShift 4s ease infinite;
+            user-select: none;
+        }
+
+        .hero-stats .feature-photo-library:active {
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
         }
 
 
@@ -986,14 +992,14 @@
         }
 
         .hero-stats .feature-photo-library:hover {
-            transform: translateY(-4px) scale(1.02);
+            transform: translateY(-6px) scale(1.03);
             background-position: 100% 50%;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 16px 48px rgba(251, 191, 36, 0.6);
+            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .feature-photo-library:hover {
-            background: #fef08a !important;
-            transform: translateY(-2px);
+            background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #f59e0b 100%) !important;
         }
 
         .hero-stats .feature-photo-library .feature-content {
@@ -1325,6 +1331,7 @@
         [data-theme="light"] .footer {
             color: rgba(30, 41, 59, 0.6);
         }
+
 
         @media (max-width: 768px) {
             .hero-section {
@@ -2212,7 +2219,7 @@
                         <span class="stat-number" id="companies-count">100+</span>
                         <span class="stat-label">Companies</span>
                     </div>
-                    <div class="stat-item feature-photo-library">
+                    <div class="stat-item feature-photo-library" id="photo-library-card" style="cursor: pointer;">
                         <div class="photo-library-wrapper">
                             <div class="feature-icon-photo">
                                 <i class="fas fa-camera"></i>
@@ -2655,7 +2662,7 @@
         }
 
         function openNewsDetail(newsId) {
-            window.location.href = `/news.html?id=${newsId}`;
+            window.location.href = `/news-detail.html?id=${newsId}`;
         }
 
         loadStats();
@@ -2836,7 +2843,40 @@
                 createParticles(this, e);
             });
         });
+
+        // Photo Library functionality - navigate to new page
+        function initializePhotoLibrary() {
+            const photoLibraryCard = document.getElementById('photo-library-card');
+
+            if (photoLibraryCard) {
+                // Navigate to photo library page instead of opening modal
+                photoLibraryCard.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.location.href = '/photo-library.html';
+                });
+                
+                console.log('Photo Library button initialized');
+            } else {
+                console.error('Photo Library card element not found');
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(initializePhotoLibrary, 100);
+            });
+        } else {
+            setTimeout(initializePhotoLibrary, 100);
+        }
+        
+        // Also try on window load as backup
+        window.addEventListener('load', function() {
+            setTimeout(initializePhotoLibrary, 200);
+        });
     </script>
+
 </body>
 </html>
 

@@ -131,6 +131,7 @@ public class SurveyAdminServiceImpl implements SurveyAdminService {
         SurveyResultsDto results = new SurveyResultsDto();
         results.setSurveyId(survey.getId());
         results.setTitle(survey.getTitle());
+        results.setTotalResponses((long) responses.size());
 
         for (SurveyQuestion question : survey.getQuestions()) {
             SurveyResultsDto.QuestionResult qr = new SurveyResultsDto.QuestionResult();
@@ -189,6 +190,32 @@ public class SurveyAdminServiceImpl implements SurveyAdminService {
             }
             results.getQuestions().add(qr);
         }
+
+        // Populate user responses with user information
+        Map<Long, SurveyResultsDto.UserResponse> userResponseMap = new LinkedHashMap<>();
+        for (SurveyResponse response : responses) {
+            User user = response.getUser();
+            Long userId = user.getId();
+            
+            SurveyResultsDto.UserResponse userResponse = userResponseMap.computeIfAbsent(userId, k -> {
+                SurveyResultsDto.UserResponse ur = new SurveyResultsDto.UserResponse();
+                ur.setUserId(user.getId());
+                ur.setUserEmail(user.getEmail());
+                ur.setUserName(user.getFirstName() + " " + user.getLastName());
+                return ur;
+            });
+
+            // Add all answers for this user
+            for (SurveyAnswer answer : response.getAnswers()) {
+                SurveyResultsDto.AnswerDetail answerDetail = new SurveyResultsDto.AnswerDetail();
+                answerDetail.setQuestionId(answer.getQuestion().getId());
+                answerDetail.setQuestionText(answer.getQuestion().getQuestionText());
+                answerDetail.setAnswerValue(answer.getAnswerValue());
+                userResponse.getAnswers().add(answerDetail);
+            }
+        }
+        results.setUserResponses(new ArrayList<>(userResponseMap.values()));
+
         return results;
     }
 

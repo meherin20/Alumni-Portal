@@ -85,6 +85,15 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
         responseRepository.save(response);
     }
 
+    @Override
+    public boolean hasUserSubmitted(Long surveyId, String userEmail) {
+        User user = userRepository.findByEmail(userEmail);
+        if (user == null) {
+            return false;
+        }
+        return responseRepository.existsBySurveyIdAndUserId(surveyId, user.getId());
+    }
+
     private String normalizeAnswer(SurveyQuestion question, String rawValue) {
         if (rawValue == null || rawValue.trim().isEmpty()) {
             if (question.isRequired()) {

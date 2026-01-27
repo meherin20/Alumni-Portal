@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News Detail · Alumni Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
+            background-attachment: fixed;
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo i {
+            color: var(--primary);
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #ef4444;
+        }
+
+        .error-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .news-detail-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .news-header {
+            padding: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .news-category {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .news-category.alumni-achievements {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .news-category.career-milestones {
+            background: rgba(59, 130, 246, 0.15);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .news-category.awards {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .news-category.startups {
+            background: rgba(139, 92, 246, 0.15);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .news-category.publications {
+            background: rgba(6, 182, 212, 0.15);
+            color: #06b6d4;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .news-category.research-innovation {
+            background: rgba(236, 72, 153, 0.15);
+            color: #ec4899;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+        }
+
+        .news-category.campus-memories {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .news-category.throwback-stories {
+            background: rgba(168, 85, 247, 0.15);
+            color: #a855f7;
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+
+        .news-category.announcement {
+            background: rgba(34, 197, 94, 0.15);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .news-category.university-updates {
+            background: rgba(99, 102, 241, 0.15);
+            color: #6366f1;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .news-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .news-meta {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+
+        .news-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .news-meta-item i {
+            color: var(--primary);
+        }
+
+        .news-image-container {
+            width: 100%;
+            max-height: 500px;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+            position: relative;
+        }
+
+        .news-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .news-content {
+            padding: 2rem;
+        }
+
+        .news-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .news-title {
+                font-size: 1.75rem;
+            }
+
+            .news-header,
+            .news-content {
+                padding: 1.5rem;
+            }
+
+            .news-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/news.html" class="nav-logo">
+                <i class="fas fa-newspaper"></i>
+                News Detail
+            </a>
+            <a href="/news.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to News
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div id="news-detail-container">
+            <div class="loading-state">
+                <i class="fas fa-spinner"></i>
+                <p>Loading news details...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let newsData = null;
+
+        function getNewsTypeClass(type) {
+            const classMap = {
+                'ALUMNI_ACHIEVEMENTS': 'alumni-achievements',
+                'CAREER_MILESTONES': 'career-milestones',
+                'AWARDS': 'awards',
+                'STARTUPS': 'startups',
+                'PUBLICATIONS': 'publications',
+                'RESEARCH_INNOVATION': 'research-innovation',
+                'CAMPUS_MEMORIES': 'campus-memories',
+                'THROWBACK_STORIES': 'throwback-stories',
+                'ANNOUNCEMENT': 'announcement',
+                'UNIVERSITY_UPDATES': 'university-updates'
+            };
+            return classMap[type] || 'announcement';
+        }
+
+        function getNewsTypeDisplay(type) {
+            const displayMap = {
+                'ALUMNI_ACHIEVEMENTS': 'Alumni Achievements',
+                'CAREER_MILESTONES': 'Career Milestones',
+                'AWARDS': 'Awards & Recognition',
+                'STARTUPS': 'Startups & Entrepreneurship',
+                'PUBLICATIONS': 'Publications & Research',
+                'RESEARCH_INNOVATION': 'Research & Innovation Highlights',
+                'CAMPUS_MEMORIES': 'Fun Campus Memories',
+                'THROWBACK_STORIES': 'Throwback Stories',
+                'ANNOUNCEMENT': 'Announcements',
+                'UNIVERSITY_UPDATES': 'University Updates'
+            };
+            return displayMap[type] || type;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        async function loadNewsDetail() {
+            const container = document.getElementById('news-detail-container');
+            const urlParams = new URLSearchParams(window.location.search);
+            const newsId = urlParams.get('id');
+
+            if (!newsId) {
+                container.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>No News ID Provided</h3>
+                        <p>Please select a news item from the news page.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                container.innerHTML = `
+                    <div class="loading-state">
+                        <i class="fas fa-spinner"></i>
+                        <p>Loading news details...</p>
+                    </div>
+                `;
+
+                const response = await fetch(`/news/${newsId}`);
+                if (!response.ok) {
+                    throw new Error('Failed to load news details');
+                }
+
+                const data = await response.json();
+                newsData = data.data || data;
+
+                if (!newsData) {
+                    throw new Error('News data not found');
+                }
+
+                renderNewsDetail(newsData);
+            } catch (error) {
+                console.error('Error loading news detail:', error);
+                container.innerHTML = `
+                    <div class="error-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error Loading News</h3>
+                        <p>Failed to load news details. Please try again later.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderNewsDetail(news) {
+            const container = document.getElementById('news-detail-container');
+            const typeClass = getNewsTypeClass(news.newsType);
+            const typeDisplay = getNewsTypeDisplay(news.newsType);
+            const formattedDate = formatDate(news.createdDate || news.lastModifiedDate);
+
+            // Build photo HTML if photoUrl exists
+            let photoHtml = '';
+            if (news.photoUrl && news.photoUrl.trim() !== '') {
+                let photoUrl = news.photoUrl.trim();
+                let filename = photoUrl;
+                if (photoUrl.includes('/')) {
+                    filename = photoUrl.substring(photoUrl.lastIndexOf('/') + 1);
+                }
+                filename = filename.replace(/^\/+/, '');
+                
+                const photoSrc = `/uploads/news/${encodeURIComponent(filename)}`;
+                
+                photoHtml = `
+                    <div class="news-image-container">
+                        <img 
+                            src="${photoSrc}" 
+                            alt="${(news.title || 'News photo').replace(/"/g, '&quot;')}" 
+                            onerror="
+                                const fallbackSrc = '/news/photo/${encodeURIComponent(filename)}';
+                                if (this.dataset.retryCount === undefined) {
+                                    this.dataset.retryCount = '1';
+                                    this.src = fallbackSrc;
+                                } else {
+                                    this.style.display = 'none';
+                                    this.parentElement.style.display = 'none';
+                                }
+                            " 
+                        />
+                    </div>
+                `;
+            }
+
+            container.innerHTML = `
+                <div class="news-detail-card">
+                    <div class="news-header">
+                        <span class="news-category ${typeClass}">${typeDisplay}</span>
+                        <h1 class="news-title">${escapeHtml(news.title || 'Untitled News')}</h1>
+                        <div class="news-meta">
+                            <div class="news-meta-item">
+                                <i class="fas fa-calendar"></i>
+                                <span>${formattedDate}</span>
+                            </div>
+                            <div class="news-meta-item">
+                                <i class="fas fa-tag"></i>
+                                <span>${typeDisplay}</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${photoHtml}
+                    <div class="news-content">
+                        <div class="news-description">${escapeHtml(news.description || 'No description available.')}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load news detail when page loads
+        document.addEventListener('DOMContentLoaded', loadNewsDetail);
+    </script>
+</body>
+</html>

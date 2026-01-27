@@ -879,11 +879,8 @@
         }
 
         function showNewsDetail(newsId) {
-            // In a real implementation, this could open a modal or navigate to a detail page
-            const news = newsData.find(n => n.id === newsId);
-            if (news) {
-                alert(`News: ${news.title}\n\n${news.description}\n\nCategory: ${getNewsTypeDisplay(news.newsType)}\nDate: ${formatDate(news.createdDate || news.lastModifiedDate)}`);
-            }
+            // Navigate to news detail page
+            window.location.href = `/news-detail.html?id=${newsId}`;
         }
 
         // Filter button event listeners

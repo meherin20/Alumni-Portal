@@ -1403,11 +1403,8 @@
     </div>
 
 <script>
-    // Require authentication (any role)
-    if (!Auth.requireAuth()) {
-        // Redirect will happen in requireAuth
-        throw new Error('Authentication required');
-    }
+    // Events page is public - no authentication required
+    // Users can view events without logging in
 
     // Theme toggle functionality
     (function() {

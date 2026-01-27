@@ -131,6 +131,9 @@
             font-weight: 500;
             transition: all 0.2s ease;
             position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .nav-link.active {
@@ -154,6 +157,23 @@
 
         .nav-link:hover::after {
             width: 100%;
+        }
+
+        .nav-link.home-link {
+            background: rgba(99, 102, 241, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-link.home-link:hover {
+            background: rgba(99, 102, 241, 0.25);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.home-link i {
+            font-size: 0.9rem;
         }
 
         .theme-toggle {
@@ -772,6 +792,10 @@
                 Alumni Portal
             </a>
             <div class="nav-links">
+                <a href="/index.html" class="nav-link home-link">
+                    <i class="fas fa-home"></i>
+                    Home
+                </a>
                 <a href="/dashboard.html" class="nav-link">Dashboard</a>
                 <a href="/events.html" class="nav-link">Events</a>
                 <a href="/jobs.html" class="nav-link">Jobs</a>
@@ -1103,12 +1127,8 @@
         }
 
         function showNewsDetail(newsId) {
-            // In a real implementation, this could open a modal or navigate to a detail page
-            const news = newsData.find(n => n.id === newsId);
-            if (news) {
-                const photoInfo = news.photoUrl ? '\n\n📸 Photo available' : '';
-                alert(`📄 ${news.title}\n\n${news.description}\n\n🏷️ Category: ${getNewsTypeDisplay(news.newsType)}\n📅 Date: ${formatDate(news.createdDate || news.lastModifiedDate)}${photoInfo}`);
-            }
+            // Navigate to news detail page
+            window.location.href = `/news-detail.html?id=${newsId}`;
         }
 
         // Filter button event listeners
