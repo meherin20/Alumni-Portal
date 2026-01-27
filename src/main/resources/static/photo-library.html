@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photo Library · Alumni Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #8b5cf6;
+            --accent: #f59e0b;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #0f172a 50%, #1e293b 75%, #0f172a 100%);
+            background-attachment: fixed;
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo i {
+            color: var(--primary);
+        }
+
+        .back-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .back-link:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .memories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .memory-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .memory-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+            border-color: var(--primary);
+        }
+
+        .memory-image-container {
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            background: var(--bg-tertiary);
+            position: relative;
+        }
+
+        .memory-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .memory-card:hover .memory-image-container img {
+            transform: scale(1.05);
+        }
+
+        .memory-content {
+            padding: 1.5rem;
+        }
+
+        .memory-user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .memory-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .memory-user-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .memory-user-details p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .memory-story {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .memory-story.collapsed {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .see-more-btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .see-more-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #ef4444;
+        }
+
+        .error-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 2rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .memories-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .memory-image-container {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/index.html" class="nav-logo">
+                <i class="fas fa-camera"></i>
+                Photo Library
+            </a>
+            <a href="/index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-images"></i>
+                Photo Library
+            </h1>
+            <p class="page-subtitle">Browse and share memorable moments from our alumni community</p>
+        </div>
+
+        <div id="memories-container">
+            <div class="loading-state">
+                <i class="fas fa-spinner"></i>
+                <p>Loading memories...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const memoriesContainer = document.getElementById('memories-container');
+        const STORY_LIMIT = 150; // Characters to show initially
+        const storiesMap = {}; // Store full stories by index
+
+        function loadMemories() {
+            memoriesContainer.innerHTML = `
+                <div class="loading-state">
+                    <i class="fas fa-spinner"></i>
+                    <p>Loading memories...</p>
+                </div>
+            `;
+
+            fetch('/api/memories?published=true')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.data && data.data.length > 0) {
+                        renderMemories(data.data);
+                    } else {
+                        memoriesContainer.innerHTML = `
+                            <div class="empty-state">
+                                <i class="fas fa-images"></i>
+                                <h3>No Memories Yet</h3>
+                                <p>Be the first to share your academic memories!</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading memories:', error);
+                    memoriesContainer.innerHTML = `
+                        <div class="error-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Error Loading Memories</h3>
+                            <p>Failed to load memories. Please try again later.</p>
+                        </div>
+                    `;
+                });
+        }
+
+        function renderMemories(memories) {
+            memoriesContainer.innerHTML = '<div class="memories-grid"></div>';
+            const grid = memoriesContainer.querySelector('.memories-grid');
+
+            memories.forEach((memory, index) => {
+                const date = new Date(memory.createdDate);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+
+                const story = memory.story || 'No story provided';
+                const isLongStory = story.length > STORY_LIMIT;
+                const shortStory = isLongStory ? story.substring(0, STORY_LIMIT) + '...' : story;
+                const userName = memory.userName || 'Unknown User';
+                const avatarInitial = userName.charAt(0).toUpperCase();
+
+                // Store full story in map
+                if (isLongStory) {
+                    storiesMap[index] = story;
+                }
+
+                const memoryCard = document.createElement('div');
+                memoryCard.className = 'memory-card';
+                memoryCard.innerHTML = `
+                    <div class="memory-image-container">
+                        <img src="/api/memories/image/${memory.imageUrl}" 
+                             alt="Memory" 
+                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'300\'%3E%3Crect fill=\'%23334155\' width=\'400\' height=\'300\'/%3E%3Ctext x=\'50%25\' y=\'50%25\' text-anchor=\'middle\' dy=\'.3em\' fill=\'%2364758b\' font-family=\'Arial\' font-size=\'16\'%3EImage not found%3C/text%3E%3C/svg%3E';" />
+                    </div>
+                    <div class="memory-content">
+                        <div class="memory-user-info">
+                            <div class="memory-avatar">${avatarInitial}</div>
+                            <div class="memory-user-details">
+                                <h4>${escapeHtml(userName)}</h4>
+                                <p>
+                                    <i class="fas fa-calendar"></i>
+                                    ${formattedDate}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="memory-story ${isLongStory ? 'collapsed' : ''}" id="story-${index}">
+                            ${escapeHtml(isLongStory ? shortStory : story)}
+                        </div>
+                        ${isLongStory ? `
+                            <button class="see-more-btn" onclick="toggleStory(${index})" id="btn-${index}">
+                                <i class="fas fa-chevron-down"></i>
+                                See More
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                grid.appendChild(memoryCard);
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleStory(index) {
+            const storyElement = document.getElementById(`story-${index}`);
+            const button = document.getElementById(`btn-${index}`);
+            
+            if (!storyElement || !button) return;
+            
+            const fullStory = storiesMap[index];
+            if (!fullStory) return;
+            
+            if (storyElement.classList.contains('collapsed')) {
+                // Expand
+                storyElement.classList.remove('collapsed');
+                storyElement.textContent = fullStory;
+                button.innerHTML = '<i class="fas fa-chevron-up"></i> See Less';
+            } else {
+                // Collapse
+                storyElement.classList.add('collapsed');
+                storyElement.textContent = fullStory.substring(0, STORY_LIMIT) + '...';
+                button.innerHTML = '<i class="fas fa-chevron-down"></i> See More';
+            }
+        }
+
+        // Make toggleStory available globally
+        window.toggleStory = toggleStory;
+
+        // Load memories when page loads
+        document.addEventListener('DOMContentLoaded', loadMemories);
+    </script>
+</body>
+</html>

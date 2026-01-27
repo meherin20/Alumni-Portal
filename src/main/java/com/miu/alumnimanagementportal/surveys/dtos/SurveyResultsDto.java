@@ -11,7 +11,9 @@ import java.util.Map;
 public class SurveyResultsDto {
     private Long surveyId;
     private String title;
+    private Long totalResponses;
     private List<QuestionResult> questions = new ArrayList<>();
+    private List<UserResponse> userResponses = new ArrayList<>();
 
     @Data
     public static class QuestionResult {
@@ -23,5 +25,20 @@ public class SurveyResultsDto {
         private Map<Integer, Long> ratingDistribution;
         private Double ratingAverage;
         private List<String> textAnswers;
+    }
+
+    @Data
+    public static class UserResponse {
+        private Long userId;
+        private String userEmail;
+        private String userName;
+        private List<AnswerDetail> answers = new ArrayList<>();
+    }
+
+    @Data
+    public static class AnswerDetail {
+        private Long questionId;
+        private String questionText;
+        private String answerValue;
     }
 }

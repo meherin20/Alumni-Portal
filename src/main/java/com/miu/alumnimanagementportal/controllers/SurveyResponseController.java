@@ -27,4 +27,13 @@ public class SurveyResponseController {
                 HttpStatus.CREATED
         );
     }
+
+    @GetMapping("/{id}/responses/check")
+    public ResponseEntity<?> checkSubmission(@PathVariable Long id, @RequestParam String userEmail) {
+        boolean hasSubmitted = responseService.hasUserSubmitted(id, userEmail);
+        return converter.buildResponseEntity(
+                Map.of("hasSubmitted", hasSubmitted),
+                HttpStatus.OK
+        );
+    }
 }

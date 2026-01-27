@@ -782,9 +782,16 @@
                     return;
                 }
 
-                // Redirect based on user type
+                // Check for redirect parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirectUrl = urlParams.get('redirect');
+                
+                // Redirect based on user type or redirect parameter
                 setTimeout(() => {
-                    if (selectedType === 'admin') {
+                    // If there's a redirect URL and user is alumni or student, use it
+                    if (redirectUrl && (selectedType === 'alumni' || selectedType === 'student')) {
+                        window.location.href = decodeURIComponent(redirectUrl);
+                    } else if (selectedType === 'admin') {
                         window.location.href = '/admin-dashboard.html';
                     } else if (selectedType === 'alumni') {
                         window.location.href = '/alumni-portal.html';

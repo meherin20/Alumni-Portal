@@ -1076,11 +1076,8 @@
     </main>
 
 <script>
-    // Require authentication (any role)
-    if (!Auth.requireAuth()) {
-        // Redirect will happen in requireAuth
-        throw new Error('Authentication required');
-    }
+    // Surveys page is accessible without authentication
+    // Users can view and participate in surveys without logging in
     // Navbar scroll effect
     (function() {
         const navbar = document.getElementById('navbar');
@@ -1213,9 +1210,15 @@
         const metaEl = document.getElementById('selected-survey-meta');
         const qContainer = document.getElementById('survey-questions');
         const titleEl = document.getElementById('selected-survey-title');
+        const msgEl = document.getElementById('survey-response-message');
+        const submitBtn = document.getElementById('submit-btn');
+        const respondentKeyInput = document.getElementById('respondentKey');
+        
         metaEl.style.display = 'none';
         titleEl.textContent = 'Loading...';
         qContainer.innerHTML = '<div class="hint">Loading survey questions...</div>';
+        if (msgEl) msgEl.style.display = 'none';
+        
         try {
             console.log('Loading survey details for ID:', id);
             const res = await fetch('/api/surveys/' + encodeURIComponent(id));
@@ -1245,6 +1248,49 @@
             const endDate = survey.endAt ? (survey.endAt.split('T')[0] || survey.endAt) : '';
             metaEl.textContent = (survey.description || '') + (endDate ? ' · Deadline: ' + endDate : '');
             metaEl.style.display = 'block';
+            
+            // Check if user has already submitted this survey
+            const userEmail = respondentKeyInput ? respondentKeyInput.value.trim() : '';
+            if (userEmail) {
+                try {
+                    const checkRes = await fetch(`/api/surveys/${encodeURIComponent(id)}/responses/check?userEmail=${encodeURIComponent(userEmail)}`);
+                    const checkJson = await checkRes.json().catch(() => ({}));
+                    if (checkRes.ok && checkJson.data && checkJson.data.hasSubmitted) {
+                        // User has already submitted this survey
+                        qContainer.innerHTML = `
+                            <div class="alert alert-warning" style="padding: 20px; text-align: center; margin: 20px 0;">
+                                <div style="font-size: 24px; margin-bottom: 10px;">✓</div>
+                                <h3 style="margin-bottom: 10px; color: var(--text-primary);">You submitted the survey once</h3>
+                                <p style="color: var(--text-secondary);">You have already submitted this survey. Thank you for your participation!</p>
+                            </div>
+                        `;
+                        if (submitBtn) submitBtn.disabled = true;
+                        if (msgEl) {
+                            msgEl.className = 'alert alert-info';
+                            msgEl.textContent = 'You have already submitted this survey.';
+                            msgEl.style.display = 'block';
+                        }
+                        // Disable all form inputs
+                        const formInputs = document.querySelectorAll('#survey-response-form input, #survey-response-form textarea, #survey-response-form button');
+                        formInputs.forEach(input => {
+                            if (input.id !== 'respondentKey') {
+                                input.disabled = true;
+                            }
+                        });
+                        return;
+                    }
+                } catch (checkError) {
+                    console.warn('Error checking submission status:', checkError);
+                    // Continue loading survey even if check fails
+                }
+            }
+            
+            // Enable form if it was disabled
+            if (submitBtn) submitBtn.disabled = false;
+            const formInputs = document.querySelectorAll('#survey-response-form input, #survey-response-form textarea, #survey-response-form button');
+            formInputs.forEach(input => {
+                input.disabled = false;
+            });
 
             // Map backend question structure to frontend format
             currentSurveyQuestions = (survey.questions || []).map(q => {
@@ -1512,8 +1558,31 @@
 
             if (!res.ok) {
                 msg.className = 'alert alert-error';
-                msg.textContent = data.message || data.error || 'Failed to submit response.';
+                const errorMsg = data.message || data.error || 'Failed to submit response.';
+                msg.textContent = errorMsg;
                 console.error('Submit error:', data);
+                
+                // If user already submitted, show the submission status
+                if (errorMsg.toLowerCase().includes('already submitted') || errorMsg.toLowerCase().includes('submitted')) {
+                    const qContainer = document.getElementById('survey-questions');
+                    if (qContainer) {
+                        qContainer.innerHTML = `
+                            <div class="alert alert-warning" style="padding: 20px; text-align: center; margin: 20px 0;">
+                                <div style="font-size: 24px; margin-bottom: 10px;">✓</div>
+                                <h3 style="margin-bottom: 10px; color: var(--text-primary);">You submitted the survey once</h3>
+                                <p style="color: var(--text-secondary);">You have already submitted this survey. Thank you for your participation!</p>
+                            </div>
+                        `;
+                    }
+                    const submitBtn = document.getElementById('submit-btn');
+                    if (submitBtn) submitBtn.disabled = true;
+                    const formInputs = document.querySelectorAll('#survey-response-form input, #survey-response-form textarea, #survey-response-form button');
+                    formInputs.forEach(input => {
+                        if (input.id !== 'respondentKey') {
+                            input.disabled = true;
+                        }
+                    });
+                }
             } else {
                 msg.className = 'alert alert-success';
                 msg.textContent = data.message || 'Response submitted successfully! Thank you for your feedback.';
@@ -1607,17 +1676,57 @@
         if (card && !e.target.closest('.btn')) {
             const surveyId = card.getAttribute('data-survey-id');
 
-            // Remove selected class from all cards
-            document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
-            // Add selected class to clicked card
-            card.classList.add('selected');
+            // Check authentication before loading survey
+            if (!surveyId) return;
 
-            // Load survey details
-            if (surveyId) {
+            // Check if user is authenticated (alumni or student)
+            try {
+                const AuthObj = window.Auth || (typeof Auth !== 'undefined' ? Auth : null);
+                
+                if (!AuthObj || typeof AuthObj.isAuthenticated !== 'function') {
+                    console.warn('Auth object not available');
+                    redirectToLogin(surveyId);
+                    return;
+                }
+
+                const isAuthenticated = AuthObj.isAuthenticated();
+                
+                if (!isAuthenticated) {
+                    // User not authenticated, redirect to login
+                    redirectToLogin(surveyId);
+                    return;
+                }
+
+                // Check if user role is alumni or student
+                const userRole = AuthObj.getUserRole ? AuthObj.getUserRole() : null;
+                const allowedRoles = ['ALUMNI', 'STUDENT', 'alumni', 'student'];
+                
+                if (userRole && !allowedRoles.includes(userRole.toUpperCase())) {
+                    alert('Only alumni and students can participate in surveys. Please login with an alumni or student account.');
+                    return;
+                }
+
+                // User is authenticated and has correct role, proceed with survey
+                // Remove selected class from all cards
+                document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
+                // Add selected class to clicked card
+                card.classList.add('selected');
+
+                // Load survey details
                 loadSurveyDetailFromApi(surveyId);
+            } catch (error) {
+                console.error('Error checking authentication:', error);
+                redirectToLogin(surveyId);
             }
         }
     });
+
+    // Function to redirect to login with survey ID
+    function redirectToLogin(surveyId) {
+        const currentUrl = window.location.pathname;
+        const redirectUrl = `${currentUrl}?surveyId=${surveyId}`;
+        window.location.href = `/login.html?redirect=${encodeURIComponent(redirectUrl)}`;
+    }
 
     // Add visual feedback for form interactions
     document.addEventListener('focus', (e) => {
@@ -1639,9 +1748,88 @@
             const email = window.localStorage.getItem('amp-user-email');
             if (email) {
                 const input = document.getElementById('respondentKey');
-                if (input) input.value = email;
+                if (input) {
+                    input.value = email;
+                    // Check submission status if survey is already loaded
+                    if (selectedSurveyId) {
+                        checkSubmissionStatus(selectedSurveyId, email);
+                    }
+                }
             }
         } catch (e) {}
+    })();
+
+    // Function to check submission status
+    async function checkSubmissionStatus(surveyId, userEmail) {
+        if (!surveyId || !userEmail || !userEmail.trim()) {
+            return;
+        }
+        
+        try {
+            const checkRes = await fetch(`/api/surveys/${encodeURIComponent(surveyId)}/responses/check?userEmail=${encodeURIComponent(userEmail.trim())}`);
+            const checkJson = await checkRes.json().catch(() => ({}));
+            const qContainer = document.getElementById('survey-questions');
+            const submitBtn = document.getElementById('submit-btn');
+            const msgEl = document.getElementById('survey-response-message');
+            
+            if (checkRes.ok && checkJson.data && checkJson.data.hasSubmitted) {
+                // User has already submitted this survey
+                if (qContainer && currentSurveyQuestions.length > 0) {
+                    qContainer.innerHTML = `
+                        <div class="alert alert-warning" style="padding: 20px; text-align: center; margin: 20px 0;">
+                            <div style="font-size: 24px; margin-bottom: 10px;">✓</div>
+                            <h3 style="margin-bottom: 10px; color: var(--text-primary);">You submitted the survey once</h3>
+                            <p style="color: var(--text-secondary);">You have already submitted this survey. Thank you for your participation!</p>
+                        </div>
+                    `;
+                }
+                if (submitBtn) submitBtn.disabled = true;
+                if (msgEl) {
+                    msgEl.className = 'alert alert-info';
+                    msgEl.textContent = 'You have already submitted this survey.';
+                    msgEl.style.display = 'block';
+                }
+                // Disable all form inputs except email
+                const formInputs = document.querySelectorAll('#survey-response-form input, #survey-response-form textarea, #survey-response-form button');
+                formInputs.forEach(input => {
+                    if (input.id !== 'respondentKey') {
+                        input.disabled = true;
+                    }
+                });
+            } else {
+                // User hasn't submitted yet, enable form
+                if (submitBtn) submitBtn.disabled = false;
+                if (msgEl && msgEl.className.includes('alert-info')) {
+                    msgEl.style.display = 'none';
+                }
+                const formInputs = document.querySelectorAll('#survey-response-form input, #survey-response-form textarea, #survey-response-form button');
+                formInputs.forEach(input => {
+                    input.disabled = false;
+                });
+                // Re-render question if survey is loaded
+                if (currentSurveyQuestions.length > 0 && qContainer) {
+                    renderCurrentQuestion();
+                }
+            }
+        } catch (checkError) {
+            console.warn('Error checking submission status:', checkError);
+        }
+    }
+
+    // Add event listener to email input to check submission status when email changes
+    (function setupEmailListener() {
+        const emailInput = document.getElementById('respondentKey');
+        if (emailInput) {
+            let debounceTimer;
+            emailInput.addEventListener('input', () => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    if (selectedSurveyId && emailInput.value.trim()) {
+                        checkSubmissionStatus(selectedSurveyId, emailInput.value.trim());
+                    }
+                }, 500); // Debounce for 500ms
+            });
+        }
     })();
 
     // Enhanced form submission with modern feedback
@@ -1700,10 +1888,54 @@
         await loadSurveys();
         const params = new URLSearchParams(window.location.search);
         const surveyIdParam = params.get('surveyId');
+        
         if (surveyIdParam) {
-            await loadSurveyDetailFromApi(surveyIdParam);
-            document.getElementById('survey-questions')?.scrollIntoView({ behavior: 'smooth' });
+            // Check authentication before loading survey details
+            try {
+                const AuthObj = window.Auth || (typeof Auth !== 'undefined' ? Auth : null);
+                
+                if (!AuthObj || typeof AuthObj.isAuthenticated !== 'function') {
+                    console.warn('Auth object not available');
+                    // Clear surveyId from URL if not authenticated
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                const isAuthenticated = AuthObj.isAuthenticated();
+                
+                if (!isAuthenticated) {
+                    // Not authenticated, clear the surveyId parameter
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                // Check if user role is alumni or student
+                const userRole = AuthObj.getUserRole ? AuthObj.getUserRole() : null;
+                const allowedRoles = ['ALUMNI', 'STUDENT', 'alumni', 'student'];
+                
+                if (userRole && !allowedRoles.includes(userRole.toUpperCase())) {
+                    alert('Only alumni and students can participate in surveys. Please login with an alumni or student account.');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                // User is authenticated and has correct role, load survey
+                await loadSurveyDetailFromApi(surveyIdParam);
+                
+                // Select the survey card visually
+                const surveyCard = document.querySelector(`[data-survey-id="${surveyIdParam}"]`);
+                if (surveyCard) {
+                    document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
+                    surveyCard.classList.add('selected');
+                }
+                
+                document.getElementById('survey-questions')?.scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error checking authentication:', error);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         }
+        
         updateStats();
         addCardAnimations();
     }
