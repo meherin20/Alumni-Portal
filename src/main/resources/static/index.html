@@ -140,6 +140,18 @@
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
 
+        /* Logout button styling (orange gradient like app-nav-cta) */
+        .nav-cta.logout-btn {
+            background: linear-gradient(135deg, #f97316, #fb923c) !important;
+            box-shadow: 0 14px 35px rgba(249, 115, 22, 0.7) !important;
+        }
+
+        .nav-cta.logout-btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+            box-shadow: 0 18px 45px rgba(249, 115, 22, 0.9) !important;
+        }
+
         .theme-toggle {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1437,7 +1449,7 @@
                 <a href="/jobs.html" class="nav-link">Jobs</a>
                 <a href="/news.html" class="nav-link">News</a>
                 <a href="/surveys.html" class="nav-link">Surveys</a>
-                <a href="/login.html" class="nav-cta">Login</a>
+                <a href="/login.html" class="nav-cta" id="login-logout-btn">Login</a>
                 <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
                     <span id="theme-toggle-icon">🌙</span>
                 </button>
@@ -1464,8 +1476,8 @@
                     Discover jobs, attend exclusive events, and stay connected with your alma mater.
                 </p>
 
-                <div class="hero-buttons">
-                    <a href="/login.html" class="btn-primary">
+                <div class="hero-buttons" id="hero-buttons">
+                    <a href="/login.html" class="btn-primary" id="get-started-btn">
                         Get Started
                         <span>→</span>
                     </a>
@@ -1572,7 +1584,112 @@
         </footer>
     </main>
 
+    <script src="/js/auth.js"></script>
     <script>
+        // Update navbar and hero buttons based on authentication status
+        function updateAuthUI() {
+            // Wait for Auth object to be available (check both Auth and window.Auth)
+            const AuthObj = window.Auth || (typeof Auth !== 'undefined' ? Auth : null);
+            
+            if (!AuthObj || typeof AuthObj.isAuthenticated !== 'function') {
+                console.warn('Auth object not loaded yet, retrying...');
+                setTimeout(updateAuthUI, 150);
+                return;
+            }
+            
+            const loginLogoutBtn = document.getElementById('login-logout-btn');
+            const getStartedBtn = document.getElementById('get-started-btn');
+            
+            // Check if elements exist
+            if (!loginLogoutBtn) {
+                console.warn('Login/Logout button not found');
+                return;
+            }
+            
+            try {
+                const isAuthenticated = AuthObj.isAuthenticated();
+                
+                if (isAuthenticated) {
+                    // Show Logout button instead of Login
+                    loginLogoutBtn.textContent = 'Logout';
+                    loginLogoutBtn.href = '#';
+                    // Add logout-btn class for orange gradient styling
+                    loginLogoutBtn.classList.add('logout-btn');
+                    loginLogoutBtn.onclick = function(e) {
+                        e.preventDefault();
+                        const AuthObj = window.Auth || Auth;
+                        if (AuthObj && typeof AuthObj.logout === 'function') {
+                            AuthObj.logout();
+                        }
+                        return false;
+                    };
+                    
+                    // Hide Get Started button
+                    if (getStartedBtn) {
+                        getStartedBtn.style.display = 'none';
+                    }
+                } else {
+                    // Show Login button
+                    loginLogoutBtn.textContent = 'Login';
+                    loginLogoutBtn.href = '/login.html';
+                    // Remove logout-btn class to restore original blue styling
+                    loginLogoutBtn.classList.remove('logout-btn');
+                    loginLogoutBtn.onclick = null;
+                    
+                    // Show Get Started button
+                    if (getStartedBtn) {
+                        getStartedBtn.style.display = 'inline-flex';
+                    }
+                }
+            } catch (error) {
+                console.error('Error updating auth UI:', error);
+            }
+        }
+        
+        // Call updateAuthUI when auth.js is loaded
+        function initAuthUI() {
+            // Use requestAnimationFrame to ensure DOM is ready
+            requestAnimationFrame(function() {
+                updateAuthUI();
+            });
+            
+            // Also try on DOMContentLoaded
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    requestAnimationFrame(function() {
+                        updateAuthUI();
+                    });
+                });
+            } else {
+                // DOM already loaded, try again
+                requestAnimationFrame(function() {
+                    updateAuthUI();
+                });
+            }
+            
+            // Also try on window load as backup
+            window.addEventListener('load', function() {
+                requestAnimationFrame(function() {
+                    updateAuthUI();
+                });
+            });
+        }
+        
+        // Initialize immediately
+        initAuthUI();
+        
+        // Also update when page becomes visible (e.g., when navigating back)
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                setTimeout(updateAuthUI, 100);
+            }
+        });
+        
+        // Also update when window gets focus (e.g., switching tabs back)
+        window.addEventListener('focus', function() {
+            setTimeout(updateAuthUI, 100);
+        });
+
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');

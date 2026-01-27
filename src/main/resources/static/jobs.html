@@ -1747,12 +1747,6 @@
     </div>
 
     <script>
-    // Require authentication (any role)
-    if (!Auth.requireAuth()) {
-        // Redirect will happen in requireAuth
-        throw new Error('Authentication required');
-    }
-
         console.log('Jobs page JavaScript loaded');
 
         // Theme toggle functionality
@@ -2173,8 +2167,20 @@
     let currentJobTitle = '';
     let currentJobCompany = '';
 
-    function openApplicationModal(jobId, jobTitle, jobCompany, event) {
+    async function openApplicationModal(jobId, jobTitle, jobCompany, event) {
         event.stopPropagation(); // Prevent card click
+
+        // Check if user is authenticated
+        const AuthObj = window.Auth || (typeof Auth !== 'undefined' ? Auth : null);
+        if (!AuthObj || !AuthObj.isAuthenticated || !AuthObj.isAuthenticated()) {
+            const shouldLogin = confirm('You need to login first to apply for this job. Would you like to login now?');
+            if (shouldLogin) {
+                // Redirect to login page with return URL
+                const currentUrl = window.location.pathname + window.location.search;
+                window.location.href = `/login.html?redirect=${encodeURIComponent(currentUrl)}`;
+            }
+            return;
+        }
 
         currentJobId = jobId;
         currentJobTitle = jobTitle;
@@ -2183,12 +2189,141 @@
         document.getElementById('jobPostId').value = jobId;
         document.getElementById('modal-job-info').textContent = `${jobTitle} - ${jobCompany}`;
 
+        // Show modal first
         document.getElementById('application-modal').classList.add('show');
         document.body.style.overflow = 'hidden';
 
         // Reset form
         document.getElementById('application-form').reset();
         document.getElementById('application-message').style.display = 'none';
+
+        // Load and pre-fill user data
+        await loadAndPrefillUserData();
+    }
+
+    async function loadAndPrefillUserData() {
+        try {
+            const currentUser = Auth.getCurrentUser();
+            if (!currentUser || !currentUser.email) {
+                console.warn('No user email found');
+                return;
+            }
+
+            // Fetch user data from backend
+            const response = await fetch(`/users/by-email?email=${encodeURIComponent(currentUser.email)}`);
+            if (!response.ok) {
+                console.error('Failed to fetch user data');
+                return;
+            }
+
+            const result = await response.json();
+            const user = result.data;
+
+            if (!user) {
+                console.warn('User data not found');
+                return;
+            }
+
+            // Pre-fill form fields
+            const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+            if (fullName) {
+                document.getElementById('fullName').value = fullName;
+            }
+
+            if (user.email) {
+                document.getElementById('email').value = user.email;
+            }
+
+            // Get profile data if available
+            if (user.profile) {
+                // Phone number from profile (field is 'phone' not 'phoneNumber')
+                if (user.profile.phone) {
+                    document.getElementById('phoneNumber').value = user.profile.phone;
+                }
+
+                // Current workplace - try to get from most recent work experience
+                if (user.profile.workExperiences && user.profile.workExperiences.length > 0) {
+                    // Get the most recent work experience
+                    const workExps = Array.isArray(user.profile.workExperiences) 
+                        ? user.profile.workExperiences 
+                        : Object.values(user.profile.workExperiences);
+                    
+                    if (workExps.length > 0) {
+                        // Sort by startYear (most recent first)
+                        const sorted = workExps.sort((a, b) => {
+                            const yearA = parseInt(a.startYear || '0');
+                            const yearB = parseInt(b.startYear || '0');
+                            return yearB - yearA;
+                        });
+                        const latest = sorted[0];
+                        
+                        if (latest.companyName) {
+                            document.getElementById('currentWorkplace').value = latest.companyName;
+                        }
+                    }
+                }
+
+                // Portfolio link from profile
+                if (user.profile.portfolioLink) {
+                    document.getElementById('portfolioLink').value = user.profile.portfolioLink;
+                }
+
+                // GitHub link - check localStorage or profile (students might have it in localStorage)
+                const githubLink = localStorage.getItem('studentGitHub') || user.profile.githubLink || '';
+                if (githubLink) {
+                    document.getElementById('githubLink').value = githubLink;
+                }
+
+                // Experience from profile work experiences
+                if (user.profile.workExperiences && user.profile.workExperiences.length > 0) {
+                    const workExps = Array.isArray(user.profile.workExperiences) 
+                        ? user.profile.workExperiences 
+                        : Object.values(user.profile.workExperiences);
+                    
+                    const experienceText = workExps
+                        .map(exp => {
+                            const company = exp.companyName || '';
+                            const position = exp.designation || '';
+                            const startYear = exp.startYear || '';
+                            const endYear = exp.endYear || 'Present';
+                            const duration = startYear && endYear ? `${startYear} - ${endYear}` : (startYear || '');
+                            return `${position}${company ? ' at ' + company : ''}${duration ? ' (' + duration + ')' : ''}`;
+                        })
+                        .join('\n\n');
+                    
+                    if (experienceText) {
+                        document.getElementById('experience').value = experienceText;
+                    }
+                }
+
+                // Skills - check if stored in profile or localStorage
+                const skills = user.profile.skills || localStorage.getItem('student-skills') || '';
+                if (skills) {
+                    const skillsText = Array.isArray(skills) ? skills.join(', ') : skills;
+                    if (skillsText) {
+                        document.getElementById('skills').value = skillsText;
+                    }
+                }
+            }
+
+            // Store applicantId for form submission
+            if (user.id) {
+                // Add hidden field for applicantId if it doesn't exist
+                let applicantIdField = document.getElementById('applicantId');
+                if (!applicantIdField) {
+                    applicantIdField = document.createElement('input');
+                    applicantIdField.type = 'hidden';
+                    applicantIdField.id = 'applicantId';
+                    applicantIdField.name = 'applicantId';
+                    document.getElementById('application-form').appendChild(applicantIdField);
+                }
+                applicantIdField.value = user.id;
+            }
+
+        } catch (error) {
+            console.error('Error loading user data:', error);
+            // Don't block the form if data loading fails
+        }
     }
 
     function closeApplicationModal() {
@@ -2213,6 +2348,52 @@
         const submitBtn = document.getElementById('submit-btn');
         const messageDiv = document.getElementById('application-message');
 
+        // Hide previous messages
+        messageDiv.style.display = 'none';
+
+        // Validate required fields
+        const fullName = document.getElementById('fullName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const coverLetter = document.getElementById('coverLetter').value.trim();
+        const resumeFile = document.getElementById('resumeFile').files[0];
+
+        if (!fullName) {
+            messageDiv.className = 'alert alert-error';
+            messageDiv.textContent = 'Please enter your full name.';
+            messageDiv.style.display = 'block';
+            return;
+        }
+
+        if (!email) {
+            messageDiv.className = 'alert alert-error';
+            messageDiv.textContent = 'Please enter your email address.';
+            messageDiv.style.display = 'block';
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            messageDiv.className = 'alert alert-error';
+            messageDiv.textContent = 'Please enter a valid email address.';
+            messageDiv.style.display = 'block';
+            return;
+        }
+
+        if (!coverLetter) {
+            messageDiv.className = 'alert alert-error';
+            messageDiv.textContent = 'Please write a cover letter.';
+            messageDiv.style.display = 'block';
+            return;
+        }
+
+        if (!resumeFile) {
+            messageDiv.className = 'alert alert-error';
+            messageDiv.textContent = 'Please upload your resume/CV.';
+            messageDiv.style.display = 'block';
+            return;
+        }
+
         // Show loading state
         submitBtn.classList.add('loading');
         submitBtn.disabled = true;
@@ -2221,12 +2402,58 @@
         try {
             const formData = new FormData();
 
-            // Get form values
-            const formElements = document.getElementById('application-form').elements;
-            for (let element of formElements) {
-                if (element.name && element.value && element.type !== 'file') {
-                    formData.append(element.name, element.value);
-                }
+            // Get required fields explicitly
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const coverLetter = document.getElementById('coverLetter').value.trim();
+            const jobPostId = document.getElementById('jobPostId').value;
+
+            // Validate jobPostId exists and is a valid number
+            if (!jobPostId || isNaN(jobPostId)) {
+                throw new Error('Job post ID is missing or invalid. Please refresh the page and try again.');
+            }
+
+            // Add required fields first
+            formData.append('fullName', fullName);
+            formData.append('email', email);
+            formData.append('coverLetter', coverLetter);
+            formData.append('jobPostId', jobPostId); // Must be included as number
+
+            // Add optional text fields (only if they have values)
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            if (phoneNumber) {
+                formData.append('phoneNumber', phoneNumber);
+            }
+
+            const currentWorkplace = document.getElementById('currentWorkplace').value.trim();
+            if (currentWorkplace) {
+                formData.append('currentWorkplace', currentWorkplace);
+            }
+
+            const portfolioLink = document.getElementById('portfolioLink').value.trim();
+            if (portfolioLink) {
+                formData.append('portfolioLink', portfolioLink);
+            }
+
+            const githubLink = document.getElementById('githubLink').value.trim();
+            if (githubLink) {
+                formData.append('githubLink', githubLink);
+            }
+
+            const experience = document.getElementById('experience').value.trim();
+            if (experience) {
+                formData.append('experience', experience);
+            }
+
+            const skills = document.getElementById('skills').value.trim();
+            if (skills) {
+                formData.append('skills', skills);
+            }
+
+            // Add applicantId if available
+            const applicantId = document.getElementById('applicantId');
+            if (applicantId && applicantId.value) {
+                formData.append('applicantId', applicantId.value);
             }
 
             // Handle file uploads
@@ -2241,24 +2468,67 @@
                 formData.append('photoFile', photoFile);
             }
 
+            // Debug: Log form data (excluding files)
+            console.log('Submitting job application:', {
+                fullName,
+                email,
+                jobPostId,
+                applicantId: applicantId?.value || 'none',
+                hasResume: !!resumeFile,
+                hasPhoto: !!photoFile
+            });
+
             const response = await fetch('/job-applications', {
                 method: 'POST',
                 body: formData
             });
 
-            const result = await response.json();
+            let result;
+            try {
+                result = await response.json();
+            } catch (e) {
+                // If response is not JSON, create error object
+                const text = await response.text();
+                console.error('Non-JSON response:', text);
+                throw new Error('Server returned an invalid response. Please try again.');
+            }
 
             if (response.ok) {
                 messageDiv.className = 'alert alert-success';
-                messageDiv.textContent = 'Application submitted successfully! We will contact you soon.';
+                messageDiv.textContent = result.message || 'Application submitted successfully! We will contact you soon.';
                 messageDiv.style.display = 'block';
 
+                // Reset form after success
+                document.getElementById('application-form').reset();
+                
                 // Close modal after success
                 setTimeout(() => {
                     closeApplicationModal();
                 }, 2000);
             } else {
-                throw new Error(result.message || 'Failed to submit application');
+                // Extract error message from response
+                let errorMessage = 'Failed to submit application';
+                
+                if (result.message) {
+                    errorMessage = result.message;
+                } else if (result.error) {
+                    errorMessage = result.error;
+                    
+                    // If there are validation details, append them
+                    if (result.details && typeof result.details === 'object') {
+                        const details = Object.entries(result.details)
+                            .map(([field, msg]) => `${field}: ${msg}`)
+                            .join(', ');
+                        if (details) {
+                            errorMessage += ' - ' + details;
+                        }
+                    }
+                } else if (typeof result === 'string') {
+                    errorMessage = result;
+                }
+                
+                console.error('Application submission failed:', result);
+                throw new Error(errorMessage);
             }
 
         } catch (error) {
