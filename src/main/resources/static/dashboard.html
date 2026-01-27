@@ -98,6 +98,32 @@
             color: #ffffff;
         }
 
+        .back-to-landing-link {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .back-to-landing-link:hover {
+            color: #ffffff;
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .back-to-landing-link i {
+            font-size: 0.875rem;
+        }
+
         /* Main Content */
         .main-content {
             max-width: 1200px;
@@ -695,6 +721,10 @@
                 <a href="/jobs.html" class="nav-link">Jobs</a>
                 <a href="/news.html" class="nav-link">News</a>
                 <a href="/surveys.html" class="nav-link">Surveys</a>
+                <a href="/index.html" class="back-to-landing-link">
+                    <i class="fas fa-home"></i>
+                    Landing Page
+                </a>
                 <button class="theme-toggle" id="theme-toggle" aria-label="Change theme">
                     <span id="theme-toggle-icon">🌙</span>
                 </button>

@@ -1076,11 +1076,8 @@
     </main>
 
 <script>
-    // Require authentication (any role)
-    if (!Auth.requireAuth()) {
-        // Redirect will happen in requireAuth
-        throw new Error('Authentication required');
-    }
+    // Surveys page is accessible without authentication
+    // Users can view and participate in surveys without logging in
     // Navbar scroll effect
     (function() {
         const navbar = document.getElementById('navbar');
@@ -1607,17 +1604,57 @@
         if (card && !e.target.closest('.btn')) {
             const surveyId = card.getAttribute('data-survey-id');
 
-            // Remove selected class from all cards
-            document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
-            // Add selected class to clicked card
-            card.classList.add('selected');
+            // Check authentication before loading survey
+            if (!surveyId) return;
 
-            // Load survey details
-            if (surveyId) {
+            // Check if user is authenticated (alumni or student)
+            try {
+                const AuthObj = window.Auth || (typeof Auth !== 'undefined' ? Auth : null);
+                
+                if (!AuthObj || typeof AuthObj.isAuthenticated !== 'function') {
+                    console.warn('Auth object not available');
+                    redirectToLogin(surveyId);
+                    return;
+                }
+
+                const isAuthenticated = AuthObj.isAuthenticated();
+                
+                if (!isAuthenticated) {
+                    // User not authenticated, redirect to login
+                    redirectToLogin(surveyId);
+                    return;
+                }
+
+                // Check if user role is alumni or student
+                const userRole = AuthObj.getUserRole ? AuthObj.getUserRole() : null;
+                const allowedRoles = ['ALUMNI', 'STUDENT', 'alumni', 'student'];
+                
+                if (userRole && !allowedRoles.includes(userRole.toUpperCase())) {
+                    alert('Only alumni and students can participate in surveys. Please login with an alumni or student account.');
+                    return;
+                }
+
+                // User is authenticated and has correct role, proceed with survey
+                // Remove selected class from all cards
+                document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
+                // Add selected class to clicked card
+                card.classList.add('selected');
+
+                // Load survey details
                 loadSurveyDetailFromApi(surveyId);
+            } catch (error) {
+                console.error('Error checking authentication:', error);
+                redirectToLogin(surveyId);
             }
         }
     });
+
+    // Function to redirect to login with survey ID
+    function redirectToLogin(surveyId) {
+        const currentUrl = window.location.pathname;
+        const redirectUrl = `${currentUrl}?surveyId=${surveyId}`;
+        window.location.href = `/login.html?redirect=${encodeURIComponent(redirectUrl)}`;
+    }
 
     // Add visual feedback for form interactions
     document.addEventListener('focus', (e) => {
@@ -1700,10 +1737,54 @@
         await loadSurveys();
         const params = new URLSearchParams(window.location.search);
         const surveyIdParam = params.get('surveyId');
+        
         if (surveyIdParam) {
-            await loadSurveyDetailFromApi(surveyIdParam);
-            document.getElementById('survey-questions')?.scrollIntoView({ behavior: 'smooth' });
+            // Check authentication before loading survey details
+            try {
+                const AuthObj = window.Auth || (typeof Auth !== 'undefined' ? Auth : null);
+                
+                if (!AuthObj || typeof AuthObj.isAuthenticated !== 'function') {
+                    console.warn('Auth object not available');
+                    // Clear surveyId from URL if not authenticated
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                const isAuthenticated = AuthObj.isAuthenticated();
+                
+                if (!isAuthenticated) {
+                    // Not authenticated, clear the surveyId parameter
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                // Check if user role is alumni or student
+                const userRole = AuthObj.getUserRole ? AuthObj.getUserRole() : null;
+                const allowedRoles = ['ALUMNI', 'STUDENT', 'alumni', 'student'];
+                
+                if (userRole && !allowedRoles.includes(userRole.toUpperCase())) {
+                    alert('Only alumni and students can participate in surveys. Please login with an alumni or student account.');
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    return;
+                }
+
+                // User is authenticated and has correct role, load survey
+                await loadSurveyDetailFromApi(surveyIdParam);
+                
+                // Select the survey card visually
+                const surveyCard = document.querySelector(`[data-survey-id="${surveyIdParam}"]`);
+                if (surveyCard) {
+                    document.querySelectorAll('.survey-card').forEach(c => c.classList.remove('selected'));
+                    surveyCard.classList.add('selected');
+                }
+                
+                document.getElementById('survey-questions')?.scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error checking authentication:', error);
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         }
+        
         updateStats();
         addCardAnimations();
     }
