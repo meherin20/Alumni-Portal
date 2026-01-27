@@ -51,8 +51,4 @@ public class JobApplicationDto implements Serializable {
     private String photoFileName;
 
     private String status;
-
-    // For file uploads (not persisted)
-    private transient String photoFile;
-    private transient String resumeFile;
 }
