@@ -56,6 +56,15 @@ public class SurveyAdminController {
         return converter.buildResponseEntity(Map.of("message", "Survey unpublished"), HttpStatus.OK);
     }
 
+    @PostMapping("/publish-all-draft")
+    public ResponseEntity<?> publishAllDraft(@RequestParam String adminEmail) {
+        int count = surveyAdminService.publishAllDraft(adminEmail);
+        return converter.buildResponseEntity(
+                Map.of("message", "Published " + count + " draft survey(s)", "count", count),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping
     public ResponseEntity<?> list(@RequestParam String adminEmail) {
         return converter.buildResponseEntity(
