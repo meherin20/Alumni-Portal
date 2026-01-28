@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="/js/auth.js"></script>
     <style>
         :root {
@@ -884,6 +885,9 @@
         <p style="color: var(--admin-text-secondary); margin-bottom: 2rem; font-size: 14px; line-height: 1.5;">
             Create, publish, manage, and analyze surveys for the alumni community. Build engaging surveys with multiple question types.
         </p>
+        <div style="margin: 16px 0; padding: 12px; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10b981; border-radius: 4px;">
+            <strong style="color: #10b981;">⚠️ Important:</strong> Surveys are created as <strong>DRAFT</strong> by default and are <strong>not visible to users</strong> until you click the <strong>"Publish"</strong> button. You can also check "Publish immediately" when creating a survey to make it visible right away.
+        </div>
 
         <form id="admin-survey-form">
             <div class="form-grid">
@@ -898,6 +902,12 @@
                 <div class="form-group">
                     <label class="form-label" for="surveyAdminEmail">Admin Email</label>
                     <input type="email" id="surveyAdminEmail" name="surveyAdminEmail" class="form-input" placeholder="admin@example.com" required />
+                </div>
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="surveyPublishImmediately" style="margin: 0;" />
+                        <span>Publish immediately (survey will be visible to users right away)</span>
+                    </label>
                 </div>
             </div>
 
@@ -982,7 +992,12 @@
 
         <!-- Surveys Table -->
         <div style="margin-top: 32px;">
-            <h3 style="margin-bottom: 16px; color: var(--admin-text-primary); font-size: 18px; font-weight: 600;">Existing Surveys</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 style="margin: 0; color: var(--admin-text-primary); font-size: 18px; font-weight: 600;">Existing Surveys</h3>
+                <button id="publish-all-draft-surveys" class="btn" style="background: #10b981; color: white; padding: 8px 16px; font-size: 14px;">
+                    <i class="fas fa-check-circle" style="margin-right: 6px;"></i>Publish All Draft Surveys
+                </button>
+            </div>
             <div style="overflow-x: auto;">
                 <table class="data-table" id="admin-survey-table">
                     <thead>
@@ -2303,8 +2318,38 @@
             const result = await response.json().catch(() => ({}));
             console.log('Survey response:', response.status, result);
             if (response.ok) {
-                surveyCreateStatus.textContent = isEditing ? 'Survey updated successfully!' : 'Survey created successfully!';
-                surveyCreateStatus.style.color = 'green';
+                const resultData = result.data || {};
+                const surveyId = resultData.id || editingSurveyId;
+                
+                // Check if "Publish immediately" is checked
+                const publishImmediately = document.getElementById('surveyPublishImmediately')?.checked || false;
+                
+                if (publishImmediately && surveyId && !isEditing) {
+                    // Auto-publish the survey
+                    fetch(`/api/admin/surveys/${surveyId}/publish?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'POST' })
+                        .then(publishResponse => publishResponse.json())
+                        .then(publishData => {
+                            if (publishData.message) {
+                                surveyCreateStatus.textContent = 'Survey created and published successfully!';
+                                surveyCreateStatus.style.color = 'green';
+                                loadAdminSurveys();
+                            } else {
+                                surveyCreateStatus.textContent = 'Survey created but failed to publish. Please publish manually.';
+                                surveyCreateStatus.style.color = 'orange';
+                                loadAdminSurveys();
+                            }
+                        })
+                        .catch(publishError => {
+                            console.error('Error auto-publishing survey:', publishError);
+                            surveyCreateStatus.textContent = 'Survey created but failed to publish. Please publish manually.';
+                            surveyCreateStatus.style.color = 'orange';
+                            loadAdminSurveys();
+                        });
+                } else {
+                    surveyCreateStatus.textContent = isEditing ? 'Survey updated successfully!' : 'Survey created successfully! (Remember to publish it to make it visible)';
+                    surveyCreateStatus.style.color = 'green';
+                    loadAdminSurveys();
+                }
                 
                 // Store admin email before resetting form
                 const savedAdminEmail = adminEmail;
@@ -2320,7 +2365,6 @@
                 editingSurveyId = null;
                 updateSurveyQuestionsDisplay();
                 resetOptionsList();
-                loadAdminSurveys();
             } else {
                 const errorMessage = result.error || result.message || result.details || 'Error saving survey';
                 surveyCreateStatus.textContent = errorMessage;
@@ -2508,7 +2552,7 @@
                 if (Array.isArray(surveys) && surveys.length > 0) {
                     surveys.forEach(survey => {
                         console.log('Processing survey:', survey);
-                        const status = survey.published ? 'PUBLISHED' : 'DRAFT';
+                        const status = survey.published ? '<span style="color: #10b981; font-weight: 600;">PUBLISHED</span>' : '<span style="color: #f59e0b; font-weight: 600;">DRAFT</span>';
                         const canPublish = !survey.published;
                         const canUnpublish = survey.published;
                         const row = document.createElement('tr');
@@ -2518,10 +2562,10 @@
                             <td>${survey.responseCount || 0}</td>
                             <td>${status}</td>
                             <td>
-                                ${canPublish ? `<button class="btn-ghost" onclick="publishSurvey(${survey.id})">Publish</button>` : ''}
-                                ${canUnpublish ? `<button class="btn-ghost" onclick="unpublishSurvey(${survey.id})">Unpublish</button>` : ''}
+                                ${canPublish ? `<button class="btn-ghost" onclick="publishSurvey(${survey.id})" style="color: #10b981;">Publish</button>` : ''}
+                                ${canUnpublish ? `<button class="btn-ghost" onclick="unpublishSurvey(${survey.id})" style="color: #f59e0b;">Unpublish</button>` : ''}
                                 <button class="btn-ghost" onclick="viewSurveyResults(${survey.id})">Results</button>
-                                <button class="btn-ghost" onclick="deleteSurvey(${survey.id})">Delete</button>
+                                <button class="btn-ghost" onclick="deleteSurvey(${survey.id})" style="color: #ef4444;">Delete</button>
                             </td>
                         `;
                         adminSurveyTableBody.appendChild(row);
@@ -2534,6 +2578,146 @@
                 console.error('Error loading surveys:', error);
                 adminSurveyTableBody.innerHTML = '<tr><td colspan="5">Error loading surveys: ' + error.message + '</td></tr>';
             });
+    }
+
+    // Aggregate all answers into a single chart
+    function aggregateAnswersForCharts(userResponses) {
+        const answerMap = new Map();
+        let totalAnswers = 0;
+        
+        // Collect all answers from all questions
+        userResponses.forEach(userResp => {
+            if (userResp.answers && Array.isArray(userResp.answers)) {
+                userResp.answers.forEach(answer => {
+                    let answerValue = answer.answerValue || '(No answer)';
+                    
+                    // Truncate very long answers
+                    if (answerValue.length > 50) {
+                        answerValue = answerValue.substring(0, 50) + '...';
+                    }
+                    
+                    const currentCount = answerMap.get(answerValue) || 0;
+                    answerMap.set(answerValue, currentCount + 1);
+                    totalAnswers++;
+                });
+            }
+        });
+        
+        if (totalAnswers === 0) return null;
+        
+        // Sort by count (descending) and get top answers
+        const answerEntries = Array.from(answerMap.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 15); // Top 15 most common answers
+        
+        // If there are more unique answers, combine remaining into "Others"
+        if (answerMap.size > 15) {
+            const othersCount = Array.from(answerMap.entries())
+                .slice(15)
+                .reduce((sum, [, count]) => sum + count, 0);
+            if (othersCount > 0) {
+                answerEntries.push(['Others', othersCount]);
+            }
+        }
+        
+        const answerArray = answerEntries.map(([answer, count]) => ({
+            answer: answer,
+            count: count,
+            percentage: totalAnswers > 0 ? ((count / totalAnswers) * 100).toFixed(1) : 0
+        }));
+        
+        return {
+            answers: answerArray,
+            total: totalAnswers
+        };
+    }
+    
+    // Render single pie chart
+    function renderSurveyCharts(chartData) {
+        if (!chartData || !chartData.answers || chartData.answers.length === 0) return;
+        
+        const canvas = document.getElementById('survey-chart-single');
+        if (!canvas) return;
+        
+        // Extended color palette for single chart
+        const colorPalette = [
+            '#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe',
+            '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5',
+            '#f59e0b', '#fbbf24', '#fcd34d', '#fde68a', '#fef3c7',
+            '#06b6d4', '#22d3ee', '#67e8f9', '#a5f3fc', '#cffafe',
+            '#ef4444', '#f87171', '#fca5a5', '#fecaca', '#fee2e2'
+        ];
+        
+        const labels = chartData.answers.map(a => {
+            const label = a.answer.length > 40 ? a.answer.substring(0, 40) + '...' : a.answer;
+            return `${label} (${a.percentage}%)`;
+        });
+        const data = chartData.answers.map(a => parseInt(a.count));
+        const backgroundColors = chartData.answers.map((_, i) => colorPalette[i % colorPalette.length]);
+        
+        new Chart(canvas, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors,
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12,
+                                family: 'Inter, sans-serif'
+                            },
+                            color: '#475569',
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 12
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 13,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                const label = chartData.answers[context.dataIndex].answer;
+                                const count = context.parsed;
+                                const percentage = chartData.answers[context.dataIndex].percentage;
+                                return `${label}: ${count} responses (${percentage}%)`;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: `Total: ${chartData.total} responses`,
+                        font: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        color: '#1e293b',
+                        padding: {
+                            bottom: 10
+                        }
+                    }
+                }
+            }
+        });
     }
 
     // Survey management functions
@@ -2560,6 +2744,27 @@
                             <i class="fas fa-chart-bar" style="margin-right: 8px; color: #6366f1;"></i>Total Responses: <strong style="color: #1e293b;">${results.totalResponses || 0}</strong>
                         </div>
                 `;
+                
+                // Add single pie chart section for answer distribution
+                if (results.userResponses && results.userResponses.length > 0) {
+                    const chartData = aggregateAnswersForCharts(results.userResponses);
+                    if (chartData && chartData.answers && chartData.answers.length > 0) {
+                        resultsHTML += `
+                            <div style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                <h3 style="color: #1e293b; margin-bottom: 20px; font-size: 18px; font-weight: 600; display: flex; align-items: center;">
+                                    <i class="fas fa-chart-pie" style="margin-right: 8px; color: #6366f1;"></i>Answer Distribution
+                                </h3>
+                                <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <div style="display: flex; align-items: center; justify-content: center; min-height: 400px;">
+                                        <div style="width: 100%; max-width: 600px; position: relative; height: 400px;">
+                                            <canvas id="survey-chart-single"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
                 
                 // Add user responses section - show each user with their questions and answers
                 if (results.userResponses && results.userResponses.length > 0) {
@@ -2655,6 +2860,17 @@
                     }
                 });
                 document.body.appendChild(modal);
+                
+                // Render single pie chart after modal is added to DOM
+                if (results.userResponses && results.userResponses.length > 0) {
+                    const chartData = aggregateAnswersForCharts(results.userResponses);
+                    if (chartData && chartData.answers && chartData.answers.length > 0) {
+                        // Small delay to ensure DOM is ready
+                        setTimeout(() => {
+                            renderSurveyCharts(chartData);
+                        }, 100);
+                    }
+                }
                 
                 // Add click handler for close button to navigate to survey management
                 const closeBtn = modal.querySelector('#survey-results-close-btn');
@@ -2772,48 +2988,66 @@
     }
 
     function publishSurvey(surveyId) {
-        if (!confirm('Publish this survey? Once published, it can be answered by alumni.')) return;
+        if (!confirm('Publish this survey? Once published, it will be visible to all users and can be answered.')) return;
         const adminEmail = getAdminEmail();
         if (!adminEmail) {
             alert('Admin email is required');
             return;
         }
         fetch(`/api/admin/surveys/${surveyId}/publish?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert('Survey published successfully');
+            .then(async response => {
+                const responseText = await response.text();
+                let data = {};
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    console.warn('Response is not JSON:', responseText);
+                }
+                
+                if (response.ok && (data.message || response.status === 200)) {
+                    alert('Survey published successfully! It is now visible to all users.');
                     loadAdminSurveys();
                 } else {
-                    alert('Failed to publish survey');
+                    const errorMsg = data.message || data.error || `HTTP ${response.status}: ${responseText}`;
+                    alert('Failed to publish survey: ' + errorMsg);
+                    console.error('Publish error:', response.status, data);
                 }
             })
             .catch(error => {
                 console.error('Error publishing survey:', error);
-                alert('Network error publishing survey');
+                alert('Network error publishing survey: ' + error.message + '. Please check if the server is running and accessible.');
             });
     }
 
     function unpublishSurvey(surveyId) {
-        if (!confirm('Unpublish this survey? Once unpublished, it will no longer be visible to alumni.')) return;
+        if (!confirm('Unpublish this survey? Once unpublished, it will no longer be visible to users.')) return;
         const adminEmail = getAdminEmail();
         if (!adminEmail) {
             alert('Admin email is required');
             return;
         }
         fetch(`/api/admin/surveys/${surveyId}/unpublish?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'POST' })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert('Survey unpublished successfully');
+            .then(async response => {
+                const responseText = await response.text();
+                let data = {};
+                try {
+                    data = JSON.parse(responseText);
+                } catch (e) {
+                    console.warn('Response is not JSON:', responseText);
+                }
+                
+                if (response.ok && (data.message || response.status === 200)) {
+                    alert('Survey unpublished successfully. It is no longer visible to users.');
                     loadAdminSurveys();
                 } else {
-                    alert('Failed to unpublish survey');
+                    const errorMsg = data.message || data.error || `HTTP ${response.status}: ${responseText}`;
+                    alert('Failed to unpublish survey: ' + errorMsg);
+                    console.error('Unpublish error:', response.status, data);
                 }
             })
             .catch(error => {
                 console.error('Error unpublishing survey:', error);
-                alert('Network error unpublishing survey');
+                alert('Network error unpublishing survey: ' + error.message);
             });
     }
 
@@ -2866,6 +3100,54 @@
     if (refreshAdminSurveysBtn) {
         refreshAdminSurveysBtn.addEventListener('click', () => {
             loadAdminSurveys();
+        });
+    }
+
+    // Publish all draft surveys
+    const publishAllDraftBtn = document.getElementById('publish-all-draft-surveys');
+    if (publishAllDraftBtn) {
+        publishAllDraftBtn.addEventListener('click', () => {
+            const adminEmail = getAdminEmail();
+            if (!adminEmail) {
+                alert('Admin email is required');
+                return;
+            }
+            
+            if (!confirm('This will publish ALL draft surveys. They will become visible to all users. Continue?')) {
+                return;
+            }
+            
+            publishAllDraftBtn.disabled = true;
+            publishAllDraftBtn.textContent = 'Publishing...';
+            
+            fetch(`/api/admin/surveys/publish-all-draft?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'POST' })
+                .then(async response => {
+                    const responseText = await response.text();
+                    let data = {};
+                    try {
+                        data = JSON.parse(responseText);
+                    } catch (e) {
+                        console.warn('Response is not JSON:', responseText);
+                    }
+                    
+                    if (response.ok && data.message) {
+                        const count = data.count || 0;
+                        alert(`Successfully published ${count} draft survey(s)! They are now visible to all users.`);
+                        loadAdminSurveys();
+                    } else {
+                        const errorMsg = data.message || data.error || `HTTP ${response.status}: ${responseText}`;
+                        alert('Failed to publish draft surveys: ' + errorMsg);
+                        console.error('Publish all error:', response.status, data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error publishing all draft surveys:', error);
+                    alert('Network error: ' + error.message + '. Please check if the server is running.');
+                })
+                .finally(() => {
+                    publishAllDraftBtn.disabled = false;
+                    publishAllDraftBtn.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 6px;"></i>Publish All Draft Surveys';
+                });
         });
     }
 

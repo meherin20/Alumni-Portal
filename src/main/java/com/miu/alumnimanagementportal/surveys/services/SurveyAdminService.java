@@ -18,6 +18,8 @@ public interface SurveyAdminService {
 
     void unpublish(String adminEmail, Long surveyId);
 
+    int publishAllDraft(String adminEmail);
+
     List<SurveyListDto> listAll(String adminEmail);
 
     SurveyDetailDto getDetail(String adminEmail, Long surveyId);

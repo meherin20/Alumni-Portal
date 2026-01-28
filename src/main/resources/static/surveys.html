@@ -1188,8 +1188,34 @@
 
         try {
             const res = await fetch(url);
-            const json = await res.json().catch(() => ({}));
-            const surveys = (json.data || []).map(s => ({
+            
+            // Check if response is OK
+            if (!res.ok) {
+                console.error('Failed to load surveys. HTTP status:', res.status, res.statusText);
+                const errorText = await res.text().catch(() => 'Unknown error');
+                listEl.innerHTML = `<div class="alert alert-error">Failed to load surveys. Server returned ${res.status}: ${errorText}</div>`;
+                surveyCache = [];
+                return;
+            }
+            
+            const json = await res.json().catch((parseError) => {
+                console.error('Failed to parse JSON response:', parseError);
+                listEl.innerHTML = '<div class="alert alert-error">Failed to parse server response. Please check if the backend is running.</div>';
+                surveyCache = [];
+                return {};
+            });
+            
+            // Handle different response structures
+            let surveysArray = [];
+            if (Array.isArray(json)) {
+                surveysArray = json;
+            } else if (json && json.data) {
+                surveysArray = Array.isArray(json.data) ? json.data : [];
+            }
+            
+            console.log('Loaded surveys:', surveysArray.length);
+            
+            const surveys = surveysArray.map(s => ({
                 id: s.id,
                 title: s.title,
                 description: s.description,
@@ -1198,11 +1224,18 @@
                 closeAt: s.endAt,
                 published: s.published
             }));
+            
             surveyCache = surveys;
             renderSurveyList(surveys);
+            
+            // Show message if no surveys found
+            if (surveys.length === 0) {
+                listEl.innerHTML = '<div class="hint">No published surveys available at this time. Check back later or contact an administrator.</div>';
+            }
         } catch (e) {
+            console.error('Error loading surveys:', e);
             surveyCache = [];
-            listEl.innerHTML = '<div class="alert alert-error">Failed to load surveys.</div>';
+            listEl.innerHTML = `<div class="alert alert-error">Failed to load surveys: ${e.message}. Please check your network connection and ensure the server is running.</div>`;
         }
     }
 
@@ -1222,7 +1255,21 @@
         try {
             console.log('Loading survey details for ID:', id);
             const res = await fetch('/api/surveys/' + encodeURIComponent(id));
-            const json = await res.json().catch(() => ({}));
+            
+            if (!res.ok) {
+                console.error('Failed to load survey details. HTTP status:', res.status);
+                const errorText = await res.text().catch(() => 'Unknown error');
+                titleEl.textContent = 'Error';
+                qContainer.innerHTML = `<div class="alert alert-error">Failed to load survey. Server returned ${res.status}: ${errorText}</div>`;
+                return;
+            }
+            
+            const json = await res.json().catch((parseError) => {
+                console.error('Failed to parse JSON response:', parseError);
+                titleEl.textContent = 'Error';
+                qContainer.innerHTML = '<div class="alert alert-error">Failed to parse server response. Please check if the backend is running.</div>';
+                return {};
+            });
             console.log('Survey API response:', json);
             
             if (!res.ok) {

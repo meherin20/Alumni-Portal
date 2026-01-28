@@ -103,6 +103,25 @@ public class SurveyAdminServiceImpl implements SurveyAdminService {
 
     @Override
     @Transactional
+    public int publishAllDraft(String adminEmail) {
+        User admin = requireAdmin(adminEmail);
+        List<Survey> draftSurveys = surveyRepository.findAllWithQuestions()
+                .stream()
+                .filter(s -> !s.isPublished())
+                .collect(Collectors.toList());
+        
+        LocalDateTime now = LocalDateTime.now();
+        for (Survey survey : draftSurveys) {
+            survey.setPublished(true);
+            survey.setPublishedAt(now);
+            surveyRepository.save(survey);
+        }
+        
+        return draftSurveys.size();
+    }
+
+    @Override
+    @Transactional
     public List<SurveyListDto> listAll(String adminEmail) {
         User admin = requireAdmin(adminEmail);
         return surveyRepository.findAllWithQuestions()
