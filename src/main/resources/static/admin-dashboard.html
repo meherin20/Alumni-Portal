@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script src="/js/auth.js"></script>
     <style>
         :root {
@@ -2536,6 +2537,146 @@
             });
     }
 
+    // Aggregate all answers into a single chart
+    function aggregateAnswersForCharts(userResponses) {
+        const answerMap = new Map();
+        let totalAnswers = 0;
+        
+        // Collect all answers from all questions
+        userResponses.forEach(userResp => {
+            if (userResp.answers && Array.isArray(userResp.answers)) {
+                userResp.answers.forEach(answer => {
+                    let answerValue = answer.answerValue || '(No answer)';
+                    
+                    // Truncate very long answers
+                    if (answerValue.length > 50) {
+                        answerValue = answerValue.substring(0, 50) + '...';
+                    }
+                    
+                    const currentCount = answerMap.get(answerValue) || 0;
+                    answerMap.set(answerValue, currentCount + 1);
+                    totalAnswers++;
+                });
+            }
+        });
+        
+        if (totalAnswers === 0) return null;
+        
+        // Sort by count (descending) and get top answers
+        const answerEntries = Array.from(answerMap.entries())
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 15); // Top 15 most common answers
+        
+        // If there are more unique answers, combine remaining into "Others"
+        if (answerMap.size > 15) {
+            const othersCount = Array.from(answerMap.entries())
+                .slice(15)
+                .reduce((sum, [, count]) => sum + count, 0);
+            if (othersCount > 0) {
+                answerEntries.push(['Others', othersCount]);
+            }
+        }
+        
+        const answerArray = answerEntries.map(([answer, count]) => ({
+            answer: answer,
+            count: count,
+            percentage: totalAnswers > 0 ? ((count / totalAnswers) * 100).toFixed(1) : 0
+        }));
+        
+        return {
+            answers: answerArray,
+            total: totalAnswers
+        };
+    }
+    
+    // Render single pie chart
+    function renderSurveyCharts(chartData) {
+        if (!chartData || !chartData.answers || chartData.answers.length === 0) return;
+        
+        const canvas = document.getElementById('survey-chart-single');
+        if (!canvas) return;
+        
+        // Extended color palette for single chart
+        const colorPalette = [
+            '#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd', '#ddd6fe',
+            '#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#d1fae5',
+            '#f59e0b', '#fbbf24', '#fcd34d', '#fde68a', '#fef3c7',
+            '#06b6d4', '#22d3ee', '#67e8f9', '#a5f3fc', '#cffafe',
+            '#ef4444', '#f87171', '#fca5a5', '#fecaca', '#fee2e2'
+        ];
+        
+        const labels = chartData.answers.map(a => {
+            const label = a.answer.length > 40 ? a.answer.substring(0, 40) + '...' : a.answer;
+            return `${label} (${a.percentage}%)`;
+        });
+        const data = chartData.answers.map(a => parseInt(a.count));
+        const backgroundColors = chartData.answers.map((_, i) => colorPalette[i % colorPalette.length]);
+        
+        new Chart(canvas, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: backgroundColors,
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 15,
+                            font: {
+                                size: 12,
+                                family: 'Inter, sans-serif'
+                            },
+                            color: '#475569',
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            boxWidth: 12
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 13,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                const label = chartData.answers[context.dataIndex].answer;
+                                const count = context.parsed;
+                                const percentage = chartData.answers[context.dataIndex].percentage;
+                                return `${label}: ${count} responses (${percentage}%)`;
+                            }
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: `Total: ${chartData.total} responses`,
+                        font: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        color: '#1e293b',
+                        padding: {
+                            bottom: 10
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     // Survey management functions
     function viewSurveyResults(surveyId) {
         const adminEmail = getAdminEmail();
@@ -2560,6 +2701,27 @@
                             <i class="fas fa-chart-bar" style="margin-right: 8px; color: #6366f1;"></i>Total Responses: <strong style="color: #1e293b;">${results.totalResponses || 0}</strong>
                         </div>
                 `;
+                
+                // Add single pie chart section for answer distribution
+                if (results.userResponses && results.userResponses.length > 0) {
+                    const chartData = aggregateAnswersForCharts(results.userResponses);
+                    if (chartData && chartData.answers && chartData.answers.length > 0) {
+                        resultsHTML += `
+                            <div style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                <h3 style="color: #1e293b; margin-bottom: 20px; font-size: 18px; font-weight: 600; display: flex; align-items: center;">
+                                    <i class="fas fa-chart-pie" style="margin-right: 8px; color: #6366f1;"></i>Answer Distribution
+                                </h3>
+                                <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                    <div style="display: flex; align-items: center; justify-content: center; min-height: 400px;">
+                                        <div style="width: 100%; max-width: 600px; position: relative; height: 400px;">
+                                            <canvas id="survey-chart-single"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
                 
                 // Add user responses section - show each user with their questions and answers
                 if (results.userResponses && results.userResponses.length > 0) {
@@ -2655,6 +2817,17 @@
                     }
                 });
                 document.body.appendChild(modal);
+                
+                // Render single pie chart after modal is added to DOM
+                if (results.userResponses && results.userResponses.length > 0) {
+                    const chartData = aggregateAnswersForCharts(results.userResponses);
+                    if (chartData && chartData.answers && chartData.answers.length > 0) {
+                        // Small delay to ensure DOM is ready
+                        setTimeout(() => {
+                            renderSurveyCharts(chartData);
+                        }, 100);
+                    }
+                }
                 
                 // Add click handler for close button to navigate to survey management
                 const closeBtn = modal.querySelector('#survey-results-close-btn');
