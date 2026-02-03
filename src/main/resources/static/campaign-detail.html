@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campaign · Alumni Support Fund</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/js/auth.js"></script>
+    <style>
+        body { font-family: Inter, system-ui, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; color: #f8fafc; margin: 0; }
+        .campaign-nav { background: rgba(15,23,42,0.9); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .campaign-nav a { color: #94a3b8; text-decoration: none; }
+        .campaign-nav a:hover { color: #fff; }
+        .campaign-wrap { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        .campaign-title { font-size: 1.75rem; margin-bottom: 0.5rem; }
+        .campaign-desc { color: rgba(255,255,255,0.7); margin-bottom: 1.5rem; }
+        .progress-wrap { margin-bottom: 1.5rem; }
+        .progress-bar { height: 12px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #34d399); border-radius: 6px; transition: width 0.5s; }
+        .donate-form { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .donate-form label { display: block; margin-bottom: 0.5rem; }
+        .donate-form input, .donate-form select { width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.2); color: #fff; margin-bottom: 1rem; }
+        .donate-form button { background: #10b981; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
+        .contact-box { background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.3); border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+        .recent-donors { margin-top: 1.5rem; }
+        .recent-donors h4 { margin-bottom: 0.75rem; }
+        .donor-item { padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; }
+        .alert-success { background: rgba(16,185,129,0.2); color: #34d399; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+        .alert-error { background: rgba(239,68,68,0.2); color: #f87171; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+    </style>
+</head>
+<body>
+    <nav class="campaign-nav">
+        <a href="/alumni-portal.html"><i class="fas fa-arrow-left"></i> Back to Profile</a>
+        <a href="/campaign-detail.html">All Campaigns</a>
+        <a href="/my-donations.html">My Donations</a>
+    </nav>
+    <div class="campaign-wrap">
+        <div id="campaign-loading">Loading campaign...</div>
+        <div id="campaign-content" style="display: none;">
+            <h1 class="campaign-title" id="campaign-title"></h1>
+            <p class="campaign-desc" id="campaign-desc"></p>
+            <div class="progress-wrap">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span id="campaign-raised">0</span> / <span id="campaign-goal">0</span>
+                    <span id="campaign-pct">0%</span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" id="campaign-progress" style="width: 0%;"></div></div>
+            </div>
+            <div id="donation-login-required" class="alert-error" style="display: none; background: rgba(245,158,11,0.2); color: #fcd34d;">
+                Only registered alumni can donate. <a href="/login.html?redirect=" id="donation-login-link" style="color: #fcd34d;">Log in</a> to contribute.
+            </div>
+            <div id="donation-success" class="alert-success" style="display: none;">
+                Thank you! Your donation was received.
+                <a href="/my-donations.html" style="color: inherit; text-decoration: underline; margin-left: 0.5rem;">View My Donations</a>
+            </div>
+            <div id="donation-error" class="alert-error" style="display: none;"></div>
+            <div class="donate-form" id="donate-form-wrap">
+                <h3 style="margin-top: 0;"><i class="fas fa-hand-holding-heart"></i> Donate to this campaign</h3>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 1rem;">Your contribution supports alumni and events. All amounts in BDT (৳).</p>
+                <label>Amount (BDT)</label>
+                <select id="donate-amount">
+                    <option value="100">৳ 100</option>
+                    <option value="500">৳ 500</option>
+                    <option value="1000">৳ 1,000</option>
+                    <option value="5000">৳ 5,000</option>
+                    <option value="10000">৳ 10,000</option>
+                    <option value="custom">Custom amount</option>
+                </select>
+                <input type="number" id="donate-amount-custom" placeholder="Enter amount in BDT" style="display: none;" min="1" step="1" />
+                <label>Payment method</label>
+                <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                    <label><input type="radio" name="donate-method" value="CARD" /> Card</label>
+                    <label><input type="radio" name="donate-method" value="BKASH" checked /> bKash</label>
+                </div>
+                <button type="button" id="donate-submit"><i class="fas fa-heart"></i> Donate</button>
+                <div id="donate-status" class="hint" style="margin-top: 0.75rem;"></div>
+                <p style="margin-top: 1rem; font-size: 0.85rem;"><a href="/my-donations.html" style="color: #94a3b8;">View your past donations</a></p>
+            </div>
+            <div class="contact-box">
+                <strong>For help call:</strong> <span id="campaign-phone">+8801673323434</span>
+            </div>
+            <div class="recent-donors" id="recent-donors-wrap" style="display: none;">
+                <h4>Recent donors</h4>
+                <div id="recent-donors-list"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const campaignId = params.get('id');
+        const donationSuccess = params.get('donationSuccess');
+        const donationIdParam = params.get('donationId');
+
+        if (donationSuccess === '1' && donationIdParam) {
+            document.getElementById('donation-success').style.display = 'block';
+            fetch('/api/funding/donations/' + donationIdParam).then(r => r.json()).then(data => {
+                const d = data.data || data;
+                if (d.status === 'PAID') document.getElementById('donation-success').textContent = 'Thank you! Your donation of ' + d.amount + ' was received.';
+            }).catch(() => {});
+        }
+
+        if (!campaignId) {
+            document.getElementById('campaign-loading').innerHTML = 'Loading campaigns...';
+            fetch('/api/funding/campaigns').then(r => r.json()).then(data => {
+                const list = data.data || data || [];
+                document.getElementById('campaign-loading').style.display = 'none';
+                document.getElementById('campaign-content').style.display = 'block';
+                document.getElementById('campaign-title').textContent = 'Active Campaigns';
+                document.getElementById('campaign-desc').textContent = 'Choose a campaign to donate.';
+                document.querySelector('.progress-wrap').style.display = 'none';
+                document.querySelector('.donate-form').style.display = 'none';
+                document.querySelector('.contact-box').style.display = 'none';
+                const wrap = document.createElement('div');
+                wrap.style.display = 'grid';
+                wrap.style.gap = '1rem';
+                wrap.innerHTML = list.length === 0 ? '<p>No active campaigns at the moment.</p>' : list.map(c => {
+                    const raised = c.raisedAmount != null ? Number(c.raisedAmount) : 0;
+                    const goal = c.goalAmount != null ? Number(c.goalAmount) : 1;
+                    const pct = goal > 0 ? (raised / goal * 100).toFixed(1) : 0;
+                    return '<div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 12px;"><a href="/campaign-detail.html?id=' + c.id + '" style="color: #10b981; font-weight: 600;">' + (c.title || '').substring(0, 60) + '</a><p style="margin: 0.5rem 0 0 0; font-size: 0.875rem;">Raised ' + raised + ' / ' + goal + ' (' + pct + '%)</p><div style="height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 0.5rem;"><div style="height: 100%; width: ' + (goal > 0 ? Math.min(100, (raised / goal * 100)) : 0) + '%; background: #10b981; border-radius: 3px;"></div></div></div>';
+                }).join('');
+                document.getElementById('campaign-content').appendChild(wrap);
+            }).catch(() => { document.getElementById('campaign-loading').textContent = 'Could not load campaigns.'; });
+        } else {
+            fetch('/api/funding/campaigns/' + campaignId)
+                .then(r => r.json())
+                .then(data => {
+                    const c = data.data || data;
+                    document.getElementById('campaign-loading').style.display = 'none';
+                    document.getElementById('campaign-content').style.display = 'block';
+                    document.getElementById('campaign-title').textContent = c.title || '';
+                    document.getElementById('campaign-desc').textContent = c.description || '';
+                    const raised = c.raisedAmount != null ? Number(c.raisedAmount) : 0;
+                    const goal = c.goalAmount != null ? Number(c.goalAmount) : 1;
+                    const pct = goal > 0 ? Math.min(100, (raised / goal * 100)) : 0;
+                    document.getElementById('campaign-raised').textContent = raised.toLocaleString();
+                    document.getElementById('campaign-goal').textContent = goal.toLocaleString();
+                    document.getElementById('campaign-pct').textContent = pct.toFixed(1) + '%';
+                    document.getElementById('campaign-progress').style.width = pct + '%';
+                    document.getElementById('campaign-phone').textContent = c.contactPhone || '+8801673323434';
+
+                    var isAlumni = typeof Auth !== 'undefined' && Auth.isAuthenticated && Auth.isAuthenticated();
+                    var loginRequiredEl = document.getElementById('donation-login-required');
+                    var donateFormEl = document.getElementById('donate-form-wrap');
+                    var loginLink = document.getElementById('donation-login-link');
+                    if (loginLink) loginLink.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname + '?id=' + campaignId);
+                    if (isAlumni) {
+                        if (loginRequiredEl) loginRequiredEl.style.display = 'none';
+                        if (donateFormEl) donateFormEl.style.display = 'block';
+                    } else {
+                        if (loginRequiredEl) loginRequiredEl.style.display = 'block';
+                        if (donateFormEl) donateFormEl.style.display = 'none';
+                    }
+
+                    document.getElementById('donate-amount').addEventListener('change', function() {
+                        document.getElementById('donate-amount-custom').style.display = this.value === 'custom' ? 'block' : 'none';
+                    });
+                    document.getElementById('donate-submit').addEventListener('click', function() {
+                        let amount = document.getElementById('donate-amount').value;
+                        if (amount === 'custom') amount = document.getElementById('donate-amount-custom').value;
+                        amount = parseFloat(amount);
+                        if (!amount || amount < 1) { document.getElementById('donate-status').textContent = 'Please enter a valid amount.'; return; }
+                        const method = document.querySelector('input[name="donate-method"]:checked').value;
+                        const userEmail = (typeof Auth !== 'undefined' && Auth.getEmail && Auth.getEmail()) || localStorage.getItem('amp-user-email') || prompt('Enter your email (to record your donation):');
+                        if (!userEmail) { document.getElementById('donate-status').textContent = 'Email is required.'; return; }
+                        document.getElementById('donate-status').textContent = 'Processing...';
+                        fetch('/api/funding/donations?userEmail=' + encodeURIComponent(userEmail), {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ campaignId: parseInt(campaignId, 10), amount: amount, method: method })
+                        }).then(r => r.json()).then(data => {
+                            const res = data.data || data;
+                            if (res.donationId) {
+                                document.getElementById('donate-status').textContent = 'Donation created. Simulating payment...';
+                                fetch('/api/funding/donations/' + res.donationId + '/simulate-paid', { method: 'POST' })
+                                    .then(() => {
+                                        document.getElementById('donation-success').style.display = 'block';
+                                        document.getElementById('donation-success').innerHTML = 'Thank you! Your donation of ৳ ' + amount.toLocaleString() + ' was received. <a href="/my-donations.html" style="color: inherit; text-decoration: underline; margin-left: 0.5rem;">View My Donations</a>';
+                                        document.getElementById('donate-status').textContent = '';
+                                        fetch('/api/funding/campaigns/' + campaignId).then(r => r.json()).then(d => {
+                                            const c = d.data || d;
+                                            const raised = c.raisedAmount != null ? Number(c.raisedAmount) : 0;
+                                            const goal = c.goalAmount != null ? Number(c.goalAmount) : 1;
+                                            const pct = goal > 0 ? Math.min(100, (raised / goal * 100)) : 0;
+                                            document.getElementById('campaign-raised').textContent = raised.toLocaleString();
+                                            document.getElementById('campaign-pct').textContent = pct.toFixed(1) + '%';
+                                            document.getElementById('campaign-progress').style.width = pct + '%';
+                                        });
+                                    })
+                                    .catch(() => { document.getElementById('donate-status').textContent = 'Marked as paid (demo). Refresh to see updated total.'; });
+                            } else {
+                                document.getElementById('donate-status').textContent = res.message || 'Done.';
+                            }
+                        }).catch(e => { document.getElementById('donate-status').textContent = 'Error: ' + e.message; });
+                    });
+                })
+                .catch(() => { document.getElementById('campaign-loading').textContent = 'Campaign not found.'; });
+        }
+    </script>
+</body>
+</html>

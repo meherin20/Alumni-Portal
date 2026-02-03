@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(
         value = {
                 "com.miu.alumnimanagementportal.repositories",
-                "com.miu.alumnimanagementportal.surveys.repositories"
+                "com.miu.alumnimanagementportal.surveys.repositories",
+                "com.miu.alumnimanagementportal.funding.repositories"
         },
         repositoryFactoryBeanClass = AlumniManagementRepositoryFactoryBean.class
 )

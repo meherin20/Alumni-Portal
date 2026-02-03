@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="/js/auth.js"></script>
     <style>
         body { font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -337,18 +338,15 @@
             </div>
         </div>
         <nav class="app-nav-links">
-            <a href="/" class="app-nav-link">Home</a>
-            <a href="/events.html" class="app-nav-link app-nav-link-active">Events</a>
-            <a href="/jobs.html" class="app-nav-link">Jobs</a>
-            <a href="/news.html" class="app-nav-link">News</a>
-            <a href="/surveys.html" class="app-nav-link">Surveys</a>
+            <a href="/alumni-portal.html" class="app-nav-link"><i class="fas fa-arrow-left"></i> Back to Profile</a>
+            <a href="/events.html" class="app-nav-link">All Events</a>
             <a href="/login.html" class="app-nav-cta">Login</a>
         </nav>
     </header>
 
     <main class="layout-main">
         <section class="scene-card">
-            <a href="/events.html" class="back-link">← Back to Events</a>
+            <a href="/alumni-portal.html" class="back-link">← Back to Profile</a>
 
             <div id="error-message" class="error" style="display: none;"></div>
             <div id="loading" class="loading">Loading event details...</div>
@@ -367,6 +365,12 @@
                 <!-- Event Content -->
                 <div id="event-content" class="event-content">
                     <!-- Content will be populated by JavaScript -->
+                </div>
+
+                <!-- Funding campaigns for this event -->
+                <div id="event-funding-section" style="margin-top: 2rem; padding: 1.5rem; background: rgba(16,185,129,0.08); border-radius: 12px; border: 1px solid rgba(16,185,129,0.2); display: none;">
+                    <h3 style="margin: 0 0 1rem 0;"><i class="fas fa-hand-holding-heart"></i> Funding campaigns for this event</h3>
+                    <div id="event-funding-campaigns-list"></div>
                 </div>
             </div>
         </section>
@@ -403,7 +407,8 @@
                 throw new Error('Failed to load event details');
             }
 
-            currentEvent = await response.json();
+            const json = await response.json();
+            currentEvent = json.data || json;
             displayEventDetails(currentEvent);
 
         } catch (error) {
@@ -418,8 +423,33 @@
         displayEventHeader(event);
         displayRegistrationSection(event);
         displayEventContent(event);
+        const eventId = event.id || new URLSearchParams(window.location.search).get('id');
+        if (eventId) loadEventFundingCampaigns(eventId);
 
         document.getElementById('event-detail-container').style.display = 'block';
+    }
+
+    function loadEventFundingCampaigns(eventId) {
+        fetch('/api/funding/events/' + eventId + '/campaigns')
+            .then(r => r.json())
+            .then(data => {
+                const list = data.data || data || [];
+                const section = document.getElementById('event-funding-section');
+                const listEl = document.getElementById('event-funding-campaigns-list');
+                if (!section || !listEl) return;
+                if (list.length === 0) {
+                    section.style.display = 'none';
+                    return;
+                }
+                section.style.display = 'block';
+                listEl.innerHTML = list.map(c => {
+                    const raised = c.raisedAmount != null ? Number(c.raisedAmount) : 0;
+                    const goal = c.goalAmount != null ? Number(c.goalAmount) : 1;
+                    const pct = goal > 0 ? (raised / goal * 100).toFixed(1) : 0;
+                    return '<div style="margin-bottom: 0.75rem;"><a href="/campaign-detail.html?id=' + c.id + '" style="color: #10b981; font-weight: 600;">' + (c.title || '').substring(0, 50) + '</a> — Raised ' + raised + ' / ' + goal + ' (' + pct + '%) <a href="/campaign-detail.html?id=' + c.id + '" style="margin-left: 8px;">View Campaign · Donate</a></div>';
+                }).join('');
+            })
+            .catch(() => { document.getElementById('event-funding-section').style.display = 'none'; });
     }
 
     function displayEventHeader(event) {
@@ -440,10 +470,13 @@
             minute: '2-digit'
         });
 
+        const eventTypeLabel = event.eventTypeLabel || (event.eventType || '').toString().replace('_', ' ');
+        const locationVal = event.location || 'Location TBD';
+        const statusVal = (event.eventStatus || 'UPCOMING').toString();
         const headerHtml = `
-            <div class="event-category">${event.eventTypeLabel}</div>
-            <h1 class="event-title">${event.title}</h1>
-            <p class="event-subtitle">${event.shortDescription || 'Join us for this exciting event'}</p>
+            <div class="event-category">${eventTypeLabel}</div>
+            <h1 class="event-title">${event.title || 'Event'}</h1>
+            <p class="event-subtitle">${event.shortDescription || event.description || 'Join us for this exciting event.'}</p>
 
             <div class="event-meta">
                 <div class="meta-item">
@@ -457,18 +490,18 @@
                     <span class="meta-icon">📍</span>
                     <div>
                         <div class="meta-label">Location</div>
-                        <div class="meta-value">${event.location}</div>
+                        <div class="meta-value">${locationVal}</div>
                     </div>
                 </div>
                 <div class="meta-item">
                     <span class="meta-icon">👥</span>
                     <div>
                         <div class="meta-label">Organizers</div>
-                        <div class="meta-value">${event.organizerNames ? event.organizerNames.join(', ') : 'Alumni Office'}</div>
+                        <div class="meta-value">${event.organizerNames && event.organizerNames.length ? event.organizerNames.join(', ') : 'Alumni Office'}</div>
                     </div>
                 </div>
                 <div class="meta-item">
-                    <span class="event-status status-${event.eventStatus.toLowerCase()}">${event.eventStatus}</span>
+                    <span class="event-status status-${statusVal.toLowerCase()}">${event.eventStatusLabel || statusVal}</span>
                 </div>
             </div>
         `;
@@ -529,13 +562,24 @@
     function displayEventContent(event) {
         let contentHtml = '';
 
-        // Full Description
-        if (event.fullDescription || event.description) {
+        // Full Description (always show section so details are visible)
+        const aboutText = event.fullDescription || event.description || event.shortDescription || 'No additional description provided.';
+        contentHtml += `
+            <div class="content-section">
+                <h2 class="section-title">📖 About This Event</h2>
+                <div class="section-content">
+                    ${aboutText}
+                </div>
+            </div>
+        `;
+
+        // Hyperlink / Join link (show prominently if present)
+        if (event.hyperlink) {
             contentHtml += `
                 <div class="content-section">
-                    <h2 class="section-title">📖 About This Event</h2>
+                    <h2 class="section-title">🔗 Event Link</h2>
                     <div class="section-content">
-                        ${event.fullDescription || event.description}
+                        <a href="${event.hyperlink}" target="_blank" rel="noopener" class="attachment-link" style="font-size: 1rem;">Open event link →</a>
                     </div>
                 </div>
             `;
