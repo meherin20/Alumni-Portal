@@ -65,12 +65,21 @@ The Alumni Management Portal is a full-stack web application that serves as a ce
 - **Message History**: View conversation history
 - **Connection-based Messaging**: Message only connected users
 
+### 💰 Fundings (Alumni Support Fund)
+- **Campaigns**: Admins create fundraising campaigns with goals, dates, and payment options (card, bKash)
+- **Donations**: Logged-in users can donate to campaigns; payments can be simulated or integrated via webhooks
+- **Public Summary**: Landing page and portal show total raised, total goal, progress, and donations-over-time charts
+- **Admin Analytics**: Per-campaign and overall analytics—bar charts (donations over time), donut charts (progress), campaign breakdown
+- **My Donations**: Users can view their donation history
+- **Export**: Admins can export donations as CSV
+
 ### 📈 Admin Dashboard
 - **User Management**: View and manage all users
 - **Survey Management**: Create, publish, and analyze surveys
 - **Job Management**: Post and manage job opportunities
 - **Event Management**: Create and manage events
 - **News Management**: Publish and manage news articles
+- **Funding Management**: Create campaigns, view donations, and analytics (Campaigns, Donations, Analytics tabs)
 - **Analytics**: View survey results, user statistics, and engagement metrics
 
 ## 🛠️ Technology Stack
@@ -173,6 +182,7 @@ AlumniManagementPortal/
 │   │   │   ├── entities/             # JPA entities
 │   │   │   ├── dtos/                 # Data Transfer Objects
 │   │   │   ├── surveys/              # Survey module
+│   │   │   ├── funding/               # Fundings (campaigns, donations, analytics)
 │   │   │   ├── config/                # Configuration classes
 │   │   │   ├── exceptions/           # Custom exceptions
 │   │   │   └── common/                # Common utilities
@@ -194,6 +204,7 @@ AlumniManagementPortal/
 - Job posting and management
 - Event creation and management
 - News publishing
+- **Funding campaigns**: Create, publish, close campaigns; view donations and analytics; export CSV
 - Analytics and reports
 
 ### Alumni
@@ -204,6 +215,7 @@ AlumniManagementPortal/
 - Participate in surveys
 - Post memories
 - View events and news
+- **Donate to campaigns** (Alumni Support Fund); view my donations
 - Messaging with connections
 
 ### Student
@@ -214,6 +226,7 @@ AlumniManagementPortal/
 - Participate in surveys
 - Post memories
 - View events and news
+- **Donate to campaigns** (Alumni Support Fund); view my donations
 - Messaging with connections
 
 ## 📡 API Endpoints
@@ -268,6 +281,32 @@ AlumniManagementPortal/
 - `GET /api/admin/news` - Admin: List all news
 - `POST /api/admin/news` - Admin: Create news
 
+### Fundings (Alumni Support Fund)
+- **Public**
+  - `GET /api/funding/summary` - Get summary (total raised, goal, percent, featured campaigns, donations over time)
+  - `GET /api/funding/campaigns` - List active campaigns (optional `eventId`)
+  - `GET /api/funding/campaigns/{id}` - Get campaign details
+  - `GET /api/funding/campaigns/top?limit=10` - Top campaigns by amount raised
+  - `GET /api/funding/donations/over-time?groupBy=day` - Donations over time
+  - `POST /api/funding/donations` - Create donation (requires `userEmail`, body: campaignId, amount, method, etc.)
+  - `GET /api/funding/my-donations?userEmail=...` - Current user's donations
+  - `GET /api/funding/donations/{id}` - Get donation by ID
+  - `GET /api/funding/events/{eventId}/campaigns` - Campaigns for an event
+- **Admin** (require admin email)
+  - `GET /api/admin/funding/campaigns?adminEmail=...` - List all campaigns
+  - `POST /api/admin/funding/campaigns` - Create campaign
+  - `PUT /api/admin/funding/campaigns/{id}` - Update campaign
+  - `DELETE /api/admin/funding/campaigns/{id}` - Delete campaign
+  - `POST /api/admin/funding/campaigns/{id}/publish` - Publish campaign
+  - `POST /api/admin/funding/campaigns/{id}/unpublish` - Unpublish campaign
+  - `POST /api/admin/funding/campaigns/{id}/close` - Close campaign
+  - `GET /api/admin/funding/donations` - List donations (optional campaignId, status, method)
+  - `GET /api/admin/funding/donations/export` - Export donations CSV
+  - `GET /api/admin/funding/analytics?adminEmail=...` - Summary, donations over time, top campaigns, per-campaign analytics
+- **Webhooks**
+  - `POST /api/funding/webhook/card` - Card gateway webhook (mark donation paid)
+  - `POST /api/funding/webhook/bkash` - bKash webhook (mark donation paid)
+
 ## 🎨 Frontend Pages
 
 - `index.html` - Landing page
@@ -287,6 +326,10 @@ AlumniManagementPortal/
 - `messages.html` - Messaging interface
 - `photo-library.html` - Photo library
 - `connection-requests.html` - Connection requests
+- `campaign-detail.html` - Campaign list and donation (Alumni Support Fund)
+- `my-donations.html` - User's donation history
+- **Landing (index.html)**: Alumni Support Fund card with donations-over-time chart, progress donut, campaign names, and "Want to donate? Log in"
+- **Admin dashboard**: Funding modal (Campaigns, Donations, Analytics) with per-campaign analytics
 
 ## 🔧 Configuration
 
@@ -330,6 +373,12 @@ The application uses MySQL with the following settings:
 - Instant message delivery
 - Message history
 - Connection-based messaging (only connected users)
+
+### Fundings (Alumni Support Fund)
+- **Campaigns** have a goal amount, start/end dates, and optional event link; admins can publish, unpublish, or close them.
+- **Donations** are tied to a campaign and user; status flows to PAID via webhook or simulate endpoint.
+- **Landing page** shows a summary card with bar chart (donations over time), donut (progress to goal), campaign name(s), and a login CTA to donate.
+- **Admin analytics** include overall and per-campaign charts (bar and donut) and CSV export of donations.
 
 ## 🐛 Troubleshooting
 
