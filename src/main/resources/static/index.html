@@ -1414,11 +1414,25 @@
         .alumni-support-fund-card .card-body {
             padding: 1.75rem 2rem 2rem;
         }
+        .alumni-support-fund-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 0 0 0.5rem 0;
+            flex-wrap: wrap;
+        }
+        .alumni-support-fund-logo {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            display: block;
+        }
         .alumni-support-fund-card .funding-title {
             font-size: 1.75rem;
             font-weight: 700;
             color: #f8fafc;
-            margin: 0 0 0.5rem 0;
+            margin: 0;
             text-align: center;
         }
         .alumni-support-fund-card .funding-subtitle {
@@ -1440,6 +1454,7 @@
             gap: 1.5rem;
         }
         .funding-analytics-panel {
+            position: relative;
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.08);
             border-radius: 16px;
@@ -2437,7 +2452,10 @@
             <div style="max-width: 1200px; margin: 0 auto;">
                 <div class="alumni-support-fund-card">
                     <div class="card-body">
-                        <h2 class="funding-title">Alumni Support Fund</h2>
+                        <div class="alumni-support-fund-title-row">
+                            <img src="/images/dont.png" alt="" class="alumni-support-fund-logo">
+                            <h2 class="funding-title">Alumni Support Fund</h2>
+                        </div>
                         <p class="funding-subtitle">Transparency in giving. Every contribution counts.</p>
                         <p class="funding-campaign-names" id="landing-funding-campaign-names"></p>
                         <div class="funding-analytics-grid">

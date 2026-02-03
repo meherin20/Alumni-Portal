@@ -686,6 +686,122 @@
         .campaign-analytics-block .analytics-grid { margin-bottom: 0; }
         .campaign-analytics-block .analytics-card-chart { height: 140px; }
 
+        /* Light theme – admin dashboard */
+        [data-theme="light"] body {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+            color: #1e293b;
+        }
+        [data-theme="light"] .admin-sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right-color: #e2e8f0;
+        }
+        [data-theme="light"] .sidebar-title { color: #1e293b; }
+        [data-theme="light"] .sidebar-subtitle { color: #64748b; }
+        [data-theme="light"] .nav-section-title { color: #64748b; }
+        [data-theme="light"] .nav-item {
+            color: #475569;
+        }
+        [data-theme="light"] .nav-item:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        [data-theme="light"] .nav-item.active {
+            background: var(--admin-gradient);
+            color: white;
+        }
+        [data-theme="light"] .header-left h1 {
+            background: linear-gradient(135deg, #1e293b, #475569);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        [data-theme="light"] .header-subtitle { color: #64748b; }
+        [data-theme="light"] .metric-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .metric-card:hover { border-color: #cbd5e1; }
+        [data-theme="light"] .metric-value,
+        [data-theme="light"] .metric-label { color: #1e293b; }
+        [data-theme="light"] .metric-label { color: #64748b; }
+        [data-theme="light"] .content-card {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .content-card h3 { color: #1e293b; }
+        [data-theme="light"] .data-table th,
+        [data-theme="light"] .data-table td {
+            border-bottom-color: #e2e8f0;
+        }
+        [data-theme="light"] .data-table th { color: #64748b; }
+        [data-theme="light"] .data-table td { color: #334155; }
+        [data-theme="light"] .data-table tbody tr:hover {
+            background: #f8fafc;
+        }
+        [data-theme="light"] .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .btn-secondary:hover {
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+        }
+        [data-theme="light"] .form-label { color: #475569; }
+        [data-theme="light"] .form-input,
+        [data-theme="light"] .form-select,
+        [data-theme="light"] .form-textarea {
+            background: #ffffff;
+            border-color: #e2e8f0;
+            color: #1e293b;
+        }
+        [data-theme="light"] .form-input:focus,
+        [data-theme="light"] .form-select:focus,
+        [data-theme="light"] .form-textarea:focus {
+            border-color: var(--admin-primary);
+            background: #ffffff;
+        }
+        [data-theme="light"] .modal-card,
+        [data-theme="light"] .modal-content {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .modal-card h2,
+        [data-theme="light"] .modal-card h3,
+        [data-theme="light"] .modal-content h2,
+        [data-theme="light"] .modal-content h3 { color: #1e293b; }
+        [data-theme="light"] .modal-header {
+            border-bottom-color: #e2e8f0;
+        }
+        [data-theme="light"] .funding-tabs {
+            background: rgba(0,0,0,0.06);
+        }
+        [data-theme="light"] .funding-tab-btn {
+            color: #475569;
+        }
+        [data-theme="light"] .funding-tab-btn:hover:not(.active) {
+            color: #1e293b;
+            background: rgba(255,255,255,0.8);
+        }
+        [data-theme="light"] .analytics-card,
+        [data-theme="light"] .campaign-analytics-block {
+            background: #ffffff;
+            border-color: #e2e8f0;
+        }
+        [data-theme="light"] .analytics-card-title,
+        [data-theme="light"] .campaign-analytics-block h5 { color: #475569; }
+        [data-theme="light"] .analytics-card-value { color: #1e293b; }
+        [data-theme="light"] .analytics-card-value.muted { color: #64748b; }
+        [data-theme="light"] #theme-toggle {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        [data-theme="light"] #theme-toggle:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .admin-layout {
@@ -3027,9 +3143,10 @@
                     if (chartData && chartData.answers && chartData.answers.length > 0) {
                         resultsHTML += `
                             <div style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
-                                <h3 style="color: #1e293b; margin-bottom: 20px; font-size: 18px; font-weight: 600; display: flex; align-items: center;">
+                                <h3 style="color: #1e293b; margin-bottom: 6px; font-size: 18px; font-weight: 600; display: flex; align-items: center;">
                                     <i class="fas fa-chart-pie" style="margin-right: 8px; color: #6366f1;"></i>Answer Distribution
                                 </h3>
+                                <p style="color: #64748b; font-size: 13px; margin: 0 0 16px 0;">Based on all answers from all respondents across every survey question.</p>
                                 <div style="background: white; padding: 20px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                                     <div style="display: flex; align-items: center; justify-content: center; min-height: 400px;">
                                         <div style="width: 100%; max-width: 600px; position: relative; height: 400px;">
