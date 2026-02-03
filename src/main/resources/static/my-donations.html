@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Donations · Alumni Support Fund</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/js/auth.js"></script>
+    <style>
+        body { font-family: Inter, system-ui, sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); min-height: 100vh; color: #f8fafc; margin: 0; }
+        .nav { background: rgba(15,23,42,0.9); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 1rem 2rem; }
+        .nav a { color: #94a3b8; text-decoration: none; margin-right: 1rem; }
+        .nav a:hover { color: #fff; }
+        .wrap { max-width: 800px; margin: 0 auto; padding: 2rem; }
+        h1 { margin-bottom: 1rem; }
+        .donation-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .donation-item .amount { font-weight: 700; color: #10b981; }
+        .donation-item .status { font-size: 0.875rem; }
+        .donation-item .date { font-size: 0.875rem; color: rgba(255,255,255,0.6); }
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="/alumni-portal.html"><i class="fas fa-arrow-left"></i> Back to Profile</a>
+        <a href="/campaign-detail.html">All Campaigns</a>
+    </nav>
+    <div class="wrap">
+        <h1>My Donations</h1>
+        <div id="donations-list">Loading...</div>
+    </div>
+    <script>
+        const userEmail = (typeof Auth !== 'undefined' && Auth.getEmail && Auth.getEmail()) || localStorage.getItem('amp-user-email');
+        if (!userEmail) {
+            document.getElementById('donations-list').innerHTML = '<p>Please <a href="/login.html">log in</a> to see your donations.</p>';
+        } else {
+            fetch('/api/funding/my-donations?userEmail=' + encodeURIComponent(userEmail))
+                .then(r => r.json())
+                .then(data => {
+                    const list = data.data || data || [];
+                    const el = document.getElementById('donations-list');
+                    if (list.length === 0) {
+                        el.innerHTML = '<p>You have not made any donations yet.</p><p><a href="/campaign-detail.html" style="color: #10b981; font-weight: 600;">Browse campaigns to donate</a></p>';
+                    } else {
+                        el.innerHTML = list.map(d => {
+                            const date = d.createdDate ? new Date(d.createdDate).toLocaleDateString() : '';
+                            const amountStr = (d.amount != null ? Number(d.amount) : 0).toLocaleString();
+                            return '<div class="donation-item"><div><span class="amount">৳ ' + amountStr + '</span> to ' + (d.campaignTitle || 'Campaign') + '<br><span class="date">' + date + ' · ' + (d.method || '') + '</span></div><div><span class="status">' + d.status + '</span></div></div>';
+                        }).join('');
+                    }
+                })
+                .catch(() => { document.getElementById('donations-list').innerHTML = '<p>Error loading donations.</p>'; });
+        }
+    </script>
+</body>
+</html>

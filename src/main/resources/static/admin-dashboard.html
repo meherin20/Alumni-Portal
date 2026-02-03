@@ -546,6 +546,146 @@
             color: white;
         }
 
+        /* Alumni Support Fund – unique tab design */
+        .funding-tabs {
+            display: flex;
+            gap: 0;
+            padding: 6px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 14px;
+            border: 1px solid var(--admin-border);
+            margin-bottom: 1.5rem;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+        .funding-tab-btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--admin-text-secondary);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .funding-tab-btn i {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        .funding-tab-btn:hover:not(.active) {
+            color: var(--admin-text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .funding-tab-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+        }
+        .funding-tab-btn[data-funding-tab="campaigns"].active {
+            background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+        .funding-tab-btn[data-funding-tab="donations"].active {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+        }
+        .funding-tab-btn[data-funding-tab="analytics"].active {
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Analytics cards – 2x2 grid, donut + area style */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .analytics-card {
+            background: var(--admin-surface-hover);
+            border: 1px solid var(--admin-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            position: relative;
+            min-height: 260px;
+        }
+        .analytics-card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--admin-text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .analytics-card-indicator {
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 8px solid var(--admin-success);
+        }
+        .analytics-card-indicator.down {
+            border-bottom: none;
+            border-top: 8px solid var(--admin-error);
+        }
+        .analytics-card-chart {
+            height: 160px;
+            position: relative;
+        }
+        .analytics-card-stats {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .analytics-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--admin-text-primary);
+        }
+        .analytics-card-value.success { color: var(--admin-success); }
+        .analytics-card-value.muted { font-size: 0.95rem; color: var(--admin-text-muted); }
+        .analytics-summary-row {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--admin-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .analytics-grid { grid-template-columns: 1fr; }
+        }
+
+        .campaign-analytics-list { display: flex; flex-direction: column; gap: 1.5rem; }
+        .campaign-analytics-block {
+            background: var(--admin-surface-hover);
+            border: 1px solid var(--admin-border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            overflow: hidden;
+        }
+        .campaign-analytics-block h5 {
+            margin: 0 0 1rem;
+            font-size: 1.05rem;
+            color: var(--admin-text-primary);
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--admin-border);
+        }
+        .campaign-analytics-block .analytics-grid { margin-bottom: 0; }
+        .campaign-analytics-block .analytics-card-chart { height: 140px; }
+
         /* Responsive */
         @media (max-width: 1024px) {
             .admin-layout {
@@ -667,6 +807,10 @@
                 <a id="memories-nav-btn" href="#memories-management" class="nav-item">
                     <div class="nav-icon"><i class="fas fa-images"></i></div>
                     <span>Post Memories</span>
+                </a>
+                <a id="funding-nav-btn" href="#funding-management" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-hand-holding-heart"></i></div>
+                    <span>Alumni Support Fund</span>
                 </a>
             </div>
 
@@ -1397,6 +1541,116 @@
     </div>
 </div>
 
+<!-- Alumni Support Fund Modal -->
+<div id="funding-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card" style="max-width: 1100px;">
+        <div class="modal-header">
+            <h2 class="modal-title"><i class="fas fa-hand-holding-heart" style="margin-right: 12px;"></i>Alumni Support Fund</h2>
+            <button type="button" class="modal-close" id="funding-modal-close"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <input type="email" id="funding-admin-email" class="form-input" placeholder="Admin email" style="max-width: 280px;" />
+        </div>
+        <div class="funding-tabs" role="tablist">
+            <button type="button" class="funding-tab-btn active" data-funding-tab="campaigns" role="tab"><i class="fas fa-bullhorn"></i><span>Campaigns</span></button>
+            <button type="button" class="funding-tab-btn" data-funding-tab="donations" role="tab"><i class="fas fa-donate"></i><span>Donations</span></button>
+            <button type="button" class="funding-tab-btn" data-funding-tab="analytics" role="tab"><i class="fas fa-chart-line"></i><span>Analytics</span></button>
+        </div>
+        <div id="funding-tab-campaigns" class="funding-tab-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0;">Campaigns</h3>
+                <button type="button" class="btn-modern btn-primary" id="funding-create-campaign-btn"><i class="fas fa-plus"></i> Create Campaign</button>
+            </div>
+            <div id="funding-campaigns-list" style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead><tr><th>Title</th><th>Event</th><th>Goal</th><th>Raised</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="funding-campaigns-tbody"></tbody>
+                </table>
+            </div>
+            <div id="funding-campaign-form" style="display: none; margin-top: 1.5rem; padding: 1.5rem; border: 1px solid var(--admin-border); border-radius: 12px;">
+                <h4 style="margin-top: 0;">Create / Edit Campaign</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Event (optional)</label>
+                        <select id="funding-campaign-event" class="form-input"><option value="">-- No event (general fund) --</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" id="funding-campaign-title" class="form-input" placeholder="Campaign title" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Goal Amount</label>
+                        <input type="number" id="funding-campaign-goal" class="form-input" placeholder="0" min="1" step="0.01" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Contact Phone</label>
+                        <input type="text" id="funding-campaign-phone" class="form-input" placeholder="+8801673323434" />
+                    </div>
+                    <div class="form-group" style="grid-column: 1/-1;">
+                        <label class="form-label">Description</label>
+                        <textarea id="funding-campaign-desc" class="form-input" rows="3" placeholder="Description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Start Date</label>
+                        <input type="date" id="funding-campaign-start" class="form-input" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" id="funding-campaign-end" class="form-input" />
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 16px; align-items: center;">
+                        <label><input type="checkbox" id="funding-campaign-card" checked /> Card</label>
+                        <label><input type="checkbox" id="funding-campaign-bkash" checked /> bKash</label>
+                    </div>
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button type="button" class="btn-modern btn-primary" id="funding-campaign-save">Save Campaign</button>
+                    <button type="button" class="btn-modern btn-secondary" id="funding-campaign-cancel">Cancel</button>
+                </div>
+                <div id="funding-campaign-form-status" class="hint" style="margin-top: 8px;"></div>
+            </div>
+        </div>
+        <div id="funding-tab-donations" class="funding-tab-panel" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h3 style="margin: 0;">Donations</h3>
+                <a id="funding-export-donations" href="#" class="btn-modern btn-secondary" download="donations.csv"><i class="fas fa-download"></i> Export CSV</a>
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead><tr><th>Id</th><th>Campaign</th><th>Donor</th><th>Amount</th><th>Method</th><th>Status</th><th>Date</th></tr></thead>
+                    <tbody id="funding-donations-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="funding-tab-analytics" class="funding-tab-panel" style="display: none;">
+            <h3 style="margin-bottom: 1rem;">Analytics</h3>
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <div class="analytics-card-title"><span class="analytics-card-indicator"></span> Donations over time <i class="fas fa-dollar-sign" style="margin-left: 6px; color: #f59e0b; font-size: 0.9em;"></i></div>
+                    <div class="analytics-card-chart"><canvas id="funding-chart-over-time"></canvas></div>
+                    <div class="analytics-card-stats" id="funding-stats-over-time"></div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card-title"><span class="analytics-card-indicator"></span> Overall progress</div>
+                    <div class="analytics-card-chart" style="display: flex; align-items: center; justify-content: center;"><canvas id="funding-chart-progress"></canvas></div>
+                    <div class="analytics-card-stats" id="funding-stats-progress"></div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card-title"><span class="analytics-card-indicator"></span> Campaign breakdown</div>
+                    <div class="analytics-card-chart"><canvas id="funding-chart-campaigns"></canvas></div>
+                    <div class="analytics-card-stats" id="funding-stats-campaigns"></div>
+                </div>
+                <div class="analytics-card">
+                    <div class="analytics-card-title"><span class="analytics-card-indicator"></span> Summary</div>
+                    <div id="funding-analytics-summary" style="padding: 0.5rem 0;"></div>
+                </div>
+            </div>
+            <h4 style="margin: 1.5rem 0 1rem; color: var(--admin-text-secondary); font-size: 1rem;">Analytics by campaign</h4>
+            <div id="funding-campaign-analytics-container" class="campaign-analytics-list"></div>
+        </div>
+    </div>
+</div>
+
 <script>
     // Require admin authentication
     if (!Auth.requireAuth('admin')) {
@@ -1451,6 +1705,28 @@
         e.preventDefault();
         memoriesModal.style.display = 'block';
         loadPhotoLibrary();
+    });
+
+    const fundingModal = document.getElementById('funding-modal');
+    document.getElementById('funding-nav-btn').addEventListener('click', (e) => {
+        e.preventDefault();
+        fundingModal.style.display = 'block';
+        const email = localStorage.getItem('adminEmail') || document.getElementById('surveyAdminEmail')?.value;
+        if (document.getElementById('funding-admin-email')) document.getElementById('funding-admin-email').value = email || '';
+        loadFundingCampaigns();
+        loadFundingEvents();
+    });
+    document.getElementById('funding-modal-close').addEventListener('click', () => { fundingModal.style.display = 'none'; });
+    document.querySelectorAll('[data-funding-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-funding-tab]').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.funding-tab-panel').forEach(p => p.style.display = 'none');
+            btn.classList.add('active');
+            const tab = btn.getAttribute('data-funding-tab');
+            document.getElementById('funding-tab-' + tab).style.display = 'block';
+            if (tab === 'donations') loadFundingDonations();
+            if (tab === 'analytics') loadFundingAnalytics();
+        });
     });
 
     document.getElementById('job-open-btn').addEventListener('click', () => {
@@ -3149,6 +3425,452 @@
                     publishAllDraftBtn.innerHTML = '<i class="fas fa-check-circle" style="margin-right: 6px;"></i>Publish All Draft Surveys';
                 });
         });
+    }
+
+    // ——— Alumni Support Fund ———
+    function getFundingAdminEmail() {
+        return (document.getElementById('funding-admin-email')?.value || localStorage.getItem('adminEmail') || '').trim();
+    }
+    let fundingEditingCampaignId = null;
+
+    function loadFundingEvents() {
+        fetch('/events').then(r => r.json()).then(data => {
+            const list = data.data || data || [];
+            const sel = document.getElementById('funding-campaign-event');
+            if (!sel) return;
+            sel.innerHTML = '<option value="">-- No event (general fund) --</option>';
+            (Array.isArray(list) ? list : []).forEach(ev => {
+                const o = document.createElement('option');
+                o.value = ev.id || ev.eventId;
+                o.textContent = ev.title || ev.name || 'Event';
+                sel.appendChild(o);
+            });
+        }).catch(() => {});
+    }
+
+    function loadFundingCampaigns() {
+        const adminEmail = getFundingAdminEmail();
+        const tbody = document.getElementById('funding-campaigns-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="6">Enter admin email and open this section to load campaigns.</td></tr>';
+        if (!adminEmail) return;
+        fetch(`/api/admin/funding/campaigns?adminEmail=${encodeURIComponent(adminEmail)}`)
+            .then(r => r.json())
+            .then(data => {
+                const list = (data.data || []);
+                tbody.innerHTML = '';
+                if (list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6">No campaigns yet. Create one to get started.</td></tr>';
+                    return;
+                }
+                list.forEach(c => {
+                    const raised = c.raisedAmount != null ? Number(c.raisedAmount) : 0;
+                    const goal = c.goalAmount != null ? Number(c.goalAmount) : 1;
+                    const pct = goal > 0 ? Math.min(100, (raised / goal * 100).toFixed(1)) : 0;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${(c.title || '').substring(0, 40)}</td>
+                        <td>${c.eventTitle || '—'}</td>
+                        <td>${goal}</td>
+                        <td>${raised} (${pct}%)</td>
+                        <td>${c.status || 'DRAFT'}</td>
+                        <td>
+                            ${c.status === 'DRAFT' ? `<button class="btn-ghost" onclick="fundingPublish(${c.id})">Publish</button>` : ''}
+                            ${c.status === 'ACTIVE' ? `<button class="btn-ghost" onclick="fundingUnpublish(${c.id})">Unpublish</button> <button class="btn-ghost" onclick="fundingClose(${c.id})">Close</button>` : ''}
+                            <button class="btn-ghost" onclick="fundingEditCampaign(${c.id})">Edit</button>
+                            <button class="btn-ghost" onclick="fundingDeleteCampaign(${c.id})" style="color:var(--admin-error);">Delete</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            })
+            .catch(e => { tbody.innerHTML = '<tr><td colspan="6">Error loading campaigns.</td></tr>'; });
+    }
+
+    function fundingPublish(id) {
+        const adminEmail = getFundingAdminEmail();
+        if (!adminEmail) { alert('Admin email required'); return; }
+        fetch(`/api/admin/funding/campaigns/${id}/publish?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'POST' })
+            .then(r => r.json()).then(() => { loadFundingCampaigns(); }).catch(() => alert('Error publishing'));
+    }
+    function fundingUnpublish(id) {
+        const adminEmail = getFundingAdminEmail();
+        if (!adminEmail) { alert('Admin email required'); return; }
+        fetch(`/api/admin/funding/campaigns/${id}/unpublish?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'POST' })
+            .then(r => r.json()).then(() => { loadFundingCampaigns(); }).catch(() => alert('Error unpublishing'));
+    }
+    function fundingClose(id) {
+        const adminEmail = getFundingAdminEmail();
+        if (!adminEmail) { alert('Admin email required'); return; }
+        fetch(`/api/admin/funding/campaigns/${id}/close?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'POST' })
+            .then(r => r.json()).then(() => { loadFundingCampaigns(); }).catch(() => alert('Error closing'));
+    }
+    function fundingDeleteCampaign(id) {
+        if (!confirm('Delete this campaign?')) return;
+        const adminEmail = getFundingAdminEmail();
+        if (!adminEmail) { alert('Admin email required'); return; }
+        fetch(`/api/admin/funding/campaigns/${id}?adminEmail=${encodeURIComponent(adminEmail)}`, { method: 'DELETE' })
+            .then(() => loadFundingCampaigns()).catch(() => alert('Error deleting'));
+    }
+    function fundingEditCampaign(id) {
+        fundingEditingCampaignId = id;
+        document.getElementById('funding-campaign-form').style.display = 'block';
+        fetch(`/api/admin/funding/campaigns/${id}?adminEmail=${encodeURIComponent(getFundingAdminEmail())}`)
+            .then(r => r.json())
+            .then(data => {
+                const c = data.data || {};
+                document.getElementById('funding-campaign-title').value = c.title || '';
+                document.getElementById('funding-campaign-desc').value = c.description || '';
+                document.getElementById('funding-campaign-goal').value = c.goalAmount || '';
+                document.getElementById('funding-campaign-phone').value = c.contactPhone || '';
+                document.getElementById('funding-campaign-event').value = c.eventId || '';
+                document.getElementById('funding-campaign-card').checked = c.cardEnabled !== false;
+                document.getElementById('funding-campaign-bkash').checked = c.bkashEnabled !== false;
+            });
+    }
+
+    document.getElementById('funding-create-campaign-btn').addEventListener('click', () => {
+        fundingEditingCampaignId = null;
+        document.getElementById('funding-campaign-form').style.display = 'block';
+        document.getElementById('funding-campaign-title').value = '';
+        document.getElementById('funding-campaign-desc').value = '';
+        document.getElementById('funding-campaign-goal').value = '';
+        document.getElementById('funding-campaign-phone').value = '+8801673323434';
+        document.getElementById('funding-campaign-event').value = '';
+        document.getElementById('funding-campaign-start').value = '';
+        document.getElementById('funding-campaign-end').value = '';
+        document.getElementById('funding-campaign-card').checked = true;
+        document.getElementById('funding-campaign-bkash').checked = true;
+    });
+    document.getElementById('funding-campaign-cancel').addEventListener('click', () => {
+        document.getElementById('funding-campaign-form').style.display = 'none';
+    });
+    document.getElementById('funding-campaign-save').addEventListener('click', () => {
+        const adminEmail = getFundingAdminEmail();
+        if (!adminEmail) { alert('Admin email required'); return; }
+        const payload = {
+            eventId: document.getElementById('funding-campaign-event').value ? parseInt(document.getElementById('funding-campaign-event').value, 10) : null,
+            title: document.getElementById('funding-campaign-title').value,
+            description: document.getElementById('funding-campaign-desc').value,
+            goalAmount: parseFloat(document.getElementById('funding-campaign-goal').value) || 0,
+            startDate: document.getElementById('funding-campaign-start').value || null,
+            endDate: document.getElementById('funding-campaign-end').value || null,
+            contactPhone: document.getElementById('funding-campaign-phone').value,
+            cardEnabled: document.getElementById('funding-campaign-card').checked,
+            bkashEnabled: document.getElementById('funding-campaign-bkash').checked
+        };
+        const url = fundingEditingCampaignId
+            ? `/api/admin/funding/campaigns/${fundingEditingCampaignId}?adminEmail=${encodeURIComponent(adminEmail)}`
+            : `/api/admin/funding/campaigns?adminEmail=${encodeURIComponent(adminEmail)}`;
+        const method = fundingEditingCampaignId ? 'PUT' : 'POST';
+        fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+            .then(r => r.json())
+            .then(() => {
+                document.getElementById('funding-campaign-form').style.display = 'none';
+                document.getElementById('funding-campaign-form-status').textContent = 'Saved.';
+                loadFundingCampaigns();
+            })
+            .catch(() => document.getElementById('funding-campaign-form-status').textContent = 'Error saving.');
+    });
+
+    function loadFundingDonations() {
+        const adminEmail = getFundingAdminEmail();
+        const tbody = document.getElementById('funding-donations-tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="7">Loading...</td></tr>';
+        if (!adminEmail) { tbody.innerHTML = '<tr><td colspan="7">Enter admin email.</td></tr>'; return; }
+        fetch(`/api/admin/funding/donations?adminEmail=${encodeURIComponent(adminEmail)}`)
+            .then(r => r.json())
+            .then(data => {
+                const list = (data.data || []);
+                tbody.innerHTML = '';
+                list.forEach(d => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${d.id}</td><td>${(d.campaignTitle || '').substring(0, 30)}</td><td>${d.userEmail || ''}</td><td>${d.amount}</td><td>${d.method}</td><td>${d.status}</td><td>${d.createdDate ? new Date(d.createdDate).toLocaleDateString() : ''}</td>`;
+                    tbody.appendChild(tr);
+                });
+                if (list.length === 0) tbody.innerHTML = '<tr><td colspan="7">No donations yet.</td></tr>';
+            })
+            .catch(() => { tbody.innerHTML = '<tr><td colspan="7">Error loading donations.</td></tr>'; });
+    }
+
+    document.getElementById('funding-export-donations').addEventListener('click', (e) => {
+        e.preventDefault();
+        const adminEmail = getFundingAdminEmail();
+        if (!adminEmail) { alert('Admin email required'); return; }
+        document.getElementById('funding-export-donations').href = `/api/admin/funding/donations/export?adminEmail=${encodeURIComponent(adminEmail)}`;
+        document.getElementById('funding-export-donations').click();
+    });
+
+    let fundingCharts = {};
+    function loadFundingAnalytics() {
+        const adminEmail = getFundingAdminEmail();
+        if (!adminEmail) return;
+        fetch(`/api/admin/funding/analytics?adminEmail=${encodeURIComponent(adminEmail)}`)
+            .then(r => r.json())
+            .then(data => {
+                const summary = data.summary || {};
+                const totalRaised = Number(summary.totalRaised != null ? summary.totalRaised : 0);
+                const totalGoal = Number(summary.totalGoal != null ? summary.totalGoal : 0);
+                const overallPercent = summary.overallPercent != null ? summary.overallPercent : 0;
+                const overTime = data.donationsOverTime || [];
+                const top = data.topCampaigns || [];
+
+                // Summary card
+                document.getElementById('funding-analytics-summary').innerHTML = `
+                    <div class="analytics-card-stats">
+                        <span class="analytics-card-value">${totalRaised.toLocaleString()}</span>
+                        <span class="analytics-card-value muted">Total Raised</span>
+                    </div>
+                    <div class="analytics-card-stats">
+                        <span class="analytics-card-value">${totalGoal.toLocaleString()}</span>
+                        <span class="analytics-card-value muted">Total Goal</span>
+                    </div>
+                    <div class="analytics-summary-row">
+                        <span class="analytics-card-value success">${overallPercent.toFixed(1)}%</span>
+                        <span class="analytics-card-value muted">to goal</span>
+                    </div>
+                `;
+
+                // 1) Donations over time – vertical bar chart, cumulative (money increasing over time)
+                const sorted = [...overTime].sort((a, b) => String(a.date).localeCompare(String(b.date)));
+                const overTimeLabels = sorted.map(x => x.date);
+                const perPeriod = sorted.map(x => Number(x.amount));
+                let running = 0;
+                const cumulativeValues = perPeriod.map(v => { running += v; return running; });
+                const totalDonations = running;
+                document.getElementById('funding-stats-over-time').innerHTML = `
+                    <span class="analytics-card-value">${totalDonations.toLocaleString()}</span>
+                    <span class="analytics-card-value muted">total raised</span>
+                `;
+                if (window.Chart && document.getElementById('funding-chart-over-time')) {
+                    if (fundingCharts.overTime) fundingCharts.overTime.destroy();
+                    const ctx = document.getElementById('funding-chart-over-time').getContext('2d');
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 160);
+                    gradient.addColorStop(0, '#60a5fa');
+                    gradient.addColorStop(1, '#3b82f6');
+                    fundingCharts.overTime = new Chart(document.getElementById('funding-chart-over-time'), {
+                        type: 'bar',
+                        data: {
+                            labels: overTimeLabels,
+                            datasets: [{
+                                label: 'Total raised',
+                                data: cumulativeValues,
+                                backgroundColor: gradient,
+                                borderColor: '#2563eb',
+                                borderWidth: 0,
+                                borderRadius: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 12 } },
+                                y: { grid: { color: 'rgba(148,163,184,0.12)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+                            },
+                            barPercentage: 0.65,
+                            categoryPercentage: 0.75
+                        }
+                    });
+                }
+
+                // 2) Overall progress – donut (raised % vs remaining)
+                const progressPct = Math.min(100, Math.max(0, overallPercent));
+                document.getElementById('funding-stats-progress').innerHTML = `
+                    <span class="analytics-card-value success">${progressPct.toFixed(0)}%</span>
+                    <span class="analytics-card-value muted">raised</span>
+                `;
+                if (window.Chart && document.getElementById('funding-chart-progress')) {
+                    if (fundingCharts.progress) fundingCharts.progress.destroy();
+                    fundingCharts.progress = new Chart(document.getElementById('funding-chart-progress'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Raised', 'Remaining'],
+                            datasets: [{
+                                data: [progressPct, 100 - progressPct],
+                                backgroundColor: ['#10b981', 'rgba(148, 163, 184, 0.25)'],
+                                borderWidth: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '70%',
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { callbacks: { label: (c) => c.label + ': ' + c.raw.toFixed(1) + '%' } }
+                            }
+                        },
+                        plugins: [{
+                            id: 'centerText',
+                            afterDraw: (chart) => {
+                                const { ctx, width, height } = chart;
+                                ctx.save();
+                                ctx.font = 'bold 24px Inter, sans-serif';
+                                ctx.fillStyle = '#f8fafc';
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+                                ctx.fillText(progressPct.toFixed(0) + '%', width / 2, height / 2);
+                                ctx.restore();
+                            }
+                        }]
+                    });
+                }
+
+                // 3) Campaign breakdown – horizontal bar chart, each bar colorful
+                const campaignColors = ['#10b981', '#6366f1', '#8b5cf6', '#f59e0b', '#ec4899', '#14b8a6', '#06b6d4', '#84cc16', '#f97316', '#a855f7'];
+                const totalTop = top.reduce((s, c) => s + Number(c.raised || 0), 0);
+                const campaignLabels = totalTop > 0 ? top.map(x => (x.title || 'Unknown').substring(0, 20)) : ['No data'];
+                const campaignData = totalTop > 0 ? top.map(x => Number(x.raised || 0)) : [0];
+                const campaignBarColors = totalTop > 0 ? campaignLabels.map((_, i) => campaignColors[i % campaignColors.length]) : ['rgba(148,163,184,0.3)'];
+                document.getElementById('funding-stats-campaigns').innerHTML = totalTop > 0
+                    ? `<span class="analytics-card-value">${top.length}</span><span class="analytics-card-value muted">campaigns</span>`
+                    : `<span class="analytics-card-value muted">No campaigns</span>`;
+                if (window.Chart && document.getElementById('funding-chart-campaigns')) {
+                    if (fundingCharts.campaigns) fundingCharts.campaigns.destroy();
+                    fundingCharts.campaigns = new Chart(document.getElementById('funding-chart-campaigns'), {
+                        type: 'bar',
+                        data: {
+                            labels: campaignLabels,
+                            datasets: [{
+                                label: 'Raised',
+                                data: campaignData,
+                                backgroundColor: campaignBarColors,
+                                borderColor: campaignBarColors,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            indexAxis: 'y',
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { color: '#94a3b8' }, beginAtZero: true },
+                                y: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                            },
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.8
+                        }
+                    });
+                }
+
+                // Per-campaign analytics sections (each campaign has its own graph section)
+                const campaignAnalytics = data.campaignAnalytics || [];
+                if (!fundingCharts.campaignOverTimeByCampaign) fundingCharts.campaignOverTimeByCampaign = {};
+                if (!fundingCharts.campaignProgressByCampaign) fundingCharts.campaignProgressByCampaign = {};
+                Object.keys(fundingCharts.campaignOverTimeByCampaign).forEach(id => {
+                    if (fundingCharts.campaignOverTimeByCampaign[id]) fundingCharts.campaignOverTimeByCampaign[id].destroy();
+                });
+                Object.keys(fundingCharts.campaignProgressByCampaign).forEach(id => {
+                    if (fundingCharts.campaignProgressByCampaign[id]) fundingCharts.campaignProgressByCampaign[id].destroy();
+                });
+                fundingCharts.campaignOverTimeByCampaign = {};
+                fundingCharts.campaignProgressByCampaign = {};
+
+                const container = document.getElementById('funding-campaign-analytics-container');
+                if (!container) {
+                    return;
+                }
+                container.innerHTML = '';
+                const barColors = ['#10b981', '#6366f1', '#8b5cf6', '#f59e0b', '#ec4899', '#14b8a6', '#06b6d4', '#84cc16'];
+                campaignAnalytics.forEach((camp, idx) => {
+                    const id = camp.campaignId;
+                    const title = (camp.title || 'Campaign ' + (idx + 1)).substring(0, 50);
+                    const raised = Number(camp.raised != null ? camp.raised : 0);
+                    const goal = Number(camp.goal != null ? camp.goal : 0);
+                    const percent = camp.percent != null ? Math.min(100, Math.max(0, camp.percent)) : 0;
+                    const overTime = camp.donationsOverTime || [];
+                    const sorted = [...overTime].sort((a, b) => String(a.date).localeCompare(String(b.date)));
+                    const labels = sorted.map(x => x.date);
+                    const perPeriod = sorted.map(x => Number(x.amount));
+                    let run = 0;
+                    const cumulative = perPeriod.map(v => { run += v; return run; });
+                    const color = barColors[idx % barColors.length];
+
+                    const block = document.createElement('div');
+                    block.className = 'campaign-analytics-block';
+                    block.innerHTML = `
+                        <h5><i class="fas fa-bullhorn" style="margin-right: 8px; color: var(--admin-primary);"></i>${title}</h5>
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <div class="analytics-card-title"><span class="analytics-card-indicator"></span> Donations over time</div>
+                                <div class="analytics-card-chart"><canvas id="funding-camp-${id}-time"></canvas></div>
+                                <div class="analytics-card-stats"><span class="analytics-card-value">${raised.toLocaleString()}</span> <span class="analytics-card-value muted">raised</span></div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="analytics-card-title"><span class="analytics-card-indicator"></span> Progress</div>
+                                <div class="analytics-card-chart" style="display: flex; align-items: center; justify-content: center;"><canvas id="funding-camp-${id}-progress"></canvas></div>
+                                <div class="analytics-card-stats"><span class="analytics-card-value success">${percent.toFixed(0)}%</span> <span class="analytics-card-value muted">of ${goal.toLocaleString()} goal</span></div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(block);
+
+                    if (window.Chart) {
+                        const timeCanvas = document.getElementById('funding-camp-' + id + '-time');
+                        if (timeCanvas) {
+                            const ctx = timeCanvas.getContext('2d');
+                            const grad = ctx.createLinearGradient(0, 0, 0, 140);
+                            grad.addColorStop(0, color + '99');
+                            grad.addColorStop(1, color + '22');
+                            fundingCharts.campaignOverTimeByCampaign[id] = new Chart(timeCanvas, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{ label: 'Raised', data: cumulative, backgroundColor: grad, borderColor: color, borderWidth: 0, borderRadius: 4 }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        x: { grid: { display: false }, ticks: { color: '#94a3b8', maxTicksLimit: 8 } },
+                                        y: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { color: '#94a3b8' }, beginAtZero: true }
+                                    },
+                                    barPercentage: 0.65,
+                                    categoryPercentage: 0.75
+                                }
+                            });
+                        }
+                        const progressCanvas = document.getElementById('funding-camp-' + id + '-progress');
+                        if (progressCanvas) {
+                            fundingCharts.campaignProgressByCampaign[id] = new Chart(progressCanvas, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: ['Raised', 'Remaining'],
+                                    datasets: [{ data: [percent, 100 - percent], backgroundColor: [color, 'rgba(148,163,184,0.25)'], borderWidth: 0 }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    cutout: '65%',
+                                    plugins: { legend: { display: false } }
+                                },
+                                plugins: [{
+                                    id: 'centerText',
+                                    afterDraw: (chart) => {
+                                        const { ctx, width, height } = chart;
+                                        ctx.save();
+                                        ctx.font = 'bold 20px Inter, sans-serif';
+                                        ctx.fillStyle = '#f8fafc';
+                                        ctx.textAlign = 'center';
+                                        ctx.textBaseline = 'middle';
+                                        ctx.fillText(percent.toFixed(0) + '%', width / 2, height / 2);
+                                        ctx.restore();
+                                    }
+                                }]
+                            });
+                        }
+                    }
+                });
+                if (campaignAnalytics.length === 0) {
+                    container.innerHTML = '<p style="color: var(--admin-text-muted); padding: 1rem 0;">No campaigns to show analytics for.</p>';
+                }
+            })
+            .catch(() => {});
     }
 
     // Memory management functionality
